@@ -1,0 +1,106 @@
+.header_wrapper {
+  position: fixed;
+  height: 90px ;
+  padding-left: 64px;
+  padding-top: 20px;
+  background-color: white !important;
+  width: 100%;
+  z-index: 5 !important;
+  box-shadow: 4px 1px 28px -24px rgb(0 0 0 / 80%);
+  -webkit-box-shadow: 4px 1px 28px -24px rgb(0 0 0 / 80%);
+  -moz-box-shadow: 4px 1px 28px -24px rgb(0 0 0 / 80%);
+}
+
+.path{
+  color: #183E58;
+}
+
+.header_text{
+  color: #1b4460;
+  font-size: 17pt;
+  font-weight: 700;
+  padding-top: 3%;
+  text-align: center;
+}
+
+.header_wrapper_transparent {
+  position: fixed;
+  height: 90px ;
+  padding-left: 64px;
+  padding-top: 20px;
+  background-color: none;
+  width: 100%;
+  z-index: 99 !important;
+}
+
+.notif_bell{
+  padding: 3% 5%;
+  text-align: center;
+  background-color: #F7F7F7;
+  border-radius: 15%;
+}
+
+.profile{
+  font-weight: 400;
+  font-size: 16px !important;
+}
+
+.profile_container{
+  background-color: white !important;
+  border-radius: 16px;
+  box-shadow: 4px 5px 51px -21px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 4px 5px 51px -21px rgba(0,0,0,0.75);
+  -moz-box-shadow: 4px 5px 51px -21px rgba(0,0,0,0.75);
+  padding: 3% 0% 3% 0%;
+  z-index: 3 !important;
+  width: 80%;
+}
+
+.user_name{
+  font-weight: 700;
+  font-size: 16px !important;
+  text-decoration: underline;
+}
+
+.profile_pic{
+  font-size: 40px !important;
+  margin-left: 6%;
+}
+
+.profile_menu{
+  margin: 5% 5% 0% 5% !important;
+  padding-top: 1% !important;
+  padding-right: 15% !important;
+  height: 42px;
+}
+
+.profile_text{
+  margin-right: 8%;
+}
+
+.profile_text_container{
+  border-bottom: 1px solid #cacdcf;
+  padding: 0% 15% 6% 7% !important;
+  margin-bottom: 0px !important;
+  transition: 0.2s;
+}
+
+.profile_text_container_2{
+  padding: 0% 15% 6% 7% !important;
+  margin-bottom: 0px !important;
+  transition: 0.2s;
+}
+
+.profile_text_container a:hover .profile_text_container:hover {
+  color: blue !important;
+}
+
+.profile_text_container_2 a:hover{
+  color: blue !important;
+}
+
+.link{
+  color: black !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}

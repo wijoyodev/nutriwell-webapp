@@ -1,0 +1,137 @@
+$dark_blue : #183E58;
+$dark_green : #096D6A;
+$dark_blue2 : #1b4460;
+
+.shipyard_name{
+  color: #183E58;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0px;
+  text-align: left;
+  margin-bottom: 7%;
+  padding: 3%;
+  border: 3px solid transparent;
+  transition: 0.2s;
+}
+
+.shipyard_name:hover{
+  border-bottom: 3px solid #183E58;
+}
+
+.button_add_dock{
+  padding-left: 0px !important;
+  color: black;
+  text-decoration: none;
+}
+
+.container_list{
+  border-radius: 16px;
+  background-color: white;
+  box-shadow: 4px 5px 51px -21px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 4px 5px 51px -21px rgba(0,0,0,0.75);
+  -moz-box-shadow: 4px 5px 51px -21px rgba(0,0,0,0.75);
+  padding: 1.7% 3% !important;
+  position: absolute;
+  z-index: 2;
+  width: 29% !important;
+}
+
+.row_list{
+  padding-top: 4.2%;
+  text-align: center;
+}
+
+.add_shipyard{
+  height: 56px;
+  color: #0b2d48;
+  background-color: white ;
+  left: 0px;
+  top: 0px;
+  border-radius: 40px;
+  border: 1px solid #7c7c7c;
+  padding-left: 6%;
+}
+
+.font_add_shipyard{
+  font-weight: 700;
+  padding-top: 5%;
+  font-size: 11pt !important;
+}
+
+.plus_add_shipyard{
+  padding-top: 0%;
+  font-size: 22pt !important;
+  font-weight: 400;
+}
+
+.selected_shipyard{
+  height: 56px;
+  color: white !important;
+  background-color: #0b2d48;
+  border-radius: 40px;
+  margin-bottom: 5%;
+  transition: 0.5s;
+  border: 2px solid transparent;
+}
+
+.selected_shipyard:hover{
+  border: 2px solid white;
+}
+
+.unselected_shipyard{
+  height: 56px;
+  background-color: white !important;
+  color: #0b2d48;
+  border-radius: 40px;
+  margin-bottom: 5%;
+  transition: 0.5s;
+  border: 2px solid transparent;
+}
+
+.unselected_shipyard:hover{
+  border: 2px solid #0b2d48 !important;
+}
+
+.menu_bar_blue{
+  background-color: #648FAD;
+  margin-bottom: 3%;
+  height: 60px;
+  width: 350px;
+  left: 60px;
+  color: white !important;
+  top: 196px;
+  border-radius: 50px;
+}
+
+.menu_bar_text{
+  font-size: 14px;
+  padding: 4.5% 0% 0% 4%;
+  font-weight: 700;
+  line-height: 26px;
+  letter-spacing: 0px;
+  text-align: left;
+  height: 100%;
+}
+
+.no_decor_link{
+  color: black !important;
+  text-decoration: none !important;
+}
+
+.no_decor_link_white{
+  color: white !important;
+  text-decoration: none !important;
+}
+
+.menu_bar{
+  background-color: white;
+  margin-bottom: 3%;
+  height: 60px;
+  width: 350px;
+  left: 60px;
+  color: $dark_blue;
+  top: 196px;
+  border-radius: 50px;
+}
+
