@@ -15,6 +15,7 @@ const initialState = {
   updateContactInfoResp: null,
   allAdminResp: null,
   statisticResp: null,
+  logout: null,
 }
   
 const reducer = (state = initialState, action) => {
@@ -30,6 +31,9 @@ const reducer = (state = initialState, action) => {
     }
     case 'SET_ACTIVATE_DEACTIVATE_RESP': {
       return {...state, activeDeactiveResp: action.payload}
+    }
+    case 'SET_LOGOUT_RESP': {
+      return {...state, logoutResp: {success: true}}
     }
     case 'SET_LOGIN_RESP': {
       return {...state, loginResp: {success: true}}

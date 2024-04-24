@@ -106,23 +106,25 @@ const Header = ({ dispatch, isLogin, needLogin}) => {
                   {/* Admin Dashboard Web */}
                 </p>
               </Col>
-              <Col xs={{ span:2, offset:1 }} className="mt-2">
+              <Col xs={{ span:2, offset:1 }} className="mt-2" 
+                onMouseEnter={()=>setMenuProfile(true)}
+                onMouseLeave={()=>setMenuProfile(false)}
+              >
                 <Row>
                   <Col xs={{ span:2, offset:0 }} className={styles.notif_bell}>
                     <FaRegBell size={18}/>
                   </Col>
-                  <Col xs={{ span:10, offset:0 }} className={styles.profile} 
-                    onMouseEnter={()=>setMenuProfile(true)}
-                    onMouseLeave={()=>setMenuProfile(false)}
-                  >
-                    <div>
-                      <CgProfile className={styles.profile_pic}/>
-                      &nbsp;
-                      {"John Doe"}
-                      <font className={styles.user_name}>
-                        {localStorage.getItem('name')}
-                      </font> 
-                    </div>
+                  <Col xs={{ span:10, offset:0 }} className={styles.profile}>
+                    <Row>
+                      <Col xs={4}>
+                        <CgProfile className={styles.profile_pic}/>
+                      </Col>
+                      <Col xs={8}>
+                        <font className={styles.user_name}>
+                          {localStorage.getItem('full_name')}
+                        </font> 
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
                 { menuProfile && 

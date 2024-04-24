@@ -57,7 +57,7 @@ const OrderManagementTable = ({
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
+    // setAllShipyard(dispatch, activePage)
     
     // FOR SLICING DATA ONLY 
     setDataShown([{
@@ -100,12 +100,12 @@ const OrderManagementTable = ({
 
 	},[])
 
-  useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
-    }
-  },[dataShipyard.allShipyardResp])
+  // useEffect(()=>{
+  //   if( dataShipyard.allShipyardResp ){
+  //     setDataShown(dataShipyard.allShipyardResp.data)
+  //     setPagination(dataShipyard.allShipyardResp.pagination)
+  //   }
+  // },[dataShipyard.allShipyardResp])
 
 	return (
     <>

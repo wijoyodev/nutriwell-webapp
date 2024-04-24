@@ -29,29 +29,63 @@ export const setStatistic = async (dispatch, data) => {
 }
 
 export const setLoginResp = async (dispatch, data) => {
-  
-  dispatch({ type: 'SET_LOGIN_RESP', payload: data })
-  localStorage.setItem("token", `Bearer SIAP`)
-  // axios.post(`${process.env.REACT_APP_API_URL}/v1/auth/login/email`, data,
-  // {
-  //   headers: {
-  //     "X-Account-Role": admin_role,
-  //   }
-  // },{
-  // }).then(({data}) => {
-  //   localStorage.setItem("token", `Bearer ${data.data.token}`);
-  //   localStorage.setItem("web", `admin_web`);
-  //   localStorage.setItem("last_login", Date.now());
-  //   dispatch({ type: 'SET_LOGIN_RESP', payload: data })
-  // }).catch((error)=>{
-  //   Swal.fire({
-  //     title: 'Error',
-  //     text: error.response.data.message,
-  //     icon: 'error',
-  //     confirmButtonColor: '#1b4460',
-  //   })
-  //   console.log("response error", error)
-  // })
+  console.log("masuk setLoginResp", data , process.env.REACT_APP_API_URL)
+  // dispatch({ type: 'SET_LOGIN_RESP', payload: data })
+  axios.post(`${process.env.REACT_APP_API_URL}/login`, data,
+  {
+    // headers: {
+    //   "X-Account-Role": admin_role,
+    // }
+  },{
+  }).then(({data}) => {
+    console.log(data,"<<setLoginResp DATA RESPONSE API ")
+    localStorage.setItem("token", `Bearer ${data.data.token}`);
+    localStorage.setItem("web", `admin_web`);
+    localStorage.setItem("email", data.email);
+    localStorage.setItem("full_name", data.data.full_name);
+    localStorage.setItem("last_login", Date.now());
+    dispatch({ type: 'SET_LOGIN_RESP', payload: data })
+  }).catch((error)=>{
+    Swal.fire({
+      title: 'Error',
+      // text: error.response.data.message,
+      text: error,
+      icon: 'error',
+      confirmButtonColor: '#1b4460',
+    })
+    console.log("response error", error)
+  })
+}
+
+export const setLogoutResp = async (dispatch) => {
+  // dispatch({ type: 'SET_LOGOUT_RESP', payload: data })
+  axios.post(`${process.env.REACT_APP_API_URL}/logout`, 
+  {
+    "email": localStorage.getItem('email'),
+    "refresh_token": localStorage.getItem('token'),
+  },
+  {
+    // headers: {
+    //   "X-Account-Role": admin_role,
+    // }
+  },{
+  }).then(({data}) => {
+    console.log(data,"<<setLogoutResp DATA RESPONSE API ")
+    // localStorage.setItem("token", `Bearer ${data.data.token}`);
+    // localStorage.setItem("web", `admin_web`);
+    // localStorage.setItem("full_name", data.data.full_name);
+    // localStorage.setItem("last_login", Date.now());
+    dispatch({ type: 'SET_LOGOUT_RESP' })
+  }).catch((error)=>{
+    Swal.fire({
+      title: 'Error',
+      // text: error.response.data.message,
+      text: error,
+      icon: 'error',
+      confirmButtonColor: '#1b4460',
+    })
+    console.log("response error", error)
+  })
 }
 
 export const setActiveDeactive = async (dispatch, mainData) => {
@@ -91,7 +125,7 @@ export const setActiveDeactive = async (dispatch, mainData) => {
 }
 
 export const setAuthResp = async (dispatch) => {
-  axios.get(`${process.env.REACT_APP_API_URL}/v1/auth/me`,
+  axios.get(`${process.env.REACT_APP_API_URL}/user`,
   {
     headers: {
       "Authorization": localStorage.getItem('token'),
@@ -101,6 +135,7 @@ export const setAuthResp = async (dispatch) => {
     },
   },{
   }).then(({data}) => {
+    console.log(data, "<data")
     if( !localStorage.getItem('email') ){
       setTimeout(() => { 
         window.location.reload(false);

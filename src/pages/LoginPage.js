@@ -53,12 +53,18 @@ const LoginPage = ({ dispatch, dataLoginRegister }) => {
     }
   ]
 
-  useEffect(()=>{
-    if( dataLoginRegister.loginResp ){
-      // setAuthResp(dispatch)
-      navigate("../dashboard");
-    }
-  },[dataLoginRegister.loginResp])
+  // useEffect(()=>{
+  //   if( dataLoginRegister.loginResp ){
+  //     if( dataLoginRegister.loginResp.success ){
+  //       const myTimeout = setTimeout(myGreeting, 2000);
+
+  //       function myGreeting() {
+  //         window.location.reload();
+  //       }
+  //       myTimeout()
+  //     }
+  //   }
+  // },[dataLoginRegister.loginResp])
 
   return (    
     <>
