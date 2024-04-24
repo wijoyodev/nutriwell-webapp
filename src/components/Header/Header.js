@@ -7,6 +7,7 @@ import { useMediaQuery } from 'react-responsive'
 import styles from './Header.module.scss'
 import Swal from 'sweetalert2'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { setLogoutResp } from '../../store/actions/loginRegisterAction'
 
 const Header = ({ dispatch, isLogin, needLogin}) => {
   const navigate = useNavigate()
@@ -78,6 +79,7 @@ const Header = ({ dispatch, isLogin, needLogin}) => {
       confirmButtonColor: '#1b4460',
     })
     localStorage.clear()
+    setLogoutResp(dispatch)
     setTimeout(() => { 
       navigate('/');
     }, 1000)
