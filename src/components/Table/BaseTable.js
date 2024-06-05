@@ -14,6 +14,7 @@ const BaseTable = ({
   section,
   activePage,
   handlePageChange,
+  memberId,
 }) => {
 
   console.log("MASUK BASE TABLE", data)
@@ -121,7 +122,10 @@ const BaseTable = ({
             <tr key={index}>
             {console.log("oneData>> ", oneData)}
               { Object.keys(oneData).map( (item,index) => (
-                section === "RewardTable" ||section === "orderManagement" || section === "adminManagement" || section === "salesReport" || section === "disbursement" || section === "referenceNetwork" ? 
+                section === "disbursementMember" || section === "RewardTable" ||
+                section === "orderManagement" || section === "adminManagement" || 
+                section === "salesReport" || section === "disbursement" || 
+                section === "referenceNetwork" ? 
                   <>
                     { printSection(index, oneData[item], item) }
                   </>
@@ -144,7 +148,12 @@ const BaseTable = ({
                 ))}
               { linkDetail &&
                 <td>
-                  <Link to={linkDetail + (oneData["ID"] || oneData["ADMIN ID"])} className={styles.no_underline}>
+                  <Link to={
+                      section === "disbursementMember" ? 
+                        ( linkDetail + memberId + `/${oneData["ID"]}` )
+                        :
+                        ( linkDetail + (oneData["ID"] || oneData["ADMIN ID"]) )
+                    } className={styles.no_underline}>
                     <p className={styles.detail}><BiSearchAlt/></p>
                   </Link>
                 </td>

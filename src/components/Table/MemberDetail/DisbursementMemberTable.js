@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styles from '../BaseTable.module.scss';
 import BaseTable from "../BaseTable";
 import { connect } from "react-redux";
@@ -17,6 +17,7 @@ const DisbursementMemberTable = ({
 }) => {
 
   const [dateRange, setDateRange] = useState([null, null]);
+  const { orderId, memberId } = useParams()
   const [startDate, endDate] = dateRange;
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
@@ -60,10 +61,11 @@ const DisbursementMemberTable = ({
         {data.length > 0 ?
           <BaseTable 
             data={data} 
-            linkDetail={"../disbursementDetail/"} 
+            linkDetail={"../memberDetail/"} 
             pagination={pagination}
-            section={"disbursement"}
+            section={"disbursementMember"}
             activePage={activePage}
+            memberId={memberId}
           />
           :
           <>

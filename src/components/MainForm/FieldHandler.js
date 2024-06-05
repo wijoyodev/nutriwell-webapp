@@ -43,15 +43,35 @@ const FieldHandler = ({
 	},[])
 
   const sectionFieldHanlder = (item, index) => {
-    if(item.type === "text" ){
+    if(item.type === "date" ){
+      return(
+        <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
+          <Row>
+            <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.label}</Form.Label>
+            <Form.Label htmlFor="basic-url" className={styles.filed_label_info}>
+              { new Date(item.value).toLocaleString() }
+            </Form.Label>
+          </Row>
+        </Col>
+      )
+    }else if(item.type === "text" ){
       return (
         <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
           <Row>
             <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label>
           </Row>
           <Row>
-            <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.value}</Form.Label>
+            <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.isCurrency && "Rp. "}{item.value}</Form.Label>
           </Row>
+          {console.log("ITEM", item)}
+          {console.log("ITEM", item.value)}
+          {item.bankInfo &&
+            <Row>
+              <Form.Label htmlFor="basic-url" className={styles.filed_label_3 + ' mb-0  pb-0'}>{item.valueAccBank}</Form.Label>
+              <Form.Label htmlFor="basic-url" className={styles.filed_label_info + ' mb-0'}>{item.valueAccBankNum}</Form.Label>
+              <Form.Label htmlFor="basic-url" className={styles.filed_label_info}>{item.valueAccBankName}</Form.Label>
+            </Row>
+          }
           {item.isPaymentDone &&
             <Row>
               <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.paymentMethod}</Form.Label>

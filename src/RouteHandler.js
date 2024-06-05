@@ -113,6 +113,7 @@ function RouteHandler() {
                     <Route exact path="/memberManagement" element={<MemberPage/>} />
                     <Route exact path="/memberManagement/addMember" element={<AddMemberPage/>} />
                     <Route exact path="/memberDetail/:memberId" element={<MemberDetailPage/>} />
+                    <Route exact path="/memberDetail/:memberId/:disbursementId" element={<DisbursementDetailPage/>} />
                     <Route exact path="/productDetail" element={<NewAdminPage/>} />
                     <Route exact path="/404" element={<NotFoundPage/>}/>
                     <Route path="*" element={<NotFoundPage/>}/>

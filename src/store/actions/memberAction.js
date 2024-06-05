@@ -141,12 +141,38 @@ export const setDisbursementDetail = async (dispatch,id) => {
       "Content-Type": "application/json",
       "Accept": "*/*",
     },
-    url     : `${process.env.REACT_APP_API_URL}/disbursement?status=COMPLETED&user_id=${id}`,
+    url     : `${process.env.REACT_APP_API_URL}/disbursement?user_id=${id}`,
   }
 
   axios(options).then(({data}) => {
     console.log("SET_DETAIL_DISBURSEMENT" ,data.result)
     dispatch({ type: 'SET_DETAIL_DISBURSEMENT', payload: data.result })
+  }).catch((error)=>{
+    Swal.fire({
+      title: 'Error',
+      text: error.response.data.message,
+      icon: 'error',
+      confirmButtonColor: '#1b4460',
+    })
+  })
+}
+
+export const setDisbursementMemberDetail = async (dispatch,id, disbId) => {
+  const options = {
+    method  : 'get',
+    headers : {
+      'Authorization': localStorage.getItem('token'),
+      "ngrok-skip-browser-warning": "true" ,
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+      "Accept": "*/*",
+    },
+    url     : `${process.env.REACT_APP_API_URL}/disbursement?user_id=${id}&id=${disbId}`,
+  }
+
+  axios(options).then(({data}) => {
+    console.log("SET_DETAIL_DISBURSEMENT_MEMBER" ,data.result)
+    dispatch({ type: 'SET_DETAIL_DISBURSEMENT_MEMBER', payload: data.result })
   }).catch((error)=>{
     Swal.fire({
       title: 'Error',

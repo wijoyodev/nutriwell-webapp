@@ -21,8 +21,8 @@ const Disbursement = ({
   const [progress, setProgress] = useState(true);
   const [islands, setIslands] = useState(null)
   const [locations, setLocations] = useState(null)
-  const [onHold, setOnHold] = useState("");
-  const [withDrawn, setWithDrawn] = useState("");
+  const [onHold, setOnHold] = useState(0);
+  const [withDrawn, setWithDrawn] = useState(0);
   const [images, setImages] = useState("");
   const [validated, setValidated] = useState(false);
   const [whatsappNumber, setWhatsappNumber] = useState("");
@@ -44,8 +44,8 @@ const Disbursement = ({
   
   const setData = (data) => {
     console.log("setData", data)
-    setWithDrawn(data.disburse_success.total_value)
-    setOnHold(data)
+    setWithDrawn(data?.disburse_success?.total_value)
+    setOnHold(data?.disburse_pending?.total_value)
     setMonthlyReward(data)
     setDataDisbursement(data.data)
     setIsLoading(false)

@@ -28,7 +28,7 @@ const MainForm = ({
   whiteBackground,
 }) => {
   const [validated, setValidated] = useState(false);
-
+  console.log(dataForm,"<<dataForm")
   const doResendPass = (e) => {
     e.preventDefault()
     setForgotPassword(dispatch, email, isVerified.role)
@@ -58,7 +58,7 @@ const MainForm = ({
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Selesai </font>
       }
     }else if( pageName === "Disbursement Detail" ){
-      if( status === "Berhasil" ){
+      if( status === "Berhasil" || status === "COMPLETED" ){
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Berhasil </font>
       } else if( status === "Pending" ){
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
@@ -175,49 +175,6 @@ const MainForm = ({
                 return <FieldHandler item={item} index={index} key={index} onClickFunc={onClickFunc}/>
               })}
             </Row>
-            { pageName === "Shipyard Owner Detail" && 
-              <>
-                <Row>
-                  <h3 className={styles.title_shipyard}>
-                    Shipyards Available
-                  </h3>
-                </Row>
-                {allShipyard.length > 0 ? 
-                  <Row className={styles.field_container}>
-                    {allShipyard.map( (item, index)=>{
-                        return (
-                          <Col md={5} xs={5} key={index} className={styles.card_2}>
-                            <Link to={`/orderManagementDetail/${orderId}/shipyardDetail/${item.id}`} className={styles.no_link}>
-                              <Row>
-                                <Col xs={7}>
-                                  <font className={styles.label_card}>
-                                    {item.name}
-                                  </font>
-                                </Col>
-                              </Row>
-                              <Row >
-                                { item.shipyardPhotos.length > 0 ?
-                                  <img src={item.shipyardPhotos[0].imageUrl} className={styles.img_card}/>
-                                  :
-                                  <img src={'/images/emptyImageDefault.png'} className={styles.img_card}/>
-                                }
-                              </Row>
-                            </Link>
-                          </Col>
-                        )
-                    })}
-                  </Row>
-                  :
-                  <h4 className={styles.no_shipyard}>
-                    <AiOutlineWarning color="#e75d0f"/>
-                    &nbsp;
-                    No Shipyard Available 
-                    &nbsp;
-                    <AiOutlineWarning color="#e75d0f"/>
-                  </h4>
-                }
-              </>
-            }
           </Form>
         </Col>
       </Row>

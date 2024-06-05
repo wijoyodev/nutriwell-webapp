@@ -10,6 +10,7 @@ const initialState = {
   disbursementGeneralResp: null,
   disbursementDetailResp: null,
   allDisbursementResp: null,
+  disbursementDetailMemberResp: null,
 }
   
 const reducer = (state = initialState, action) => {
@@ -31,6 +32,9 @@ const reducer = (state = initialState, action) => {
     }
     case 'SET_DETAIL_DISBURSEMENT':{
       return {...state, disbursementDetailResp: action.payload}
+    }
+    case 'SET_DETAIL_DISBURSEMENT_MEMBER':{
+      return {...state, disbursementDetailMemberResp: action.payload}
     }
     case 'SET_MEMBER_DETAIL_RESP':{
       return {...state, memberDetailResp: action.payload.data[0]}
