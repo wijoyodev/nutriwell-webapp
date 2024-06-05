@@ -6,29 +6,48 @@ import Swal from 'sweetalert2'
 import { connect } from "react-redux";
 import { setUploadFile, resetUploadFile, setDetailShipyard, resetDetailShipyard, setAllShipyardByShipyardId, setUpdateDetailShipyard } from '../store/actions/shipyardAction'
 import { setActiveDeactive } from '../store/actions/loginRegisterAction'
+import { setDetailOrder } from '../store/actions/orderAction'
 
-const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
+const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   const { orderId } = useParams()
 
   // const [isLoading, setIsLoading] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [transactionTotal, setTrasactionTotal] = useState(null);
+  const [transactionSubTotal, setTrasactionSubTotal] = useState(null);
   const [isVerified, setIsVerified] = useState(true);
   // const [isVerified, setIsVerified] = useState(null);
   
-  const [allShipyard, setAllShipyard] = useState(null);
-  const [bankName, setBankName] = useState("");
+  const [details, setDetails] = useState(null);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
-  const [requestDate, setRequestDate] = useState("");
+  const [requestDate, setRequestDate] = useState("");  
+  const [receivedDate, setReceivedDate] = useState("");
+
+  // bank info
+  const [bankName, setBankName] = useState("");
   const [bankNumber, setBankNumber] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
-  const [transactionDetail, setTransactionDetail] = useState("");
+
+  // payment info
+  const [isPaymentDone, setIsPaymentDone] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentDate, setPaymentDate] = useState("");
+  
+  // shipping info
+  const [isOnShipping, setIsOnShipping] = useState(false);
+  const [courierType, setCourierType] = useState("");
+  const [courierPrice, setCourierPrice] = useState("");
+
+  const [productDetails, setProductDetails] = useState("");
   const [transactionNumber, setTransactionNumber] = useState("");
   const [reason, setReason] = useState("");
   const [customerDetail, setCustomerDetail] = useState("");
   const [status, setStatus] = useState("");
   const [transactionDate, setTransactionDate] = useState("");
+  const [shippingNo, setShippingNo] = useState("");
+  const [shippingDate, setShippingDate] = useState("");
+
   const navigate = useNavigate()
 
   const doUpdate = (e) => {
@@ -39,7 +58,7 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
       bankAccountName,
       status,
       transactionDate,
-      transactionDetail: transactionDetail,
+      productDetails: productDetails,
       transactionNumber: transactionNumber,
       reason: reason,
       customerDetail: customerDetail,
@@ -134,90 +153,106 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
   }
 
   useEffect(()=>{
-    if( dataShipyard.detailShipyardResp ){
-      let data = dataShipyard.detailShipyardResp
-      setId(data.id)
-      setName(data.name)
-      setRequestDate(data.requestDate)
-      setBankName(data.bankName)
-      setBankNumber(data.bankNumber)
-      setBankAccountName(data.bankAccountName)
-      setTransactionDetail(data.transactionDetail)
-      setTransactionNumber(data.transactionNumber)
-      setReason(data.reason)
-      setCustomerDetail(data.customerDetail)
-      setStatus(data.status)
-      setTransactionDate(data.transactionDate)
-      setIsVerified(data.account)
-      setTrasactionTotal(data.account.isActive)
-    }
-  },[dataShipyard.detailShipyardResp])
+    if( dataOrder.orderDetailResp ){
+      console.log(dataOrder.orderDetailResp, "< dataOrder.orderDetailResp")
+      let data = dataOrder.orderDetailResp
+      setId(data.order_number)
+      setName(data.user_detail.full_name)
+      setRequestDate(data.created_at)
+      
+      setBankName(data.user_detail.account_bank)
+      setBankNumber(data.user_detail.account_bank_number)
+      setBankAccountName(data.user_detail.account_bank_name)
 
-  useEffect(()=>{
-    if( dataShipyard.allShipyardByShipyardIdResp ){
-      setAllShipyard(dataShipyard.allShipyardByShipyardIdResp)
+      if(data.status === 2 || data.status === 3){
+        setShippingNo(data.shipment_number)
+        setShippingDate(data.delivery_date)
+        setIsOnShipping(true)
+      }
+
+      if(data.status === 1 || data.status === 2 || data.status === 3){
+        setPaymentMethod(data.payment_method)
+        setPaymentDate(data.payment_date)
+        setIsPaymentDone(true)
+      }
+
+      if(data.status === 3){
+        setReceivedDate(data.receive_date)
+      }
+
+      setCourierType(data.courier_name)
+      setCourierPrice(data.courier_rate)
+      setProductDetails(data.product_detail)
+      setTransactionNumber(data.order_number)
+      setReason(data.reason)
+      setCustomerDetail(data.user_detail)
+      setStatus(data.status)
+      setTransactionDate(data.created_at)
+      setIsVerified(data.account)
+      setTrasactionTotal(data.total_purchase)
+      setTrasactionSubTotal(data.product_detail.total_price)
       setIsLoading(false)
     }
-  },[dataShipyard.allShipyardByShipyardIdResp])
+  },[dataOrder.orderDetailResp])
 
   useEffect(()=>{
-    if( dataShipyard.uploadFileResp ){
-      switch (dataShipyard.uploadFileResp.section) {
-        case "transactionDetail" :
-          setTransactionDetail(dataShipyard.uploadFileResp.url)
+    if( dataOrder.uploadFileResp ){
+      switch (dataOrder.uploadFileResp.section) {
+        case "productDetails" :
+          setProductDetails(dataOrder.uploadFileResp.url)
           break;
         case "transactionNumber" :
-          setTransactionNumber(dataShipyard.uploadFileResp.url)
+          setTransactionNumber(dataOrder.uploadFileResp.url)
           break;
         case "reason" :
-          setReason(dataShipyard.uploadFileResp.url)
+          setReason(dataOrder.uploadFileResp.url)
           break;
         case "customerDetail" :
-          setCustomerDetail(dataShipyard.uploadFileResp.url)
+          setCustomerDetail(dataOrder.uploadFileResp.url)
           break;
         default :
-          setTransactionDetail(dataShipyard.uploadFileResp.url)
+          setProductDetails(dataOrder.uploadFileResp.url)
           break;
       } 
       resetUploadFile(dispatch)
     }
-  },[dataShipyard.uploadFileResp])
+  },[dataOrder.uploadFileResp])
 
   useEffect(()=>{
-    setDetailShipyard(dispatch, orderId)
-    setAllShipyardByShipyardId(dispatch, orderId)
+    setDetailOrder(dispatch, orderId)
+    setIsLoading(true)
 
     // FOR SLICING DATA ONLY 
-    setId("ODO00001")
-    setName("PT Bumi Makmur")
-    setRequestDate("oke")
-    setBankName("BCA")
-    setBankNumber("5082172373")
-    setBankAccountName("Samsul Saripudin")
-    setTransactionDetail([{
-      description: "Request PEnarikan",
-      total: 1500000,
-    }])
-    setTransactionNumber("973528139")
-    setReason("oke")
-    setCustomerDetail({
-      name: "John Doe",
-      phone: "085712381238",
-      address: "Ruko Prominence, Jl. Jalur Sutera Boulevard No.2, Kab Tangerang, Banten, ID 12345",
-      paymentMethod: "Transfer Bank",
-      shippingMethod: "JNE Regular",
-      trasactionDate: 1709910356,
-      shippingNo: "032483294203942",
-      shippingDate: 1709910356,
-    })
-    setStatus("Selesai")
-    setTransactionDate(1709743549)
-    setIsVerified("oke")
-    setTrasactionTotal({
-      subTotal: 150000,
-      shippingPrice: 3000,
-      totalPrice: 153000,
-    })
+    // setId("ODO00001")
+    // setName("PT Bumi Makmur")
+    // setRequestDate("oke")
+    // setBankName("BCA")
+    // setBankNumber("5082172373")
+    // setBankAccountName("Samsul Saripudin")
+    // setProductDetail([{
+    //   description: "Request PEnarikan",
+    //   total: 1500000,
+    // }])
+    // setTransactionNumber("973528139")
+    // setReason("oke")
+    // setCustomerDetail({
+    //   name: "John Doe",
+    //   phone: "085712381238",
+    //   address: "Ruko Prominence, Jl. Jalur Sutera Boulevard No.2, Kab Tangerang, Banten, ID 12345",
+    //   paymentMethod: "Transfer Bank",
+    //   shippingMethod: "JNE Regular",
+    //   trasactionDate: 1709910356,
+    //   shippingNo: "032483294203942",
+    //   shippingDate: 1709910356,
+    // })
+    // setStatus("Selesai")
+    // setTransactionDate(1709743549)
+    // setIsVerified("oke")
+    // setTrasactionTotal({
+    //   subTotal: 150000,
+    //   shippingPrice: 3000,
+    //   totalPrice: 153000,
+    // })
     // FOR SLICING DATA ONLY
 
   },[])
@@ -246,7 +281,7 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
           spaceXs: "12",
           value: transactionNumber,
         },{
-          label: "NOMOR PESANAN",
+          label: "WAKTU PESANAN",
           type: "text",
           spaceMd: "6",
           spaceXs: "12",
@@ -269,27 +304,31 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
           type: "text",
           spaceMd: "6",
           spaceXs: "12",
-          isPaymentDone: true,
-          value: customerDetail.paymentMethod,
-          detailInfo: customerDetail.trasactionDate,
+          isPaymentDone: isPaymentDone,
+          paymentMethod: paymentMethod,
+          detailInfo: paymentDate,
         },{
           label: "METODE PENGIRIMAN",
           type: "text",
           spaceMd: "6",
           spaceXs: "12",
-          isOnShipping: true,
-          value: customerDetail.shippingMethod,
+          isOnShipping: isOnShipping,
+          courierType: courierType,
           detailInfo: customerDetail,
+          shippingNo: shippingNo,
+          shippingDate: shippingDate,
         }
       ]
     },
     {
       label: "Informasi Pesanan",
       type: "sectionTable",
-      dataFields: transactionDetail, 
+      productDetails: productDetails, 
       dataFieldsTitle: ["Deskripsi", "Jumlah"], 
       transactionTotal: transactionTotal,
+      transactionSubTotal: transactionSubTotal,
       transactionTotalTitle: ["Subtotal", "Ongkir", "Total"], 
+      courierPrice: courierPrice,
     },
     {
       label: "Ubah Status",
@@ -306,13 +345,13 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
   ]
 
   return (    
-    isLoading === false && transactionDetail.length > 0 && transactionTotal && 
+    isLoading === false && 
     <div className="container_right_form">
       <MainForm
         pageName={"Order Detail"}
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
-        allShipyard={allShipyard}
+        details={details}
         status={status}
         orderId={id}
         pageFor={"detail"}
@@ -326,7 +365,7 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard,
+    dataOrder: state.order,
   };
 };
 

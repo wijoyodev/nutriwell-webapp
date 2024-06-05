@@ -9,12 +9,13 @@ import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { setAllShipyard, setSearchShipyardOwner } from '../../store/actions/shipyardAction'
+import { setDisbursementList } from '../../store/actions/memberAction'
 
 const DisbursementTable = ({
   pageName,
   linkAddNew,
   dispatch, 
-  dataShipyard,
+  dataMember,
 }) => {
 
   const [dateRange, setDateRange] = useState([null, null]);
@@ -61,55 +62,14 @@ const DisbursementTable = ({
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "DI0100",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "PT Sukro",
-      totalPayment: 98000,
-      status: "Berhasil"
-    },{
-      id: "DI0101",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "Alima Putra",
-      totalPayment: 122000,
-      status: "Pending"
-    },{
-      id: "DI0102",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "Yuloha Sukima",
-      totalPayment: 10000,
-      status: "Berhasil"
-    },{
-      id: "DI0103",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "Maratus K",
-      totalPayment: 10000,
-      status: "Pending"
-    },{
-      id: "DI0104",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "Saikoji",
-      totalPayment: 10000,
-      status: "Berhasil"
-    }])
-    // FOR SLICING DATA ONLY 
-
+    setDisbursementList(dispatch)
 	},[])
 
   useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
+    if( dataMember.allDisbursementResp ){
+      setDataShown(dataMember.allDisbursementResp.data)
     }
-  },[dataShipyard.allShipyardResp])
+  },[dataMember.allDisbursementResp])
 
 	return (
     <>
@@ -201,7 +161,7 @@ const DisbursementTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 

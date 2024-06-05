@@ -4,10 +4,10 @@ import { FaHome, FaTools, FaChartBar } from 'react-icons/fa'
 import { FaMoneyBills } from 'react-icons/fa6'
 import { RiShipFill, RiAccountCircleFill } from 'react-icons/ri'
 import { IoDocumentTextOutline } from 'react-icons/io5'
+import { GrFolder  } from 'react-icons/gr'
 import { CiImageOn } from 'react-icons/ci'
 import { BsFillTagFill } from 'react-icons/bs'
 import { MdPeople } from 'react-icons/md'
-
 import { CgProfile } from 'react-icons/cg'
 import {  Link } from 'react-router-dom';
 import styles from './SideMenu.module.scss'
@@ -18,37 +18,36 @@ const SideMenu = () => {
   const defaultMenu = [{
     title: "Order Management",
     icon: <IoDocumentTextOutline/>,
-    isActive: false,
     type:"menu",
     link:"../orderManagement"
   },{
     title: "Sales Report",
     icon: <FaChartBar/>,
-    isActive: false,
     type:"menu",
     link:"./salesReport"
   },{
     title: "Disbursement",
     icon: <FaMoneyBills/>,
-    isActive: false,
     type:"menu",
     link:"./disbursement"
   },{
     title: "Banner Management",
     icon: <FaTools/>,
-    isActive: false,
     type:"menu",
     link:"./bannerManagement"
   },{
+    title: "Product Detail",
+    icon: <CgProfile/>,
+    type:"menu",
+    link:"./productDetail"
+  },{
     title: "Member Management",
     icon: <MdPeople/>,
-    isActive: false,
     type:"menu",
     link:"./memberManagement"
   },{
     title: "Admin Management",
     icon: <CgProfile/>,
-    isActive: false,
     type:"menu",
     link:"./adminManagement"
   }
@@ -83,16 +82,33 @@ const SideMenu = () => {
   //   type:"menu",
   //   link:"./faq"
   // }
-]
+  ] 
+  
+  const menuAdminPacking = [{
+    title: "Order Management",
+    icon: <IoDocumentTextOutline/>,
+    type:"menu",
+    link:"../orderManagement"
+  }
+  ]
   
   const selectMenu = (index) => {
-    let currMenu = [...defaultMenu];
-    currMenu[index].isActive = !currMenu[index].isActive 
-    setMenuList(currMenu)
+    localStorage.setItem("activeMenu", index)
   }
 
   useEffect(()=>{
-    setMenuList(defaultMenu)
+    if(localStorage.getItem("activeMenu")){
+      localStorage.setItem("activeMenu", localStorage.getItem("activeMenu"))
+    }else{
+      localStorage.setItem("activeMenu", 0)
+    }
+
+    if( localStorage.getItem('role') === "3" ){
+      setMenuList(menuAdminPacking)
+    }else{
+      setMenuList(defaultMenu)
+    }
+
   },[])
 
   // useEffect(()=>{
@@ -115,7 +131,7 @@ const SideMenu = () => {
             data.type === "menu" ? 
               <Row key={index} onClick={ ()=>selectMenu(index) }>
                 <Link to={data.link} className={styles.link}>
-                  <Col xs="12" className={data.isActive ? styles.list_menu_active : styles.list_menu}>
+                  <Col xs="12" className={localStorage.getItem("activeMenu") == index ? styles.list_menu_active : styles.list_menu}>
                     <p> {data.icon} &nbsp;&nbsp; {data.title} </p>
                   </Col>
                 </Link>

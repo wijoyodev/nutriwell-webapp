@@ -75,7 +75,7 @@ function RouteHandler() {
   let location = useLocation();
 
   useEffect(()=>{
-    if( localStorage.getItem('token') ){
+    if( localStorage.getItem('token') && localStorage.getItem('webGarenaLogedIn') ){
       setIsLogin(true)
       setToken(localStorage.getItem('token'))
     } else {
@@ -94,25 +94,67 @@ function RouteHandler() {
                 <SideMenu/>
               </Col>
               <Col xs={"9"} className={"main_menu_login"}>
-                <Routes>
-                  <Route exact path="/" element={<OrderManagementPage/>} />
-                  <Route exact path="/orderManagement" element={<OrderManagementPage/>} />
-                  <Route exact path="/orderManagementDetail/:orderId" element={<OrderManagementDetailPage/>} />
-                  <Route exact path="/salesReport" element={<SalesReportPage/>} />
-                  <Route exact path="/disbursement" element={<DisbursementPage/>} />
-                  <Route exact path="/disbursementDetail/:disbursementId" element={<DisbursementDetailPage/>} />
-                  <Route exact path="/adminManagement" element={<AdminPage/>} />
-                  <Route exact path="/adminDetail/:adminId" element={<AdminDetailPage/>} />
-                  <Route exact path="/adminManagement/addAdmin" element={<AddAdminPage/>} />
-                  <Route exact path="/bannerManagement" element={<BannerManagementPage/>} />
-                  <Route exact path="/newBanner" element={<NewBannerManagementPage/>} />
-                  <Route exact path="/bannerDetail/:bannerId" element={<BannerDetailPage/>} />
-                  <Route exact path="/memberManagement" element={<MemberPage/>} />
-                  <Route exact path="/memberManagement/addMember" element={<AddMemberPage/>} />
-                  <Route exact path="/memberDetail/:memberId" element={<MemberDetailPage/>} />
+
+                {/* ROLE 1 === super admin */}
+                { localStorage.getItem('role') === "1" && 
+                  <Routes>
+                    <Route exact path="/" element={<OrderManagementPage/>} />
+                    <Route exact path="/orderManagement" element={<OrderManagementPage/>} />
+                    <Route exact path="/orderManagementDetail/:orderId" element={<OrderManagementDetailPage/>} />
+                    <Route exact path="/salesReport" element={<SalesReportPage/>} />
+                    <Route exact path="/disbursement" element={<DisbursementPage/>} />
+                    <Route exact path="/disbursementDetail/:disbursementId" element={<DisbursementDetailPage/>} />
+                    <Route exact path="/adminManagement" element={<AdminPage/>} />
+                    <Route exact path="/adminDetail/:adminId" element={<AdminDetailPage/>} />
+                    <Route exact path="/adminManagement/addAdmin" element={<AddAdminPage/>} />
+                    <Route exact path="/bannerManagement" element={<BannerManagementPage/>} />
+                    <Route exact path="/newBanner" element={<NewBannerManagementPage/>} />
+                    <Route exact path="/bannerDetail/:bannerId" element={<BannerDetailPage/>} />
+                    <Route exact path="/memberManagement" element={<MemberPage/>} />
+                    <Route exact path="/memberManagement/addMember" element={<AddMemberPage/>} />
+                    <Route exact path="/memberDetail/:memberId" element={<MemberDetailPage/>} />
+                    <Route exact path="/productDetail" element={<NewAdminPage/>} />
+                    <Route exact path="/404" element={<NotFoundPage/>}/>
+                    <Route path="*" element={<NotFoundPage/>}/>
+                  </Routes>
+                }
+                
+                {/* ROLE 2 === manager  */}
+                { localStorage.getItem('role') === "2" && 
+                  <Routes>
+                    <Route exact path="/" element={<OrderManagementPage/>} />
+                    <Route exact path="/orderManagement" element={<OrderManagementPage/>} />
+                    <Route exact path="/orderManagementDetail/:orderId" element={<OrderManagementDetailPage/>} />
+                    <Route exact path="/salesReport" element={<SalesReportPage/>} />
+                    <Route exact path="/disbursement" element={<DisbursementPage/>} />
+                    <Route exact path="/disbursementDetail/:disbursementId" element={<DisbursementDetailPage/>} />
+                    <Route exact path="/adminManagement" element={<AdminPage/>} />
+                    <Route exact path="/bannerManagement" element={<BannerManagementPage/>} />
+                    <Route exact path="/newBanner" element={<NewBannerManagementPage/>} />
+                    <Route exact path="/bannerDetail/:bannerId" element={<BannerDetailPage/>} />
+                    <Route exact path="/memberManagement" element={<MemberPage/>} />
+                    <Route exact path="/memberManagement/addMember" element={<AddMemberPage/>} />
+                    <Route exact path="/memberDetail/:memberId" element={<MemberDetailPage/>} />
+                    <Route exact path="/productDetail" element={<NewAdminPage/>} />
+                    <Route exact path="/404" element={<NotFoundPage/>}/>
+                    <Route path="*" element={<NotFoundPage/>}/>
+                  </Routes>
+                }
+                
+                {/* ROLE 3 === admin packing  */}
+                { localStorage.getItem('role') === "3" && 
+                  <Routes>
+                    <Route exact path="/" element={<OrderManagementPage/>} />
+                    <Route exact path="/orderManagement" element={<OrderManagementPage/>} />
+                    <Route exact path="/orderManagementDetail/:orderId" element={<OrderManagementDetailPage/>} />
+                    <Route exact path="/productDetail" element={<NewAdminPage/>} />
+                    <Route exact path="/404" element={<NotFoundPage/>}/>
+                    <Route path="*" element={<NotFoundPage/>}/>
+                  </Routes>
+                }
                   
                   
-                  <Route exact path="/contactInformation" element={<ContactInformationPage/>} />
+                  {/* <Route exact path="/contactInformation" element={<ContactInformationPage/>} />
                   <Route exact path="/shipyardOwner" element={<ShipyardOwnerPage/>} />
                   <Route exact path="/newShipyardOwner" element={<NewShipyardOwnerPage/>} />
                   <Route exact path="/shipOwner" element={<ShipOwnerPage/>} />
@@ -156,10 +198,7 @@ function RouteHandler() {
                   <Route exact path="/privacyPolicy" element={<PrivacyPolicyPage/>} />
                   <Route exact path="/helpCenter" element={<HelpCenterPage/>} />
                   <Route exact path="/marine/preview" element={<PreviewPage/>} />
-                  <Route exact path="/createPassword" element={<CreatePasswordPage setIsLogin={setIsLogin} isLogin={isLogin}/>} />
-                  <Route exact path="/404" element={<NotFoundPage/>}/>
-                  <Route path="*" element={<NotFoundPage/>}/>
-                </Routes>
+                  <Route exact path="/createPassword" element={<CreatePasswordPage setIsLogin={setIsLogin} isLogin={isLogin}/>} /> */}
               </Col>
             </>
           :

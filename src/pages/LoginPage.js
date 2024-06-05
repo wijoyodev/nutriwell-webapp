@@ -11,7 +11,7 @@ const LoginPage = ({ dispatch, dataLoginRegister }) => {
   
   const doLogin = (e) => {
     e.preventDefault()
-    let data = { email, password }
+    let data = { user_account : email, password }
     setLoginResp(dispatch, data)
   }
   // 
@@ -53,18 +53,18 @@ const LoginPage = ({ dispatch, dataLoginRegister }) => {
     }
   ]
 
-  // useEffect(()=>{
-  //   if( dataLoginRegister.loginResp ){
-  //     if( dataLoginRegister.loginResp.success ){
-  //       const myTimeout = setTimeout(myGreeting, 2000);
+  useEffect(()=>{
+    if( dataLoginRegister.loginResp ){
+      if( dataLoginRegister.loginResp.success ){
+        const myTimeout = setTimeout(reloadFunc, 2000);
 
-  //       function myGreeting() {
-  //         window.location.reload();
-  //       }
-  //       myTimeout()
-  //     }
-  //   }
-  // },[dataLoginRegister.loginResp])
+        function reloadFunc() {
+          window.location.reload();
+        }
+        myTimeout()
+      }
+    }
+  },[dataLoginRegister.loginResp])
 
   return (    
     <>

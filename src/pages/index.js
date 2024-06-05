@@ -59,3 +59,5 @@ export { default as BannerManagementPage } from './BannerManagementPage';
 export { default as BannerDetailPage } from './BannerDetailPage';
 export { default as MemberPage } from './MemberPage';
 export { default as MemberDetailPage } from './MemberDetailPage';
+export { default as ProductDetailPage } from './ProductDetailPage';
+

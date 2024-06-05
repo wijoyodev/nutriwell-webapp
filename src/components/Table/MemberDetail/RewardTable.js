@@ -14,6 +14,7 @@ const RewardTable = ({
   pageName,
   linkAddNew,
   dispatch, 
+  dataReward,
   dataShipyard,
 }) => {
 
@@ -49,49 +50,19 @@ const RewardTable = ({
     let listData = []
     for (let idx in datas) {
       listData.push({
-        'Tanggal': datas[idx].date,
+        'Tanggal': datas[idx].created_at,
         'Deskripsi': datas[idx].description,
-        'Jumlah Komisi': datas[idx].totalComission,
+        'Jumlah Komisi': datas[idx].reward_profit,
       })
     }
+    console.log(listData, "<listData")
     setData(listData)
   }
-
+  
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      date: 1711875255000,
-      description: "Pembelian Produk Bpk/Ibu George",
-      totalComission: 5000000,
-    },{
-      date: 1711875255000,
-      description: "Pembelian Produk Bpk/Ibu Sutisna",
-      totalComission: 100000,
-    },{
-      date: 1711875255000,
-      description: "Pembelian Produk Bpk/Ibu Markus",
-      totalComission: 2000000,
-    },{
-      date: 1711875255000,
-      description: "Pembelian Produk Bpk/Ibu George",
-      totalComission: 100,
-    },{
-      date: 1711875255000,
-      description: "Pembelian Produk Bpk/Ibu George",
-      totalComission: 9000000,
-    }])
-    // FOR SLICING DATA ONLY 
-
-	},[])
-
-  useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
-    }
-  },[dataShipyard.allShipyardResp])
+    console.log(dataReward, "<dataReward")
+    setDataShown(dataReward)
+	},[dataReward])
 
 	return (
     <>

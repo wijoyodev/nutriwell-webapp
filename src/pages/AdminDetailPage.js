@@ -4,11 +4,11 @@ import MainForm from '../components/MainForm/MainForm'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
-import { setUploadFile, resetUploadFile, setDetailShipyard, resetDetailShipyard, setAllShipyardByShipyardId, setUpdateDetailShipyard } from '../store/actions/shipyardAction'
 import { setActiveDeactive } from '../store/actions/loginRegisterAction'
+import { setAdminById, setUpdateDetaiAdmin } from '../store/actions/adminAction'
 
-const AdminDetailPage = ({ dispatch, dataShipyard }) => {
-  const { disbursementId } = useParams()
+const AdminDetailPage = ({ dispatch, dataAdmin }) => {
+  const { adminId } = useParams()
 
   // const [isLoading, setIsLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +18,7 @@ const AdminDetailPage = ({ dispatch, dataShipyard }) => {
   const [isVerified, setIsVerified] = useState(true);
   // const [isVerified, setIsVerified] = useState(null);
   
-  const [allShipyard, setAllShipyard] = useState(null);
+  const [detailAdmin, setDetailAdmin] = useState(null);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,15 +28,17 @@ const AdminDetailPage = ({ dispatch, dataShipyard }) => {
   const doUpdate = (e) => {
     e.preventDefault()
     const dataUpdate = {
-      name,
+      id,
+      full_name: name,
       email,
       status,
     }
-    setUpdateDetailShipyard(dispatch, dataUpdate, id)
+    setUpdateDetaiAdmin(dispatch, dataUpdate, id)
   }
-
-  const triggerUpload = (e, section) => {
-    setUploadFile(dispatch, e.target.files[0], section)
+  
+  const handleSelect = (e, type) => {
+    const splitValue = e.target.value.split("||")
+    setStatus(splitValue[0]) 
   }
 
   const packageDetail = () => {
@@ -95,31 +97,25 @@ const AdminDetailPage = ({ dispatch, dataShipyard }) => {
   }
 
   useEffect(()=>{
-    if( dataShipyard.detailShipyardResp ){
-      let data = dataShipyard.detailShipyardResp
-      setId(data.id)
-      setName(data.name)
-      setEmail(data.email)
-      setStatus(data.status)
-    }
-  },[dataShipyard.detailShipyardResp])
-
-  useEffect(()=>{
-    if( dataShipyard.allShipyardByShipyardIdResp ){
-      setAllShipyard(dataShipyard.allShipyardByShipyardIdResp)
+    if( dataAdmin.adminDetailResp ){
+      console.log(dataAdmin.adminDetailResp[0], "<<< dataAdmin.adminDetailResp")
+      setDetailAdmin(dataAdmin.adminDetailResp[0])
+      setId(dataAdmin.adminDetailResp[0].id)
+      setName(dataAdmin.adminDetailResp[0].full_name)
+      setEmail(dataAdmin.adminDetailResp[0].email)
+      setStatus(dataAdmin.adminDetailResp[0].status)
       setIsLoading(false)
     }
-  },[dataShipyard.allShipyardByShipyardIdResp])
+  },[dataAdmin.adminDetailResp])
 
   useEffect(()=>{
-    setDetailShipyard(dispatch, disbursementId)
-    setAllShipyardByShipyardId(dispatch, disbursementId)
+    setAdminById(dispatch, adminId)
 
     // FOR SLICING DATA ONLY 
-    setId("ODO00001")
-    setName("Yanti Sumartini")
-    setEmail("yanti@sumartini@yahooo.com")
-    setStatus("Berhasil")
+    // setId("ODO00001")
+    // setName("Yanti Sumartini")
+    // setEmail("yanti@sumartini@yahooo.com")
+    // setStatus("Berhasil")
     // FOR SLICING DATA ONLY
 
   },[])
@@ -145,6 +141,7 @@ const AdminDetailPage = ({ dispatch, dataShipyard }) => {
       spaceMd: "4",
       spaceXs: "12",
       value: name,
+      action: setName,
       required: true,
     },{
       type: "SPACE",
@@ -157,6 +154,7 @@ const AdminDetailPage = ({ dispatch, dataShipyard }) => {
       spaceMd: "4",
       spaceXs: "12",
       value: email,
+      action: setEmail,
       required: true,
     },{
       type: "SPACE",
@@ -169,7 +167,8 @@ const AdminDetailPage = ({ dispatch, dataShipyard }) => {
       placeholder: "Input Status",
       spaceMd: "4",
       spaceXs: "12",
-      value: status,
+      value: status == 1 ? {name: "Active"} : {name: "Inactive"},
+      action: handleSelect,
       required: true,
     },{
       type: "SPACE",
@@ -180,11 +179,13 @@ const AdminDetailPage = ({ dispatch, dataShipyard }) => {
       type: "button_submit",
       spaceMd: "3",
       spaceXs: "3",
+      action: doUpdate,
     },{
       label: "Batal",
       type: "buttonWhite",
       spaceMd: "3",
       spaceXs: "3",
+      link: '../adminManagement',
     }
   ]
 
@@ -195,7 +196,7 @@ const AdminDetailPage = ({ dispatch, dataShipyard }) => {
         pageName={"Detail Admin"}
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
-        allShipyard={allShipyard}
+        detailAdmin={detailAdmin}
         status={status}
         orderId={id}
         pageFor={"detail"}
@@ -210,7 +211,7 @@ const AdminDetailPage = ({ dispatch, dataShipyard }) => {
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard,
+    dataAdmin: state.admin,
   };
 };
 

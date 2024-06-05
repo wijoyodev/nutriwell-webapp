@@ -16,6 +16,35 @@ const BaseTable = ({
   handlePageChange,
 }) => {
 
+  console.log("MASUK BASE TABLE", data)
+
+  const printSection = (index, data, title) => {
+    console.log("masuk printsection", index, data, title)
+    if( title === "STATUS" ){
+      return (
+        <td key={index}>
+          { printStatusLabel(data) }
+        </td>
+      )
+    }else{
+      return (
+        <td key={index}>
+          { printData(data, title) }
+        </td>
+      )
+    }
+  }
+
+  // const printRoleLabel = (role) => {
+  //   if( role === 1 ){
+  //     return <p> Super Admin </p>
+  //   }else if( role === 2 ){
+  //     return <p> Manager </p>
+  //   }else if( role === 3 ){
+  //     return <p> Admin Packing </p>
+  //   }
+  // }
+
   const printStatusLabel = (status) => {
     if( section === "orderManagement" ){
       if( status === "Selesai" ){
@@ -32,15 +61,15 @@ const BaseTable = ({
         return <p className={`${styles.statusDone} ${styles.buttonStatus}`}> Selesai </p>
       }
     }else if( section === "disbursement" ){
-      if( status === "Berhasil" ){
+      if( status === "COMPLETED" ){
         return <p className={`${styles.statusDone} ${styles.buttonStatus}`}> Berhasil </p>
       } else if( status === "Pending" ){
         return <p className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </p>
       } 
     }else if( section === "adminManagement" ){
-      if( status === "Active" ){
+      if( status === 1 ){
         return <p className={`${styles.statusDone} ${styles.buttonStatus}`}> Active </p>
-      } else if( status === "Inactive" ){
+      } else if( status === 2 ){
         return <p className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Inactive </p>
       }
     }
@@ -48,17 +77,20 @@ const BaseTable = ({
 
   const printDate = (unix) => {
     const date = new Date(unix);
+    console.log(date, unix, "<<<")
     const formatter = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
     return formatter.format(date);
   }
 
-  const printData = (data, item) => {
-    if( item == "Total Komisi" ){
+  const printData = (data, title) => {
+    if( title == "Total Komisi" ){
       return <p className={styles.data_row}> {"Rp. "  + data} </p>
-    }else if( item == "Tanggal" ){
+    }else if( title == "Tanggal" ){
+      console.log("printData", data,title, data[title])
       return <p className={styles.data_row}> {printDate(data)}</p>
     }else{
       return <p className={styles.data_row}> {data} </p>
+      // return <p className={styles.data_row}> {data[title]} </p>
     }
   }
 
@@ -66,6 +98,7 @@ const BaseTable = ({
 	},[])
 
 	return (
+    data && 
     <>
       <Row>
         <Table className={styles.table}>
@@ -84,31 +117,19 @@ const BaseTable = ({
             </tr>
           </thead>
           <tbody>
-          { data.map((data, index) => (
+          { data.map((oneData, index) => (
             <tr key={index}>
-              { Object.keys(data).map( (item,index) => (
-                section === "orderManagement" || section === "adminManagement" || section === "salesReport" || section === "disbursement" ? 
+            {console.log("oneData>> ", oneData)}
+              { Object.keys(oneData).map( (item,index) => (
+                section === "RewardTable" ||section === "orderManagement" || section === "adminManagement" || section === "salesReport" || section === "disbursement" || section === "referenceNetwork" ? 
                   <>
-                    {item === "STATUS" ? 
-                      <td key={index}>
-                        { printStatusLabel(data['STATUS']) }
-                        {/* {data['STATUS'] ?
-                          <p className={styles.active}> Selesai </p>
-                        :
-                          <p className={styles.inactive}> Pending </p>
-                        } */}
-                      </td>
-                      :
-                      <td key={index}>
-                        { printData(data[item], item) }
-                      </td>
-                    }
+                    { printSection(index, oneData[item], item) }
                   </>
                   :
                   <>
                     {item === "STATUS" ? 
                       <td key={index}>
-                        {data['STATUS'] ?
+                        {oneData['STATUS'] ?
                           <p className={styles.verif}> <RiCheckLine/> Verified </p>
                         :
                           <p className={styles.notVerif}> Not Verified </p>
@@ -116,14 +137,14 @@ const BaseTable = ({
                       </td>
                       :
                       <td key={index}>
-                        { printData(data[item], item) }
+                        { printData(oneData, item) }
                       </td>
                     }
                   </>
                 ))}
               { linkDetail &&
                 <td>
-                  <Link to={linkDetail + (data["ID"] || data["ADMIN ID"])} className={styles.no_underline}>
+                  <Link to={linkDetail + (oneData["ID"] || oneData["ADMIN ID"])} className={styles.no_underline}>
                     <p className={styles.detail}><BiSearchAlt/></p>
                   </Link>
                 </td>
@@ -139,7 +160,7 @@ const BaseTable = ({
             {...bootstrap5PaginationPreset}
             className={"pagination text-left"}
             current={activePage}
-            total={pagination.pageCount}
+            total={Math.ceil(pagination.total/pagination.limit)}
             onPageChange={(e)=>handlePageChange(e)}
           />
         </Col>
@@ -153,7 +174,7 @@ const BaseTable = ({
         </Col> */}
         <Col xs={{span: "2", offset: "4"}} className={styles.page_data}>
           <p>
-            {`Total: ${pagination.totalCount} data`}
+            {`Total: ${pagination.total} data`}
           </p>
         </Col>
       </Row>

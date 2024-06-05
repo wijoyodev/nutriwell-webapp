@@ -412,14 +412,13 @@ const FieldHandler = ({
   } else if (item.type === "date"){
     return (
       item.availability && 
-        <Col md={item.spaceMd} xs={item.spaceXs} key={index}>
+        <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
           <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label> 
           <br/>
-          <DatePicker appearance="default" placeholder="Default" style={{ width: "100%"}} 
+          <DatePicker appearance="default" placeholder="Default" style={{ width: "100%", marginTop: "2%"}} 
           onChange={(e)=> {item.action(e[0], e[1])}}
           // value={[
-          //   new Date(item.availableFrom * 1000),
-          //   new Date(item.availableUntil * 1000)
+            // new Date(item.value * 1000)
           // ]}
           />
         </Col>

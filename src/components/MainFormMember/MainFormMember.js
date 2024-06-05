@@ -24,6 +24,7 @@ const MainFormMember = ({
   dataForm,
   pageFor,
   status,
+  dataOneMember,
   allShipyard,
   orderId,
   isVerified,
@@ -34,7 +35,6 @@ const MainFormMember = ({
 }) => {
   const [validated, setValidated] = useState(false);
   const [position, setPosition] = useState("")
-  const [dataOneMember, setDataOneMember] = useState("")
   const { memberId } = useParams()
 
   const doResendPass = (e) => {
@@ -87,7 +87,6 @@ const MainFormMember = ({
 
   useEffect(()=>{
     if(position && localStorage.getItem('memberDetailPos') != position){
-      console.log("kok masuk?", localStorage.getItem('memberDetailPos'), "|" , position)
       localStorage.setItem('memberDetailPos', position)
     }
   },[position])
@@ -102,11 +101,14 @@ const MainFormMember = ({
       setPosition(localStorage.getItem('memberDetailPos'))
     }
   },[])
+
+  console.log("mainFormMember")
 	
 	return (
 		<>
-      { pageFor === "detail" && 
+      { pageFor === "detail" && dataOneMember &&
       <>
+      {console.log("dataOneMember", dataOneMember)}
         <Row>
           <Col xs={9}>
             <p className={styles.main_title_2}>

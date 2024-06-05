@@ -12,6 +12,7 @@ const NewBannerManagementPage = ({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
+  const [imagez, setImagez] = useState([]);
   const navigate = useNavigate()
 
   useEffect(()=>{
@@ -20,7 +21,7 @@ const NewBannerManagementPage = ({
   useEffect(()=>{
     if( dataBanner.bannerCreatetResp ){
       resetCreateBanner(dispatch)
-      navigate('../supplierBanner')
+      navigate('../bannerManagement')
     }
   },[dataBanner.bannerCreatetResp])
 
@@ -34,10 +35,14 @@ const NewBannerManagementPage = ({
     setImages(imageList);
   };
 
+  const onChangeImagez = (e) => {
+    // data for submit
+    setImagez(e.target.files[0]);
+  };
+
   const doCreateBanner = (e) => {
     e.preventDefault()
     const data = {
-      bannerType: "supplier",
       title,
       content,
       imageUrl: images
@@ -53,7 +58,9 @@ const NewBannerManagementPage = ({
       spaceXs: "12",
       maxImage: "1",
       images: images,
+      // images: imagez,
       action: onChangeImage,
+      // action: onChangeImagez,
     },{
       type: "SPACE",
       spaceMd: "6",
@@ -90,12 +97,13 @@ const NewBannerManagementPage = ({
       type: "button_submit",
       spaceMd: "3",
       spaceXs: "3",
+      action: doCreateBanner,
     },{
       label: "Cancel",
       type: "buttonWhite",
       spaceMd: "3",
       spaceXs: "3",
-      link: '../supplierBanner'
+      link: '../bannerManagement'
     }
   ]
 

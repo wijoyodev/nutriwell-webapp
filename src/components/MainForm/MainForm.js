@@ -34,25 +34,33 @@ const MainForm = ({
     setForgotPassword(dispatch, email, isVerified.role)
   }
 
+  //  status {
+  //   'Belum Bayar' = 0,
+  //   'Dikemas' = 1,
+  //   'Dikirim' = 2,
+  //   'Selesai' = 3,
+  //   'Dibatalkan' = 4,
+  // }
+
   const printStatusLabel = (status) => {
     if( pageName === "Order Detail" ){
-      if( status == "Selesai" ){
+      if( status === 3 ){ // STATUS : Selesai
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Selesai </font>
-      } else if( status == "Belum Bayar" ){
+      } else if( status === 0 ){ // STATUS : Belum Bayar
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Belum Bayar </font>
-      } else if( status == "Dikemas" ){
+      } else if( status === 1 ){ // STATUS : Dikemas
         return <font className={`${styles.statusPacking} ${styles.buttonStatus}`}> Dikemas </font>
-      } else if( status == "Dikirim" ){
+      } else if( status === 2 ){ // STATUS : Dikirim
         return <font className={`${styles.statusDelivered} ${styles.buttonStatus}`}> Dikirim </font>
-      } else if( status == "Dibatalkan" ){
+      } else if( status === 4 ){ // STATUS : Dibatalkan
         return <font className={`${styles.statusCancelled} ${styles.buttonStatus}`}> Dibatalkan </font>
       } else {
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Selesai </font>
       }
     }else if( pageName === "Disbursement Detail" ){
-      if( status == "Berhasil" ){
+      if( status === "Berhasil" ){
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Berhasil </font>
-      } else if( status == "Pending" ){
+      } else if( status === "Pending" ){
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
       } else {
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>

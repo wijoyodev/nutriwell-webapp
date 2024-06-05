@@ -7,6 +7,9 @@ import shipBuilding from "./shipBuildingReducer"
 import banner from "./bannerReducer"
 import ship from "./shipReducer"
 import admin from "./adminReducer"
+import order from "./orderReducer"
+import member from "./memberReducer"
+import product from "./productReducer"
 
 export default combineReducers({
   loginRegister,
@@ -17,4 +20,7 @@ export default combineReducers({
   supplier,
   banner,
   admin,
+  member,
+  product,
+  order,
 })

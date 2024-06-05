@@ -6,7 +6,7 @@ import FieldHandler from '../../MainFormMember/FieldHandler'
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
 import DisbursementMemberTable from "../../Table/MemberDetail/DisbursementMemberTable";
-import { setIslandResp, setAddShipyard, resetAddShipyardResp, setUpdateShipyard, resetUpdateShipyard } from '../../../store/actions/shipyardAction'
+import { setDisbursementGeneral } from '../../../store/actions/memberAction'
 
 const Disbursement = ({
   pageFor,
@@ -14,6 +14,7 @@ const Disbursement = ({
   dataShipyard,
   setPosition,
   dataOneShipyard,
+  dataMember,
 }) => {
   const { orderId, memberId } = useParams()
   const [isLoading, setIsLoading] = useState(true);
@@ -37,146 +38,19 @@ const Disbursement = ({
   const [bankAccountName, setBankAccountName] = useState();
   const [selectedLocation, setSelectedLocation] = useState();
   const [referalCode, setReferalCode] = useState("");
+  const [dataDisbursement, setDataDisbursement] = useState("");
   
   const navigate = useNavigate()
-
-  const setLocation = () => {
-    setIslandResp(dispatch)
-  }
   
-  const clicked = () => {
-    const temp = !progress
-    setProgress(temp)
-  }
-  
-  const handleSelect = (e, type) => {
-    const splitValue = e.target.value.split("||")
-    if( type === "Island" ){
-      setBankAccountName({
-        id: splitValue[0],
-        name: splitValue[1],
-      }) 
-    } else if( type === "Location" ){
-      setSelectedLocation({
-        id: splitValue[0],
-        name: splitValue[1],
-      })
-    }
-  }
-
-  const resetData = () => {
-    
-  }
-
-  const manageLocation = () => {
-    const list = dataShipyard.islandResp.data.islands
-    let islands = []
-    let location = {}
-
-    for( let i=0 ; i<list.length ; i++ ){
-      if( i === 0 ){
-        setBankAccountName({
-          id: list[i].id,
-          name: list[i].name,
-        })
-      }
-      islands.push({
-        id: list[i].id,
-        name: list[i].name,
-      })
-      location[list[i].name] = []
-      for( let j=0 ; j<list[i].areas.length ; j++ ){
-        let area = list[i].areas[j]
-        if( i === 0 && j === 0 ){
-          setSelectedLocation({
-            id: area.id,
-            name: area.name,
-          })
-        }
-        location[list[i].name].push({
-          id: area.id,
-          name: area.name,
-        })
-      }
-    }
-    setIslands(islands)
-    setLocations(location)
+  const setData = (data) => {
+    console.log("setData", data)
+    setWithDrawn(data.disburse_success.total_value)
+    setOnHold(data)
+    setMonthlyReward(data)
+    setDataDisbursement(data.data)
     setIsLoading(false)
   }
 
-  const doDeactive = (e) => {
-    e.preventDefault()
-    Swal.fire({
-      text: "Are you sure want to deactivate this user?",
-      confirmButtonText: 'Yes',
-      confirmButtonColor: '#a9acaf',
-      cancelButtonText: 'No',
-      cancelButtonColor: '#163b55',
-      showCloseButton: true,
-      showCancelButton: true,
-    })
-  }
-  
-  const onChangeImage = (imageList, addUpdateIndex) => {
-    setImages(imageList);
-  };
-
-  const initImage = (allImages) => {
-    let data = []
-    for( let i=0 ;i<allImages.length ; i++){
-      data.push({data_url: allImages[i].imageUrl})
-    }
-    setImages(data)
-  }
-
-  useEffect(()=>{
-    if( dataShipyard.islandResp.data ){
-      manageLocation()
-    }
-  },[dataShipyard.islandResp])
-
-  useEffect(()=>{
-    if( dataShipyard.addShipyardResp ){
-      // navigate("../shipyardListed");
-      resetAddShipyardResp(dispatch)
-      setPosition("Dock Facility")
-      localStorage.setItem("pagePos","Dock Facility")
-    }
-  },[dataShipyard.addShipyardResp])
-
-  useEffect(()=>{
-    if( dataShipyard.updateShipyardResp ){
-      resetUpdateShipyard(dispatch)
-      setPosition("Dock Facility")
-      localStorage.setItem("pagePos","Dock Facility")
-    }
-  },[dataShipyard.updateShipyardResp])
-
-  const setData = (data) => {
-    setWithDrawn("26000500")
-    setOnHold("130000")
-    setMonthlyReward("500000")
-  }
-
-  useEffect(()=>{
-    setLocation()
-
-    // testing purpose only
-      setData(dataOneShipyard)
-  },[])
-
-  const backPage = (e) => {
-    e.preventDefault()
-    navigate(-1)
-  }
-
-  useEffect(()=>{
-    setLocation()
-    if( dataOneShipyard !== "not available" ){
-      setData(dataOneShipyard)
-    }
-  },[dataOneShipyard])
-  
   const dataForm = [
     {
       label: "Berhasil Ditarik",
@@ -194,6 +68,25 @@ const Disbursement = ({
       withCurrency: true,
     }
   ]
+
+  useEffect(()=>{
+    console.log("dataMember", dataMember)
+    if( dataMember.disbursementGeneralResp){
+      console.log(dataMember.disbursementGeneralResp, "<<disbursementGeneralResp")
+      setData(dataMember.disbursementGeneralResp)
+      // setMemberNetworkSummary(dataReward)
+      // setTotalRefNetwork(dataReward.sum_transaction)
+      // setLvl1(dataReward.level_1)
+      // setLvl2(dataReward.level_2)
+      // setLvl3(dataReward.level_3)
+      // setLvl4(dataReward.level_4)
+      // setLvl5(dataReward.level_5)
+    }
+  },[dataMember.disbursementGeneralResp])
+
+  useEffect(()=>{
+    setDisbursementGeneral(dispatch, memberId)
+	},[])
   
 
   // useEffect(()=>{
@@ -219,31 +112,29 @@ const Disbursement = ({
 	return (
     isLoading ==false &&
     <>
-      { islands !== null && locations !== null &&  <>
-        <Container className={styles.container}>
-          <Row>
-            <Col className={styles.container_about} xs={12}>
-              <Form noValidate validated={validated}>
-                <Row className={styles.field_container}>
-                  {dataForm.map( (item, index)=>{
-                      return <FieldHandler item={item} index={index} key={index}/>
-                  })}
-                </Row>
-              </Form>
-            </Col>
-          </Row>
-          <Row>
-            <DisbursementMemberTable/>
-          </Row>
-        </Container>
-      </> }
+      <Container className={styles.container}>
+        <Row>
+          <Col className={styles.container_about} xs={12}>
+            <Form noValidate validated={validated}>
+              <Row className={styles.field_container}>
+                {dataForm.map( (item, index)=>{
+                    return <FieldHandler item={item} index={index} key={index}/>
+                })}
+              </Row>
+            </Form>
+          </Col>
+        </Row>
+        <Row>
+          <DisbursementMemberTable dataDisbursement={dataDisbursement}/>
+        </Row>
+      </Container>
     </>
 	);
 };
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 

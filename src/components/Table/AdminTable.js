@@ -9,12 +9,13 @@ import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { setAllShipyard, setSearchShipyardOwner } from '../../store/actions/shipyardAction'
+import { setAllAdmin } from '../../store/actions/adminAction'
 
 const AdminTable = ({
   pageName,
   linkAddNew,
   dispatch, 
-  dataShipyard,
+  dataAdmin,
 }) => {
 
   const [dateRange, setDateRange] = useState([null, null]);
@@ -50,9 +51,9 @@ const AdminTable = ({
     for (let idx in datas) {
       listData.push({
         'ID': datas[idx].id,
-        'Nama': datas[idx].name,
+        'Nama': datas[idx].full_name,
         'Email': datas[idx].email,
-        'Role': datas[idx].role,
+        'ROLE': datas[idx].role_name,
         'STATUS': datas[idx].status,
       })
     }
@@ -60,50 +61,50 @@ const AdminTable = ({
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
+    setAllAdmin(dispatch)
     
     // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "DI0100",
-      name: "PT Sukro",
-      email: "suryo.kencono@mail.com",
-      role: "Super Admin",
-      status: "Active"
-    },{
-      id: "DI0101",
-      name: "Alima Putra",
-      email: "AlimaPutra@gmail.com",
-      role: "Super Admin",
-      status: "Active"
-    },{
-      id: "DI0102",
-      name: "Yuloha Sukima",
-      email: "YulohaSukima@gmail.com",
-      role: "Admin Packing",
-      status: "Inactive"
-    },{
-      id: "DI0103",
-      name: "Maratus K",
-      email: "MaratusK@gmail.com",
-      role: "Super Admin",
-      status: "Inactive"
-    },{
-      id: "DI0104",
-      name: "Saikoji",
-      email: "Saikoji.putra@gmail.com",
-      role: "Manager",
-      status: "Inactive"
-    }])
+    // setDataShown([{
+    //   id: "DI0100",
+    //   name: "PT Sukro",
+    //   email: "suryo.kencono@mail.com",
+    //   role: "Super Admin",
+    //   status: "Active"
+    // },{
+    //   id: "DI0101",
+    //   name: "Alima Putra",
+    //   email: "AlimaPutra@gmail.com",
+    //   role: "Super Admin",
+    //   status: "Active"
+    // },{
+    //   id: "DI0102",
+    //   name: "Yuloha Sukima",
+    //   email: "YulohaSukima@gmail.com",
+    //   role: "Admin Packing",
+    //   status: "Inactive"
+    // },{
+    //   id: "DI0103",
+    //   name: "Maratus K",
+    //   email: "MaratusK@gmail.com",
+    //   role: "Super Admin",
+    //   status: "Inactive"
+    // },{
+    //   id: "DI0104",
+    //   name: "Saikoji",
+    //   email: "Saikoji.putra@gmail.com",
+    //   role: "Manager",
+    //   status: "Inactive"
+    // }])
     // FOR SLICING DATA ONLY 
 
 	},[])
 
   useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
+    if( dataAdmin.allAdminResp ){
+      console.log(dataAdmin.allAdminResp, "<<dataAdmin.allAdminResp")
+      setDataShown(dataAdmin.allAdminResp)
     }
-  },[dataShipyard.allShipyardResp])
+  },[dataAdmin.allAdminResp])
 
 	return (
     <>
@@ -163,6 +164,7 @@ const AdminTable = ({
             </Link>
           </Col>
         </Row>
+        {console.log(data, "<<BEFORE PRESENT")}
         {data.length > 0 ?
           <BaseTable 
             data={data} 
@@ -188,7 +190,7 @@ const AdminTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataAdmin: state.admin,
   };
 };
 

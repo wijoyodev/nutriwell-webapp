@@ -10,7 +10,8 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_BANNER': {
-      return {...state, bannerListResp: action.payload.data.banners}
+      console.log("SET_BANNER", action)
+      return {...state, bannerListResp: action.payload.result}
     }
     case 'SET_CREATE_BANNER': {
       return {...state, bannerCreatetResp: action.payload}
@@ -19,7 +20,7 @@ const reducer = (state = initialState, action) => {
       return {...state, bannerOrderResp: action.payload.data.data}
     }
     case 'SET_DETAIL_BANNER': {
-      return {...state, bannerDetailResp: action.payload.data.banner}
+      return {...state, bannerDetailResp: action.payload.result[0]}
     }
     case 'SET_UPDATE_BANNER': {
       return {...state, bannerUpdateResp: action.payload.data}

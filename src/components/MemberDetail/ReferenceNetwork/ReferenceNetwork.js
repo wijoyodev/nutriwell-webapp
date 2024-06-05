@@ -6,120 +6,41 @@ import FieldHandler from '../../MainFormMember/FieldHandler'
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
 import ReferenceNetworkTable from "../../Table/MemberDetail/ReferenceNetworkTable";
-import { setIslandResp, setAddShipyard, resetAddShipyardResp, setUpdateShipyard, resetUpdateShipyard } from '../../../store/actions/shipyardAction'
+import { setNetworkById, setNetworkSummaryById } from '../../../store/actions/memberAction'
 
 const ReferenceNetwork = ({
   pageFor,
   dispatch, 
-  dataShipyard,
+  dataMember,
   setPosition,
   dataOneShipyard,
 }) => {
   const { orderId, memberId } = useParams()
+  const [memberNetwork, setMemberNetwork] = useState("");
+  const [memberNetworkSummary, setMemberNetworkSummary] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(true);
   const [islands, setIslands] = useState(null)
   const [locations, setLocations] = useState(null)
   const [lvl1, setLvl1] = useState("");
+  const [lvl2, setLvl2] = useState("");
+  const [lvl3, setLvl3] = useState("");
+  const [lvl4, setLvl4] = useState("");
+  const [lvl5, setLvl5] = useState("");
   const [totalRefNetwork, setTotalRefNetwork] = useState("");
   const [images, setImages] = useState("");
   const [validated, setValidated] = useState(false);
   const [whatsappNumber, setWhatsappNumber] = useState("");
-  const [lvl2, setLvl2] = useState("");
-  const [lvl5, setLvl5] = useState("");
   const [gender, setGender] = useState("");
   const [bankName, setBankName] = useState("");
   const [upline, setUpline] = useState("");
-  const [lvl4, setLvl4] = useState("");
   const [bankAccount, setBankAccount] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [lvl3, setLvl3] = useState("");
   const [bankAccountName, setBankAccountName] = useState();
   const [selectedLocation, setSelectedLocation] = useState();
   const [referalCode, setReferalCode] = useState("");
   
   const navigate = useNavigate()
-
-  const setLocation = () => {
-    setIslandResp(dispatch)
-  }
-  
-  const clicked = () => {
-    const temp = !progress
-    setProgress(temp)
-  }
-  
-  const handleSelect = (e, type) => {
-    const splitValue = e.target.value.split("||")
-    if( type === "Island" ){
-      setBankAccountName({
-        id: splitValue[0],
-        name: splitValue[1],
-      }) 
-    } else if( type === "Location" ){
-      setSelectedLocation({
-        id: splitValue[0],
-        name: splitValue[1],
-      })
-    }
-  }
-
-  const resetData = () => {
-    
-  }
-
-  const manageLocation = () => {
-    const list = dataShipyard.islandResp.data.islands
-    let islands = []
-    let location = {}
-
-    for( let i=0 ; i<list.length ; i++ ){
-      if( i === 0 ){
-        setBankAccountName({
-          id: list[i].id,
-          name: list[i].name,
-        })
-      }
-      islands.push({
-        id: list[i].id,
-        name: list[i].name,
-      })
-      location[list[i].name] = []
-      for( let j=0 ; j<list[i].areas.length ; j++ ){
-        let area = list[i].areas[j]
-        if( i === 0 && j === 0 ){
-          setSelectedLocation({
-            id: area.id,
-            name: area.name,
-          })
-        }
-        location[list[i].name].push({
-          id: area.id,
-          name: area.name,
-        })
-      }
-    }
-    setIslands(islands)
-    setLocations(location)
-    setIsLoading(false)
-  }
-
-  const doDeactive = (e) => {
-    e.preventDefault()
-    Swal.fire({
-      text: "Are you sure want to deactivate this user?",
-      confirmButtonText: 'Yes',
-      confirmButtonColor: '#a9acaf',
-      cancelButtonText: 'No',
-      cancelButtonColor: '#163b55',
-      showCloseButton: true,
-      showCancelButton: true,
-    })
-  }
-  
-  const onChangeImage = (imageList, addUpdateIndex) => {
-    setImages(imageList);
-  };
 
   const initImage = (allImages) => {
     let data = []
@@ -128,29 +49,6 @@ const ReferenceNetwork = ({
     }
     setImages(data)
   }
-
-  useEffect(()=>{
-    if( dataShipyard.islandResp.data ){
-      manageLocation()
-    }
-  },[dataShipyard.islandResp])
-
-  useEffect(()=>{
-    if( dataShipyard.addShipyardResp ){
-      // navigate("../shipyardListed");
-      resetAddShipyardResp(dispatch)
-      setPosition("Dock Facility")
-      localStorage.setItem("pagePos","Dock Facility")
-    }
-  },[dataShipyard.addShipyardResp])
-
-  useEffect(()=>{
-    if( dataShipyard.updateShipyardResp ){
-      resetUpdateShipyard(dispatch)
-      setPosition("Dock Facility")
-      localStorage.setItem("pagePos","Dock Facility")
-    }
-  },[dataShipyard.updateShipyardResp])
 
   const setData = (data) => {
     setTotalRefNetwork("MEI02")
@@ -162,10 +60,8 @@ const ReferenceNetwork = ({
   }
 
   useEffect(()=>{
-    setLocation()
-
     // testing purpose only
-      setData(dataOneShipyard)
+      // setData(dataOneShipyard)
   },[])
 
   const backPage = (e) => {
@@ -174,7 +70,6 @@ const ReferenceNetwork = ({
   }
 
   useEffect(()=>{
-    setLocation()
     if( dataOneShipyard !== "not available" ){
       setData(dataOneShipyard)
     }
@@ -219,56 +114,66 @@ const ReferenceNetwork = ({
       value: lvl5,
     }
   ]
-  
 
-  // useEffect(()=>{
-  //   if( pageFor === "detail" ){
-  //     let data = [...dataForm]
-  //     data.push({
-  //       label: "Deactive",
-  //       type: "buttonWhite",
-  //       spaceMd: "3",
-  //       spaceXs: "3",
-  //       onClickAction: doDeactive,
-  //     })
-  //     data.push({
-  //       label: "Cancel",
-  //       type: "buttonWhite",
-  //       spaceMd: "3",
-  //       spaceXs: "3",
-  //     })
-  //     setDataForm(data)
-  //   }
-	// },[pageFor])
-  // 
+  useEffect(()=>{
+    if( dataMember.memberNetworkListResp){
+      console.log(dataMember.memberNetworkListResp, "<<memberNetworkListResp")
+      setMemberNetwork(dataMember.memberNetworkListResp)
+      setIsLoading(false)
+      setTotalRefNetwork(dataMember.memberNetworkListResp.limit)
+      setLvl1(dataMember.memberNetworkListResp.limit)
+      setLvl2(dataMember.memberNetworkListResp.limit)
+      setLvl3(dataMember.memberNetworkListResp.limit)
+      setLvl4(dataMember.memberNetworkListResp.limit)
+      setLvl5(dataMember.memberNetworkListResp.limit)
+    }
+  },[dataMember.memberNetworkListResp])
+
+  useEffect(()=>{
+    if( dataMember.memberNetworkSummaryResp){
+      console.log(dataMember.memberNetworkSummaryResp, "<<memberNetworkSummaryResp")
+      let dataStat = dataMember.memberNetworkSummaryResp.totalStat
+      setMemberNetworkSummary(dataStat)
+      setTotalRefNetwork(dataStat.sum_transaction)
+      setLvl1(dataStat.level_1)
+      setLvl2(dataStat.level_2)
+      setLvl3(dataStat.level_3)
+      setLvl4(dataStat.level_4)
+      setLvl5(dataStat.level_5)
+    }
+  },[dataMember.memberNetworkSummaryResp])
+
+  useEffect(()=>{
+    setNetworkById(dispatch, 0, memberId)
+    setNetworkSummaryById(dispatch, memberId)
+	},[])
+  
 	return (
-    isLoading ==false &&
+    isLoading ==false && memberNetwork && memberNetworkSummary &&
     <>
-      { islands !== null && locations !== null &&  <>
-        <Container className={styles.container}>
-          <Row>
-            <Col className={styles.container_about} xs={12}>
-              <Form noValidate validated={validated}>
-                <Row className={styles.field_container}>
-                  {dataForm.map( (item, index)=>{
-                      return <FieldHandler item={item} index={index} key={index}/>
-                  })}
-                </Row>
-              </Form>
-            </Col>
-          </Row>
-          <Row>
-            <ReferenceNetworkTable/>
-          </Row>
-        </Container>
-      </> }
+      <Container className={styles.container}>
+        <Row>
+          <Col className={styles.container_about} xs={12}>
+            <Form noValidate validated={validated}>
+              <Row className={styles.field_container}>
+                {dataForm.map( (item, index)=>{
+                    return <FieldHandler item={item} index={index} key={index}/>
+                })}
+              </Row>
+            </Form>
+          </Col>
+        </Row>
+        <Row>
+          <ReferenceNetworkTable memberNetwork={memberNetwork}/>
+        </Row>
+      </Container>
     </>
 	);
 };
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 

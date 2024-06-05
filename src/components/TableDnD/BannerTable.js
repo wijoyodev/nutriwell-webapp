@@ -53,6 +53,23 @@ const BannerTable = ({
     setReorderState(!reorderState)
   }
 
+  const manageListBanner = (listData) => {
+    let finalData = []
+    for( let i=0 ; i < listData.length ; i++ ){
+      finalData.push({
+        "id": listData[i].id,
+        "code": listData[i].code,
+        "title": listData[i].title,
+        "linkUrl": "https://google.com/",
+        "imageUrl": listData[i].image_url,
+        "orderNum": i+1,
+        "createdAt": listData[i].created_at,
+        "updatedAt": listData[i].updated_at
+      })
+    }
+    setData(finalData)
+  }
+
 	useEffect(()=>{
     setBanner(dispatch, "supplier")
 
@@ -81,10 +98,11 @@ const BannerTable = ({
 	},[])
 
   useEffect(()=>{
-    // if( dataBanner.bannerListResp ){
-    //   resetBanner(dispatch)
-    //   setData(dataBanner.bannerListResp)
-    // }
+    if( dataBanner.bannerListResp ){
+      console.log("MASUK BANNER TABLE", dataBanner.bannerListResp)
+      // resetBanner(dispatch)
+      manageListBanner(dataBanner.bannerListResp)
+    }
   },[dataBanner.bannerListResp])
 
 

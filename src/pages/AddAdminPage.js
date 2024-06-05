@@ -4,11 +4,12 @@ import MainForm from '../components/MainForm/MainForm'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
-import { setUploadFile, resetUploadFile, setDetailShipyard, resetDetailShipyard, setAllShipyardByShipyardId, setUpdateDetailShipyard } from '../store/actions/shipyardAction'
+import { setCreateAdmin } from '../store/actions/adminAction'
 import { setActiveDeactive } from '../store/actions/loginRegisterAction'
 
-const AddAdminPage = ({ dispatch, dataShipyard }) => {
+const AddAdminPage = ({ dispatch, dataAdmin }) => {
   const { disbursementId } = useParams()
+	const [showPassword, setShowPassword] = useState(false);
 
   // const [isLoading, setIsLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,40 +22,42 @@ const AddAdminPage = ({ dispatch, dataShipyard }) => {
   const [allShipyard, setAllShipyard] = useState(null);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("");
+  const [role, setRole] = useState("1");
   const navigate = useNavigate()
 
-  const doUpdate = (e) => {
+  const doCreateAdmin = (e) => {
+    console.log("masuk do create admiubn")
     e.preventDefault()
-    const dataUpdate = {
+    const dataCreate = {
       name,
       email,
-      status,
+      role,
+      password,
     }
-    setUpdateDetailShipyard(dispatch, dataUpdate, id)
+    setCreateAdmin(dispatch, dataCreate)
   }
 
   useEffect(()=>{
-    if( dataShipyard.detailShipyardResp ){
-      let data = dataShipyard.detailShipyardResp
+    if( dataAdmin.createAdminResp ){
+      console.log(dataAdmin.createAdminResp, "<<< dataAdmin.createAdminResp")
+      let data = dataAdmin.createAdminResp
       setId(data.id)
       setName(data.name)
       setEmail(data.email)
-      setStatus(data.status)
-    }
-  },[dataShipyard.detailShipyardResp])
-
-  useEffect(()=>{
-    if( dataShipyard.allShipyardByShipyardIdResp ){
-      setAllShipyard(dataShipyard.allShipyardByShipyardIdResp)
       setIsLoading(false)
     }
-  },[dataShipyard.allShipyardByShipyardIdResp])
+  },[dataAdmin.createAdminResp])
 
   useEffect(()=>{
-    setDetailShipyard(dispatch, disbursementId)
-    setAllShipyardByShipyardId(dispatch, disbursementId)
+    if( dataAdmin.allShipyardByShipyardIdResp ){
+      setAllShipyard(dataAdmin.allShipyardByShipyardIdResp)
+      setIsLoading(false)
+    }
+  },[dataAdmin.allShipyardByShipyardIdResp])
+
+  useEffect(()=>{
   },[])
 
   const dataForm = [
@@ -65,6 +68,8 @@ const AddAdminPage = ({ dispatch, dataShipyard }) => {
       spaceMd: "4",
       spaceXs: "12",
       required: true,
+      value: name,
+      action: setName,
     },{
       type: "SPACE",
       spaceMd: "8",
@@ -76,17 +81,22 @@ const AddAdminPage = ({ dispatch, dataShipyard }) => {
       spaceMd: "4",
       spaceXs: "12",
       required: true,
+      value: email,
+      action: setEmail,
     },{
       type: "SPACE",
       spaceMd: "8",
       spaceXs: "12",
     },{
       label: "Password",
-      type: "text",
+      type: "password",
       placeholder: "Input Password",
       spaceMd: "4",
       spaceXs: "12",
       required: true,
+      value: password,
+      showPassword: false,
+      action: setPassword,
     },{
       type: "SPACE",
       spaceMd: "8",
@@ -96,10 +106,12 @@ const AddAdminPage = ({ dispatch, dataShipyard }) => {
       type: "button_submit",
       spaceMd: "3",
       spaceXs: "3",
+      action: doCreateAdmin,
     },{
       label: "Batal",
       type: "buttonWhite",
       spaceMd: "3",
+      link: '../adminManagement',
       spaceXs: "3",
     }
   ]
@@ -112,11 +124,10 @@ const AddAdminPage = ({ dispatch, dataShipyard }) => {
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
         allShipyard={allShipyard}
-        status={status}
         pageFor={"detail"}
         isVerified={isVerified}
         email={email}
-        onSubmit={doUpdate}
+        onSubmit={doCreateAdmin}
         whiteBackground={true}
       />
     </div>
@@ -125,7 +136,7 @@ const AddAdminPage = ({ dispatch, dataShipyard }) => {
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard,
+    dataAdmin: state.admin,
   };
 };
 

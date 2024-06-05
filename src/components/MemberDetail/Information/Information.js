@@ -13,9 +13,9 @@ const Information = ({
   dataShipyard,
   setPosition,
   dataOneShipyard,
+  dataOneMember,
 }) => {
   const { orderId, memberId } = useParams()
-  const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(true);
   const [islands, setIslands] = useState(null)
   const [locations, setLocations] = useState(null)
@@ -28,6 +28,7 @@ const Information = ({
   const [address, setAddress] = useState("");
   const [gender, setGender] = useState("");
   const [bankName, setBankName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [upline, setUpline] = useState("");
   const [dob, setDOB] = useState("");
   const [bankAccount, setBankAccount] = useState("");
@@ -35,7 +36,7 @@ const Information = ({
   const [phone, setPhone] = useState("");
   const [bankAccountName, setBankAccountName] = useState();
   const [selectedLocation, setSelectedLocation] = useState();
-  const [referalCode, setReferalCode] = useState("");
+  const [referrerCode, setReferrerCode] = useState("");
   
   const navigate = useNavigate()
 
@@ -124,7 +125,6 @@ const Information = ({
     }
     setIslands(islands)
     setLocations(location)
-    setIsLoading(false)
   }
 
   const doDeactive = (e) => {
@@ -152,62 +152,60 @@ const Information = ({
     setImages(data)
   }
 
-  useEffect(()=>{
-    if( dataShipyard.islandResp.data ){
-      manageLocation()
-    }
-  },[dataShipyard.islandResp])
+  // useEffect(()=>{
+  //   if( dataShipyard.islandResp.data ){
+  //     manageLocation()
+  //   }
+  // },[dataShipyard.islandResp])
 
-  useEffect(()=>{
-    if( dataShipyard.addShipyardResp ){
-      // navigate("../shipyardListed");
-      resetAddShipyardResp(dispatch)
-      setPosition("Dock Facility")
-      localStorage.setItem("pagePos","Dock Facility")
-    }
-  },[dataShipyard.addShipyardResp])
+  // useEffect(()=>{
+  //   if( dataShipyard.addShipyardResp ){
+  //     // navigate("../shipyardListed");
+  //     resetAddShipyardResp(dispatch)
+  //     setPosition("Dock Facility")
+  //     localStorage.setItem("pagePos","Dock Facility")
+  //   }
+  // },[dataShipyard.addShipyardResp])
 
-  useEffect(()=>{
-    if( dataShipyard.updateShipyardResp ){
-      resetUpdateShipyard(dispatch)
-      setPosition("Dock Facility")
-      localStorage.setItem("pagePos","Dock Facility")
-    }
-  },[dataShipyard.updateShipyardResp])
+  // useEffect(()=>{
+  //   if( dataShipyard.updateShipyardResp ){
+  //     resetUpdateShipyard(dispatch)
+  //     setPosition("Dock Facility")
+  //     localStorage.setItem("pagePos","Dock Facility")
+  //   }
+  // },[dataShipyard.updateShipyardResp])
 
   const setData = (data) => {
-    setId("MEI02")
-    setName("Chelsea Hillman")
-    setEmail("chelsea@gmail.com")
-    setPhone("0857634363")
-    setDOB("1711555351")
-    setAddress("Jalan Sudirman no 25, Jakarta Selatan")
-    setGender("male")
-    setUpline("Soekamti C")
-    setReferalCode("Soekamti C")
-    setBankAccountName("Chelsea")
-    setBankName("BCA")
-    setBankAccount("Barklay")
+    console.log("SETDATA ", data)
+    setId(data.id)
+    setName(data.full_name)
+    setEmail(data.email)
+    setPhone(data.phone_number)
+    setDOB(data.date_of_birth)
+    setAddress(data.address_detail.address_detail + ', ' + data.address_detail.district + ', ' + data.address_detail.city + ', ' + data.address_detail.province)
+    setGender(data.gender)
+    // setUpline(data)
+    setAvatarUrl(data.avatar_url)
+    setBankAccountName(data.account_bank_number)
+    setBankName(data.account_bank_name)
+    setBankAccount(data.account_bank)
+    setReferrerCode(data.referral_code)
   }
 
   useEffect(()=>{
     setLocation()
-
-    // testing purpose only
-      setData(dataOneShipyard)
   },[])
+
+  useEffect(()=>{
+    if(dataOneMember){
+      setData(dataOneMember)
+    }
+  },[dataOneMember])
 
   const backPage = (e) => {
     e.preventDefault()
     navigate(-1)
   }
-
-  useEffect(()=>{
-    setLocation()
-    if( dataOneShipyard !== "not available" ){
-      setData(dataOneShipyard)
-    }
-  },[dataOneShipyard])
   
   const dataForm = [
     {
@@ -218,8 +216,8 @@ const Information = ({
     },{
       label: "Profile Image",
       type: "uploadPhoto",
-      spaceMd: "6",
-      spaceXs: "6",
+      spaceMd: "12",
+      spaceXs: "12",
       maxImage: "1",
       images: images,
       action: onChangeImage,
@@ -232,6 +230,14 @@ const Information = ({
       spaceXs: "6",
       value: id,
       notEditable: true,
+      required: true,
+    },{
+      label: "Nama",
+      type: "text",
+      placeholder: "Input Name",
+      spaceMd: "6",
+      spaceXs: "6",
+      value: name,
       required: true,
     },{
       label: "Email",
@@ -272,23 +278,24 @@ const Information = ({
       required: true,
       dataDropdown:[{id: 1, name:"Laki-Laki"},{id: 2, name:"Perempuan"}]
     },{
-      label: "Upline",
-      type: "dropdown",
-      placeholder: "Pilih Upline",
-      spaceMd: "6",
-      spaceXs: "6",
-      value: upline,
-      action: setUpline,
-      dataDropdown:[{id: 1, name:"Shawn Mendes - 123"},{id: 2, name:"Roy Martin - 22222"}]
-    },{
+    //   label: "Upline",
+    //   type: "dropdown",
+    //   placeholder: "Pilih Upline",
+    //   spaceMd: "6",
+    //   spaceXs: "6",
+    //   value: upline,
+    //   action: setUpline,
+    //   dataDropdown:[{id: 1, name:"Shawn Mendes - 123"},{id: 2, name:"Roy Martin - 22222"}]
+    // },{
       label: "Kode Referral",
       type: "text",
       placeholder: "Input Kode Referral",
       spaceMd: "6",
       spaceXs: "6",
-      value: referalCode,
-      action: setReferalCode,
+      value: referrerCode,
+      action: setReferrerCode,
       required: false,
+      notEditable: true,
     },{
       label: "Alamat Pengiriman",
       type: "labelTitle",
@@ -300,9 +307,10 @@ const Information = ({
       placeholder: "input alamat",
       spaceMd: "6",
       spaceXs: "6",
-      value: setAddress,
-      action: address,
+      value: address,
+      action: setAddress,
       required: false,
+      notEditable: true,
     },{
       label: "Akun Bank",
       type: "labelTitle",
@@ -346,9 +354,9 @@ const Information = ({
       placeholder: "input Upline",
       spaceMd: "6",
       spaceXs: "6",
-      value: setUpline,
       action: upline,
       required: false,
+      notEditable: true,
     },{
       type: "SPACE",
       spaceMd: "6",
@@ -370,6 +378,8 @@ const Information = ({
       action: backPage,
     }
   ]
+  
+  console.log("masuk information")
   
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -403,23 +413,20 @@ const Information = ({
 	// },[pageFor])
   // 
 	return (
-    isLoading ==false &&
     <>
-      { islands !== null && locations !== null &&  <>
-        <Container className={styles.container}>
-          <Row>
-            <Col className={styles.container_about} xs={12}>
-              <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                <Row className={styles.field_container}>
-                  {dataForm.map( (item, index)=>{
-                      return <FieldHandler item={item} index={index} key={index}/>
-                  })}
-                </Row>
-              </Form>
-            </Col>
-          </Row>
-        </Container>
-      </> }
+      <Container className={styles.container}>
+        <Row>
+          <Col className={styles.container_about} xs={12}>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+              <Row className={styles.field_container}>
+                {dataForm.map( (item, index)=>{
+                    return <FieldHandler item={item} index={index} key={index}/>
+                })}
+              </Row>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
     </>
 	);
 };
