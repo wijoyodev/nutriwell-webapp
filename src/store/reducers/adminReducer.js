@@ -24,9 +24,6 @@ const reducer = (state = initialState, action) => {
     case 'RESET_CREATE_ADMIN':{
       return {...state, createAdminResp: null}
     }
-    case 'RESET_VERIFY_USER':{
-      return {...state, verifyUserResp: null}
-    }
     default:
       return state
   }

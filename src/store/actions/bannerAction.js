@@ -2,7 +2,7 @@ import axios from 'axios';
 import { MdDescription } from 'react-icons/md';
 import Swal from 'sweetalert2';
 
-export const setBanner = async (dispatch, section) => {
+export const setBanner = async (dispatch) => {
   axios.get(`${process.env.REACT_APP_API_URL}/banner`, {
     headers: {
       "Authorization": localStorage.getItem('token'),
@@ -26,26 +26,22 @@ export const setBanner = async (dispatch, section) => {
   })
 }
 
-export const setBannerOrder = async (dispatch, mainData) => {
-  axios.put(`${process.env.REACT_APP_API_URL}/banner/reorder`, mainData,{
-    headers: {
-      "Authorization": localStorage.getItem('token'),
+export const setBannerSearch = async (dispatch, params) => {
+  const options = {
+    method  : 'get',
+    headers : {
+      'Authorization': localStorage.getItem('token'),
+      "ngrok-skip-browser-warning": "true" ,
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",
       "Accept": "*/*",
     },
-  },{
-  }).then(({data}) => {
-    dispatch({ type: 'SET_BANNER_ORDER', payload: data })
-    Swal.fire({
-      title: 'Success',
-      text: `Success reorder ${mainData.bannerType} banner`,
-      icon: 'success',
-      confirmButtonColor: '#1b4460',
-    })
-    setTimeout(() => { 
-      window.location.reload(false);
-    }, 1500)
+    params  : params,
+    url     : `${process.env.REACT_APP_API_URL}/banner`,
+  }
+
+  axios(options).then(({data}) => {
+    dispatch({ type: 'SET_BANNER_SEARCH', payload: data })
   }).catch((error)=>{
     console.log("response error", error)
     Swal.fire({
@@ -113,12 +109,12 @@ export const setDeleteBanner = async (dispatch, id) => {
 
 export const setUpdateBanner = async (dispatch, id, mainData) => {
   // if(mainData.imageUrl.length === 0 || mainData.imageUrl === ""){
-  //   Swal.fire({
-  //     title: 'Photo required',
-  //     text: "Need to add Photo",
-  //     icon: 'warning',
-  //     confirmButtonColor: '#1b4460',
-  //   })
+    // Swal.fire({
+    //   title: 'Photo required',
+    //   text: "Need to add Photo",
+    //   icon: 'warning',
+    //   confirmButtonColor: '#1b4460',
+    // })
   // }else{
     console.log(mainData,"<< main data")
     let files = new FormData();
@@ -207,8 +203,8 @@ export const setUpdateBanner = async (dispatch, id, mainData) => {
       //     confirmButtonColor: '#1b4460',
       //   })
       // })
-    }
-  // }
+    // }
+  }
 // }
 
 export const setCreateBanner = async (dispatch, mainData) => {
@@ -287,10 +283,6 @@ export const setCreateBanner = async (dispatch, mainData) => {
     //   })
     })
   }
-}
-
-export const resetBanner = async (dispatch) => {
-  dispatch({ type: 'RESET_BANNER' })
 }
 
 export const resetUpdateBanner = async (dispatch) => {

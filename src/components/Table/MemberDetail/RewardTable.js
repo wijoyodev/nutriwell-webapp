@@ -8,14 +8,10 @@ import BaseTable from "../BaseTable";
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllShipyard, setSearchShipyardOwner } from '../../../store/actions/shipyardAction'
 
 const RewardTable = ({
   pageName,
-  linkAddNew,
-  dispatch, 
   dataReward,
-  dataShipyard,
 }) => {
 
   const [dateRange, setDateRange] = useState([null, null]);
@@ -29,21 +25,21 @@ const RewardTable = ({
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    // setSearchShipyardOwner(dispatch, params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    // setSearchShipyardOwner(dispatch, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    // setAllShipyard(dispatch, pageNumber)
   }
 
   const setDataShown = (datas) => {
@@ -55,12 +51,10 @@ const RewardTable = ({
         'Jumlah Komisi': datas[idx].reward_profit,
       })
     }
-    console.log(listData, "<listData")
     setData(listData)
   }
   
 	useEffect(()=>{
-    console.log(dataReward, "<dataReward")
     setDataShown(dataReward)
 	},[dataReward])
 
@@ -93,7 +87,7 @@ const RewardTable = ({
             <br/>
             <br/>
             <p>
-              Curently no Sales Report data..
+              Curently no Reward data..
             </p>
           </>
         }
@@ -104,7 +98,7 @@ const RewardTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 

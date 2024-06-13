@@ -4,9 +4,7 @@ import MainForm from '../components/MainForm/MainForm'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
-import { setUploadFile, resetUploadFile, setDetailShipyard, resetDetailShipyard, setAllShipyardByShipyardId, setUpdateDetailShipyard } from '../store/actions/shipyardAction'
-import { setActiveDeactive } from '../store/actions/loginRegisterAction'
-import { setDetailOrder } from '../store/actions/orderAction'
+import { setDetailOrder, setChangeOrderStatus, setTrackShipment } from '../store/actions/orderAction'
 
 const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   const { orderId } = useParams()
@@ -50,6 +48,36 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
 
   const navigate = useNavigate()
 
+  const reqChangeStat = (orderStatus, dataReq) => {
+    // order status
+    // Belum Bayar = 0 
+    // Dikemas = 1
+    // Dikirim = 2
+    // Selesai = 3
+    // Dibatalkan 4
+
+    let dataParam = {
+      "status": orderStatus,
+      // "delivery_date": "Fri Apr 25 2024 19:50:58 GMT+0700",
+      // "receive_date": "Fri Apr 26 2024 19:50:58 GMT+0700",
+      // "payment_date": "Fri Apr 24 2024 19:50:58 GMT+0700",
+      // "shipment_number": "asdas42112ada",
+      // "payment_method": "BANK_TRANSFER",
+      // "external_id": "ada2323esfdsokro34"
+    }
+    if( orderStatus === 1 ){
+      dataParam["payment_date"] = new Date()
+    }else if( orderStatus === 2 ){
+      dataParam["shipment_number"] = dataReq.shipment_number
+      dataParam["delivery_date"] = new Date()
+    }else if( orderStatus === 3 ){
+      dataParam["receive_date"] = new Date()
+    }else if( orderStatus === 4 ){
+      dataParam["reasons"] = dataReq.reason
+    }
+    setChangeOrderStatus(dispatch, orderId, dataParam)
+  }
+
   const doUpdate = (e) => {
     e.preventDefault()
     const dataUpdate = {
@@ -63,11 +91,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       reason: reason,
       customerDetail: customerDetail,
     }
-    setUpdateDetailShipyard(dispatch, dataUpdate, id)
-  }
-
-  const triggerUpload = (e, section) => {
-    setUploadFile(dispatch, e.target.files[0], section)
+    // setUpdateDetailShipyard(dispatch, dataUpdate, id)
   }
 
   const packageDetail = () => {
@@ -76,7 +100,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       html: `
         <label for="cars">Kurir</label>
         <br/>
-        <select name="cars" id="swal2-select" class="swal2-select">
+        <select name="cars" id="courier" class="courier">
           <option value="jne">JNE</option>
           <option value="jnt">JNT</option>
           <option value="tiki">TIKI</option>
@@ -84,15 +108,37 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
         </select>
 
         <br/>
-        <label for="cars">Nomr Resi</label>
-        <input id="swal-input2" class="swal2-input" placeholder="Masukkan nomor Resi"/>
+        <label for="cars">Nomor Resi</label>
+        <input id="ship_number" class="ship_number" placeholder="Masukkan nomor Resi"/>
       `,
       focusConfirm: false,
       preConfirm: () => {
-        return [
-          document.getElementById("swal2-select").value,
-          document.getElementById("swal-input2").value
-        ];
+        let courier = document.getElementById("courier").value;
+        let ship_number = document.getElementById("ship_number").value;
+        
+        console.log("VALUE PAKET", courier, ship_number)
+        if (!courier || !ship_number) {
+          Swal.fire({
+            title: 'Warning',
+            text: "You need to Choose Shipment Courier and Tracking Number",
+            icon: 'warning',
+            confirmButtonColor: '#0975B6',
+          })
+        }else{
+          reqChangeStat(2, {shipment_number: ship_number})
+        }
+        // return [
+        //   document.getElementById("swal2-select").value,
+        //   document.getElementById("swal-input2").value
+        // ];
+      },
+      inputValidator: (value) => {
+        // console.log("VALUE PAKET", value)
+        // if (!value) {
+        //   return "You need to Choose Shipment Courier and Tracking Number";
+        // }else{
+        //   reqChangeStat(2, {shipment_number: value})
+        // }
       }
     })
   }
@@ -106,13 +152,17 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       showCancelButton: true,
       inputValidator: (value) => {
         if (!value) {
-          return "You need to write something!";
+          return "You need to write something";
+        }else{
+          reqChangeStat(4, {reason: value})
         }
       }
     });
-    if (ipAddress) {
-      Swal.fire(`Your IP address is ${ipAddress}`);
-    }
+  }
+
+  const trackShipment = (e, shipNum) =>{
+    e.preventDefault()
+    setTrackShipment(dispatch, shipNum)
   }
 
   const changeStatus = (e) => {
@@ -135,22 +185,45 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       cancelButtonColor: "grey",
       inputValidator: (value) => {
         return new Promise((resolve) => {
-          if (value === "delivered") {
+          if(value === "notPaid") {
+            reqChangeStat(0)
+          } else if(value === "packaged") {
+            reqChangeStat(1)
+          } else if (value === "delivered") {
             packageDetail()
-          } else if (value === "cancelled") {
+          } else if (value === "done") {
+            reqChangeStat(3)
+          } else if( value === "cancelled" ){
             reasonCancel();
-          } else {
-            Swal.fire({
-              title: 'Sukses',
-              text: "Mengganti status",
-              icon: 'success',
-              confirmButtonColor: '#0975B6',
-            })
           }
         });
       }
     })
   }
+  
+  useEffect(()=>{ 
+    if( dataOrder.trackShipmentResp ){
+      console.log(dataOrder.trackShipmentResp, "<<di useeffect trackShipmentResp`")
+      Swal.fire({
+        title: 'Shipment' + dataOrder.trackShipmentResp   ,
+        text: dataOrder.trackShipmentResp,
+        icon: 'success',
+        confirmButtonColor: '#1b4460',
+      })
+    }
+  },[dataOrder.trackShipmentResp])
+  
+  useEffect(()=>{ 
+    if( dataOrder.changeOrderStatusResp ){
+      console.log(dataOrder.changeOrderStatusResp, "<<di useeffect changeOrderStatusResp")
+      Swal.fire({
+        title: 'Sukses',
+        text: "Mengganti status",
+        icon: 'success',
+        confirmButtonColor: '#0975B6',
+      })
+    }
+  },[dataOrder.changeOrderStatusResp])
 
   useEffect(()=>{
     if( dataOrder.orderDetailResp ){
@@ -196,65 +269,8 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   },[dataOrder.orderDetailResp])
 
   useEffect(()=>{
-    if( dataOrder.uploadFileResp ){
-      switch (dataOrder.uploadFileResp.section) {
-        case "productDetails" :
-          setProductDetails(dataOrder.uploadFileResp.url)
-          break;
-        case "transactionNumber" :
-          setTransactionNumber(dataOrder.uploadFileResp.url)
-          break;
-        case "reason" :
-          setReason(dataOrder.uploadFileResp.url)
-          break;
-        case "customerDetail" :
-          setCustomerDetail(dataOrder.uploadFileResp.url)
-          break;
-        default :
-          setProductDetails(dataOrder.uploadFileResp.url)
-          break;
-      } 
-      resetUploadFile(dispatch)
-    }
-  },[dataOrder.uploadFileResp])
-
-  useEffect(()=>{
     setDetailOrder(dispatch, orderId)
     setIsLoading(true)
-
-    // FOR SLICING DATA ONLY 
-    // setId("ODO00001")
-    // setName("PT Bumi Makmur")
-    // setRequestDate("oke")
-    // setBankName("BCA")
-    // setBankNumber("5082172373")
-    // setBankAccountName("Samsul Saripudin")
-    // setProductDetail([{
-    //   description: "Request PEnarikan",
-    //   total: 1500000,
-    // }])
-    // setTransactionNumber("973528139")
-    // setReason("oke")
-    // setCustomerDetail({
-    //   name: "John Doe",
-    //   phone: "085712381238",
-    //   address: "Ruko Prominence, Jl. Jalur Sutera Boulevard No.2, Kab Tangerang, Banten, ID 12345",
-    //   paymentMethod: "Transfer Bank",
-    //   shippingMethod: "JNE Regular",
-    //   trasactionDate: 1709910356,
-    //   shippingNo: "032483294203942",
-    //   shippingDate: 1709910356,
-    // })
-    // setStatus("Selesai")
-    // setTransactionDate(1709743549)
-    // setIsVerified("oke")
-    // setTrasactionTotal({
-    //   subTotal: 150000,
-    //   shippingPrice: 3000,
-    //   totalPrice: 153000,
-    // })
-    // FOR SLICING DATA ONLY
-
   },[])
 
   const dataForm = [
@@ -323,6 +339,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
     {
       label: "Informasi Pesanan",
       type: "sectionTable",
+      isProductInfo: true,
       productDetails: productDetails, 
       dataFieldsTitle: ["Deskripsi", "Jumlah"], 
       transactionTotal: transactionTotal,
@@ -335,7 +352,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       type: "button_submit",
       spaceMd: "3", 
       spaceXs: "3",
-      action: changeStatus,
+      action: changeStatus ,
       link: "../accountReview"
     },{
       type: "SPACE",
@@ -349,6 +366,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
     <div className="container_right_form">
       <MainForm
         pageName={"Order Detail"}
+        trackShipment={trackShipment}
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
         details={details}

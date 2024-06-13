@@ -6,6 +6,7 @@ const initialState = {
   memberNetworkSummaryResp: null,
   userDetailUpdateResp: null,
   createUserResp: null,
+  createMemberResp: null,
   rewardDetailResp: null,
   disbursementGeneralResp: null,
   disbursementDetailResp: null,
@@ -17,6 +18,10 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_ALL_MEMBER': {
       return {...state, allMemberResp: action.payload}
+    }
+    case 'SET_CREATE_MEMBER': {
+      console.log("SET CREATE MEMBER", )
+      return {...state, createMemberResp: action.payload.data}
     }
     case 'SET_DETAIL_MEMBER': {
       return {...state, detailMemberResp: action.payload.data[0]}
@@ -47,18 +52,12 @@ const reducer = (state = initialState, action) => {
       console.log("SET_MEMBER_NETWORK_SUMMARY_RESP", action.payload)
       return {...state, memberNetworkSummaryResp: action.payload}
     }
-    case 'SET_CREATE_USER': {
-      return {...state, createUserResp: action.payload.data}
-    }
     case 'SET_UPDATE_USER_RESP':{
       console.log("SET_UPDATE_USER_RESP", action)
       return {...state, userDetailUpdateResp: action.payload}
     }
     case 'RESET_CREATE_USER':{
       return {...state, createUserResp: null}
-    }
-    case 'RESET_VERIFY_USER':{
-      return {...state, verifyUserResp: null}
     }
     default:
       return state

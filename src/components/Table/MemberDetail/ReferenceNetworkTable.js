@@ -8,7 +8,6 @@ import BaseTable from "../BaseTable";
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllShipyard, setSearchShipyardOwner } from '../../../store/actions/shipyardAction'
 
 const ReferenceNetworkTable = ({
   pageName,
@@ -29,21 +28,21 @@ const ReferenceNetworkTable = ({
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    // setSearchShipyardOwner(dispatch, params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    // setSearchShipyardOwner(dispatch, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    // setAllShipyard(dispatch, pageNumber)
   }
 
   console.log("memberNetworkmemberNetwork", memberNetwork)
@@ -65,42 +64,6 @@ const ReferenceNetworkTable = ({
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    // setDataShown([{
-    //   id: "DI0100",
-    //   name: "PT Sukro",
-    //   email: "suryo.kencono@mail.com",
-    //   role: "Super Admin",
-    //   status: "Active"
-    // },{
-    //   id: "DI0101",
-    //   name: "Alima Putra",
-    //   email: "AlimaPutra@gmail.com",
-    //   role: "Super Admin",
-    //   status: "Active"
-    // },{
-    //   id: "DI0102",
-    //   name: "Yuloha Sukima",
-    //   email: "YulohaSukima@gmail.com",
-    //   role: "Admin Packing",
-    //   status: "Inactive"
-    // },{
-    //   id: "DI0103",
-    //   name: "Maratus K",
-    //   email: "MaratusK@gmail.com",
-    //   role: "Super Admin",
-    //   status: "Inactive"
-    // },{
-    //   id: "DI0104",
-    //   name: "Saikoji",
-    //   email: "Saikoji.putra@gmail.com",
-    //   role: "Manager",
-    //   status: "Inactive"
-    // }])
-    // FOR SLICING DATA ONLY 
-
 	},[])
 
   useEffect(()=>{
@@ -144,7 +107,7 @@ const ReferenceNetworkTable = ({
             <br/>
             <br/>
             <p>
-              Curently no Sales Report data..
+              Curently no Reference Network data..
             </p>
           </>
         }

@@ -14,7 +14,7 @@ const DisbursementPage = () => {
     <div className="container_right_form">
       <DisbursementTable
         pageName={"Disbursement"}
-        linkAddNew={"../newShipyardOwner"}
+        linkAddNew={""}
       />
     </div>
   );

@@ -169,7 +169,7 @@ const FieldHandler = ({
           <Form.Control
             className={item.notEditable ? styles.field_form_disabled  : styles.field_form}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             onChange={(e)=>item.action(e.target.value)}
             value={item.value}
@@ -386,7 +386,7 @@ const FieldHandler = ({
           <Form.Control
             className={styles.field_form_disabled_upload}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             tabIndex={item.notEditable ? "-1" : "1"}
           />

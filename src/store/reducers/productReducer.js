@@ -6,7 +6,8 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_PRODUCT_DETAIL_RESP':{
-      return {...state, productDetailResp: action.payload.data}
+      console.log("SET_PRODUCT_DETAIL_RESP", action)
+      return {...state, productDetailResp: action.payload[0]}
     }
     case 'SET_UPDATE_PRODUCT_RESP':{
       console.log("SET_UPDATE_PRODUCT_RESP", action)

@@ -8,7 +8,6 @@ import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllShipyard, setSearchShipyardOwner } from '../../store/actions/shipyardAction'
 import { setAllMember } from '../../store/actions/memberAction'
 
 const MemberTable = ({
@@ -29,16 +28,20 @@ const MemberTable = ({
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    if( startDate && endDate ){
+      params['start'] = Math.floor(new Date(startDate).getTime() / 1000)
+      params['end'] = Math.floor(new Date(endDate).getTime() / 1000)
+    }
+    setAllMember(dispatch, 0 ,params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    setAllMember(dispatch, 0, params)
   }
 
   const handlePageChange = (pageNumber) => {
@@ -63,41 +66,6 @@ const MemberTable = ({
 
 	useEffect(()=>{
     setAllMember(dispatch, 0)
-    
-    // FOR SLICING DATA ONLY 
-    // setDataShown([{
-    //   id: "DI0100",
-    //   name: "PT Sukro",
-    //   domisili: "DKI Jakarta",
-    //   totalDownline: "55",
-    //   totalComission: "15000000"
-    // },{
-    //   id: "DI0101",
-    //   name: "Alima Putra",
-    //   domisili: "DKI Jakarta",
-    //   totalDownline: "55",
-    //   totalComission: "2000000"
-    // },{
-    //   id: "DI0102",
-    //   name: "Yuloha Sukima",
-    //   domisili: "DKI Jakarta",
-    //   totalDownline: "55",
-    //   totalComission: "15000000"
-    // },{
-    //   id: "DI0103",
-    //   name: "Maratus K",
-    //   domisili: "DKI Jakarta",
-    //   totalDownline: "55",
-    //   totalComission: "500000"
-    // },{
-    //   id: "DI0104",
-    //   name: "Saikoji",
-    //   domisili: "DKI Jakarta",
-    //   totalDownline: "55",
-    //   totalComission: "150000000"
-    // }])
-    // FOR SLICING DATA ONLY 
-
 	},[])
 
   useEffect(()=>{
@@ -105,10 +73,10 @@ const MemberTable = ({
       console.log(dataMember.allMemberResp, "<<dataMember.allMemberResp")
       setDataShown(dataMember.allMemberResp.data)
       setPagination({
-          offset: dataMember.allMemberResp.offset, 
-          limit: dataMember.allMemberResp.limit, 
-          total: dataMember.allMemberResp.total, 
-        })
+        offset: dataMember.allMemberResp.offset, 
+        limit: dataMember.allMemberResp.limit, 
+        total: dataMember.allMemberResp.total, 
+      })
     }
   },[dataMember.allMemberResp])
 
@@ -144,14 +112,6 @@ const MemberTable = ({
                 value={searchKeyword}
               />
             </InputGroup >
-          </Col>
-          <Col xs="3">
-            <Form.Label htmlFor="basic-url">Filter by Status</Form.Label>
-            <Form.Select aria-label="Choose Status" className={styles.field_form} >
-              <option>{"Select Status"}</option>
-              <option>{"Pending"}</option>
-              <option>{"Berhasil"}</option>
-            </Form.Select>
           </Col>
           <Col xs="3">
             <Form.Label htmlFor="basic-url">Range Date</Form.Label>
@@ -194,7 +154,7 @@ const MemberTable = ({
             <br/>
             <br/>
             <p>
-              Curently no Sales Report data..
+              Curently no Member data..
             </p>
           </>
         }

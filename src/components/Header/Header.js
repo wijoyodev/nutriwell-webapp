@@ -90,7 +90,6 @@ const Header = ({ dispatch, isLogin, needLogin, dataLoginRegister}) => {
 	useEffect(()=>{
     checkWebAuth(localStorage.getItem('web'))
     checkLocation(location.pathname)
-    // resetError(dispatch)
     // isTokenExpired()
 	},[location, isLogin])
 
@@ -155,30 +154,6 @@ const Header = ({ dispatch, isLogin, needLogin, dataLoginRegister}) => {
                 { menuProfile && 
                   <Container className={styles.profile_container}>
                     <Row>
-                      {/* <a className={styles.link} href="/myAccount">
-                        <Col xs={12} className={styles.profile_menu}>
-                          <p className={styles.profile_text_container}>
-                            <CgProfile className={styles.profile_text}/>
-                              {"My Account"}
-                          </p>
-                        </Col>
-                      </a> 
-                      <a className={styles.link} href="/privacyPolicy">
-                        <Col xs={12} className={styles.profile_menu}>
-                          <p className={styles.profile_text_container}>
-                            <CgFileDocument className={styles.profile_text}/>
-                              {"Privacy Policy"}
-                          </p>
-                        </Col>
-                      </a> 
-                      <a className={styles.link} href="/helpCenter">
-                        <Col xs={12} className={styles.profile_menu}>
-                          <p className={styles.profile_text_container}>
-                            <FaQuestion className={styles.profile_text}/>
-                              {"Help Center"}
-                          </p>
-                        </Col>
-                      </a>  */}
                       <Col xs={12} className={styles.profile_menu} onClick={(e)=>doLogout(e)}>
                         <a className={styles.link} href="/">
                           <p className={styles.profile_text_container_2}>

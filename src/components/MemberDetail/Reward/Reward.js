@@ -9,11 +9,7 @@ import RewardTable from "../../Table/MemberDetail/RewardTable";
 import { setRewardDetail } from '../../../store/actions/memberAction'
 
 const Reward = ({
-  pageFor,
   dispatch, 
-  dataShipyard,
-  setPosition,
-  dataOneShipyard,
   dataMember,
 }) => {
   const { orderId, memberId } = useParams()

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-export const setAllAdmin = async (dispatch) => {
+export const setAllAdmin = async (dispatch, page, filter) => {
   const options = {
     method  : 'get',
     headers : {
@@ -11,7 +11,8 @@ export const setAllAdmin = async (dispatch) => {
       "Content-Type": "application/json",
       "Accept": "*/*",
     },
-    url     : `${process.env.REACT_APP_API_URL}/user?userType=admin`,
+    params  : filter ,
+    url     : `${process.env.REACT_APP_API_URL}/user?offset=${page}&userType=admin`,
   }
 
   axios(options).then(({data}) => {
@@ -167,10 +168,6 @@ export const setAllMember = async (dispatch) => {
       confirmButtonColor: '#1b4460',
     })
   })
-}
-
-export const resetVerifyUser = async (dispatch) => {
-  dispatch({ type: 'RESET_VERIFY_USER' })
 }
 
 export const resetCreateAdmin = async (dispatch) => {
