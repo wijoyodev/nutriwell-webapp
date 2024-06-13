@@ -9,11 +9,7 @@ import DisbursementMemberTable from "../../Table/MemberDetail/DisbursementMember
 import { setDisbursementGeneral } from '../../../store/actions/memberAction'
 
 const Disbursement = ({
-  pageFor,
   dispatch, 
-  dataShipyard,
-  setPosition,
-  dataOneShipyard,
   dataMember,
 }) => {
   const { orderId, memberId } = useParams()

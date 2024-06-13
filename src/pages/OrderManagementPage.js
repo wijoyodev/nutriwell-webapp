@@ -14,7 +14,7 @@ const OrderManagementPage = () => {
     <div className="container_right_form">
       <OrderManagementTable
         pageName={"Order Management"}
-        linkAddNew={"../newShipyardOwner"}
+        linkAddNew={""}
       />
     </div>
   );

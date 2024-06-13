@@ -13,17 +13,8 @@ export const setUpdateProduct = async (dispatch, data, id) => {
     },
   },{
   }).then(({data}) => {
-    console.log("DATA set update detail admin", data)
-    dispatch({ type: 'SET_UPDATE_PRODUCT_RESP', payload: data })
-    Swal.fire({
-      title: 'Success',
-      text: "Product Information Updated",
-      icon: 'success',
-      confirmButtonColor: '#1b4460',
-    })
-    setTimeout(() => { 
-      window.location.reload(false);
-    }, 1500)
+    console.log("setUpdateProduct", data)
+    dispatch({ type: 'SET_UPDATE_PRODUCT_RESP', payload: data.result })
   }).catch((error)=>{
     console.log("response error", error)
     Swal.fire({

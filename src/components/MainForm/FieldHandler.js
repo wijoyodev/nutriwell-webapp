@@ -15,6 +15,7 @@ const FieldHandler = ({
   item, 
   index,
   onClickFunc,
+  trackShipment,
 }) => {
   const uploadFile= useRef(null);
 	const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +24,6 @@ const FieldHandler = ({
     let curr = showPassword
     setShowPassword(!curr)
   }
-
   
   const dropdownComponent = (item) =>{
     let data = []
@@ -88,7 +88,7 @@ const FieldHandler = ({
               <Form.Label htmlFor="basic-url" className={styles.filed_label_info}>
                 {`No Resi ` + item.shippingNo} 
                 &nbsp;
-                <u className={styles.link}> Lacak </u>
+                <u className={styles.link} onClick={(e)=>trackShipment(e, item.shippingNo)}> Lacak </u>
                 <br/>
                 {`Terkirim ` + new Date(item.shippingDate).toLocaleString()}
               </Form.Label>
@@ -140,55 +140,86 @@ const FieldHandler = ({
             )
           ) }
         </Row>
-        {console.log(item.productDetails, "<<ITEM section productDetails")}
-        <Row index={index} className={styles.data_table}>
-          <Col md={3} xc={3} className={"p-3"}>
-            {item.productDetails.product_name}
-          </Col>
-          <Col md={3} xc={3} className={"p-3"}>
-            {item.productDetails.quantity}
-          </Col>
-          <Col md={3} xc={3} className={"p-3"}>
-            {'Rp' + item.productDetails.price}
-          </Col>
-          <Col md={3} xc={3} className={"p-3"}>
-            {'Rp' + item.productDetails.total_price}
-          </Col>
-        </Row>
-        {item.transactionTotalTitle.map( ( data, index) => (
-          <Row index={index}>
-            <Col md={{ span:3, offset:6 }} xc={{ span:3, offset:6 }} className={"p-3"}>
-              {data}
-            </Col>
-            {console.log ("ITEM", item)}
-            { data === "Total yang dapat ditarik" &&
-              <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
-                {'Rp' + item?.transactionTotal?.totalPrice}
-              </Col>
-            }
-            { data === "Total" &&
-              <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
-                {'Rp' + item?.transactionTotal}
-              </Col>
-            }
-            { data === "Subtotal" &&
+        { item.transactionInfo &&  
+          <>
+            <Row index={index} className={styles.data_table}>
               <Col md={3} xc={3} className={"p-3"}>
-                {'Rp' + item?.transactionSubTotal}
+                {item.transactionDescription}
               </Col>
-            }
-            { data === "Ongkir" &&
+            </Row>
+            {item.transactionTotalTitle.map( ( data, index) => (
+              <Row index={index}>
+                <Col md={{ span:3, offset:3 }} xc={{ span:3, offset:3 }} className={"p-3"}>
+                  {data}
+                </Col>
+                {console.log ("ITEM", item)}
+                { data === "Total yang dapat ditarik" &&
+                  <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
+                    {'Rp' + item?.transactionTotal?.totalPrice}
+                  </Col>
+                }
+                { data === "PPH (23 (2%)" &&
+                  <Col md={3} xc={3} className={"p-3"}>
+                    {'- Rp' + item?.transactionTotal?.pph}
+                  </Col>
+                }
+              </Row>
+            ))}
+          </>
+        }
+
+        { item.isProductInfo &&
+          <>
+            <Row index={index} className={styles.data_table}>
               <Col md={3} xc={3} className={"p-3"}>
-                {'Rp' + item?.courierPrice}
+                {item.productDetails.product_name}
               </Col>
-            }
-            { data === "PPH (23 (2%)" &&
               <Col md={3} xc={3} className={"p-3"}>
-                {'- Rp' + item?.transactionTotal?.pph}
+                {item.productDetails.quantity}
               </Col>
-            }
-            {/* {styles.totalPrice + " p-3"} */}
-          </Row>
-        ))}
+              <Col md={3} xc={3} className={"p-3"}>
+                {'Rp' + item.productDetails.price}
+              </Col>
+              <Col md={3} xc={3} className={"p-3"}>
+                {'Rp' + item.productDetails.total_price}
+              </Col>
+            </Row>
+            {item.transactionTotalTitle.map( ( data, index) => (
+              <Row index={index}>
+                <Col md={{ span:3, offset:6 }} xc={{ span:3, offset:6 }} className={"p-3"}>
+                  {data}
+                </Col>
+                {console.log ("ITEM", item)}
+                { data === "Total yang dapat ditarik" &&
+                  <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
+                    {'Rp' + item?.transactionTotal?.totalPrice}
+                  </Col>
+                }
+                { data === "Total" &&
+                  <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
+                    {'Rp' + item?.transactionTotal}
+                  </Col>
+                }
+                { data === "Subtotal" &&
+                  <Col md={3} xc={3} className={"p-3"}>
+                    {'Rp' + item?.transactionSubTotal}
+                  </Col>
+                }
+                { data === "Ongkir" &&
+                  <Col md={3} xc={3} className={"p-3"}>
+                    {'Rp' + item?.courierPrice}
+                  </Col>
+                }
+                { data === "PPH (23 (2%)" &&
+                  <Col md={3} xc={3} className={"p-3"}>
+                    {'- Rp' + item?.transactionTotal?.pph}
+                  </Col>
+                }
+                {/* {styles.totalPrice + " p-3"} */}
+              </Row>
+            ))}
+          </>
+        }
       </Col>
     )
   } else if(item.type === "text"){
@@ -199,7 +230,7 @@ const FieldHandler = ({
           <Form.Control
             className={item.notEditable ? styles.field_form_disabled  : styles.field_form}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             onChange={(e)=>item.action(e.target.value)}
             value={item.value}
@@ -303,7 +334,7 @@ const FieldHandler = ({
     )
   } else if (item.type === "button_white"){
     return (
-      <Col md={item.spaceMd} xs={item.spaceXs} key={index}>
+      <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
         { item.action ? 
           <Button className={styles.cancel_button} onClick={((e)=>item.action(e))}>
             {item.label}
@@ -438,7 +469,7 @@ const FieldHandler = ({
           <Form.Control
             className={styles.field_form_disabled_upload}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             tabIndex={item.notEditable ? "-1" : "1"}
           />

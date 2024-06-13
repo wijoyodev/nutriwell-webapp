@@ -48,41 +48,34 @@ const DisbursementDetailPage = ({ dispatch, dataMember }) => {
     setRequestDate(oneData.created_at)
     setSuccessDate(oneData.success_disbursement_date)
     setIsLoading(false)
+
+    if(isDisbMemberDetail){
+      setTrasactionTotal({
+        totalPrice: oneData.disbursement_value,
+        pph: oneData.total_tax,
+      })
+    }
   }
 
   useEffect(()=>{
     if( dataMember.disbursementDetailResp){
       setData(dataMember.disbursementDetailResp)
-      // setMemberNetworkSummary(dataReward)
-      // setTotalRefNetwork(dataReward.sum_transaction)
-      // setLvl1(dataReward.level_1)
-      // setLvl2(dataReward.level_2)
-      // setLvl3(dataReward.level_3)
-      // setLvl4(dataReward.level_4)
-      // setLvl5(dataReward.level_5)
     }
   },[dataMember.disbursementDetailResp])
 
   useEffect(()=>{
     if( dataMember.disbursementDetailMemberResp){
       setData(dataMember.disbursementDetailMemberResp)
-      // setMemberNetworkSummary(dataReward)
-      // setTotalRefNetwork(dataReward.sum_transaction)
-      // setLvl1(dataReward.level_1)
-      // setLvl2(dataReward.level_2)
-      // setLvl3(dataReward.level_3)
-      // setLvl4(dataReward.level_4)
-      // setLvl5(dataReward.level_5)
     }
   },[dataMember.disbursementDetailMemberResp])
 
   useEffect(()=>{
     setisDisbMemberDetail(location.pathname.includes("memberDetail"))
-    if(location.pathname.includes("memberDetail")){
+    // if(location.pathname.includes("memberDetail")){
       setDisbursementMemberDetail(dispatch, memberId,disbursementId)
-    }else{
-      setDisbursementDetail(dispatch, memberId)
-    }
+    // }else{
+      // setDisbursementDetail(dispatch, disbursementId)
+    // }
 	},[])
 
   const dataForm = [
@@ -103,27 +96,30 @@ const DisbursementDetailPage = ({ dispatch, dataMember }) => {
           spaceXs: "12",
           value: name,
         },{
-          label: "METODE PEMBAYARAN",
+          label: "REKENING TUJUAN",
           type: "text",
           spaceMd: "6",
           spaceXs: "12",
-          isPaymentDone: false,
-          value: customerDetail.paymentMethod,
-          detailInfo: customerDetail.trasactionDate,
+          bankInfo: true,
+          valueAccBank: bankAccount.account_bank,
+          valueAccBankNum: bankAccount.account_bank_number,
+          valueAccBankName: bankAccount.account_bank_name,
         },{
           label: "TANGGAL REQUEST",
           type: "text",
           spaceMd: "6",
           spaceXs: "12",
-          value: transactionDate,
+          value: requestDate,
         }
       ]
     },{
       label: "Informasi Penarikan",
       type: "sectionTable",
+      transactionInfo: true,
       dataFields: "transactionDetail",
-      dataFieldsTitle: ["Produk", "QTY", "Harga Per Produk", "Jumlah"], 
-      transactionTotal: 'transactionTotal',
+      dataFieldsTitle: ["Deskripsi", "Jumlah"], 
+      transactionDescription: "Request Penarikan",
+      transactionTotal: transactionTotal,
       transactionTotalTitle: ["PPH (23 (2%)", "Total yang dapat ditarik"], 
     },{
       type: "SPACE",

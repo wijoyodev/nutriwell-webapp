@@ -5,20 +5,14 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import FieldHandler from '../../MainFormMember/FieldHandler'
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
-import { setIslandResp, setAddShipyard, resetAddShipyardResp, setUpdateShipyard, resetUpdateShipyard } from '../../../store/actions/shipyardAction'
 
 const Information = ({
-  pageFor,
-  dispatch, 
-  dataShipyard,
-  setPosition,
-  dataOneShipyard,
   dataOneMember,
 }) => {
   const { orderId, memberId } = useParams()
   const [progress, setProgress] = useState(true);
   const [islands, setIslands] = useState(null)
-  const [locations, setLocations] = useState(null)
+  // const [locations, setLocations] = useState(null)
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [images, setImages] = useState("");
@@ -35,145 +29,14 @@ const Information = ({
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [phone, setPhone] = useState("");
   const [bankAccountName, setBankAccountName] = useState();
-  const [selectedLocation, setSelectedLocation] = useState();
+  // // const [selectedLocation, setSelectedLocation] = useState();
   const [referrerCode, setReferrerCode] = useState("");
   
   const navigate = useNavigate()
 
-  const setLocation = () => {
-    setIslandResp(dispatch)
-  }
-  
-  const clicked = () => {
-    const temp = !progress
-    setProgress(temp)
-  }
-  
-  const doRegisterUpdateShipyard = (e) => {
-    e.preventDefault()
-    let data = { 
-      orderId,
-      // islandId: selectedIsland.id,
-      areaId: selectedLocation.id,
-      name,
-      facilityDescription: '---',
-      address,
-      bankName,
-      upline,
-      bankAccount,
-      linkedinUrl,
-      phone,
-      whatsappNumber,
-      imageUrls: images,
-    }
-    if( pageFor === "detail" ){
-      setUpdateShipyard(dispatch, data, memberId)
-    }else{
-      setAddShipyard(dispatch, data)
-    }
-  }
-  
-  const handleSelect = (e, type) => {
-    const splitValue = e.target.value.split("||")
-    if( type === "Island" ){
-      setBankAccountName({
-        id: splitValue[0],
-        name: splitValue[1],
-      }) 
-    } else if( type === "Location" ){
-      setSelectedLocation({
-        id: splitValue[0],
-        name: splitValue[1],
-      })
-    }
-  }
-
-  const resetData = () => {
-    
-  }
-
-  const manageLocation = () => {
-    const list = dataShipyard.islandResp.data.islands
-    let islands = []
-    let location = {}
-
-    for( let i=0 ; i<list.length ; i++ ){
-      if( i === 0 ){
-        setBankAccountName({
-          id: list[i].id,
-          name: list[i].name,
-        })
-      }
-      islands.push({
-        id: list[i].id,
-        name: list[i].name,
-      })
-      location[list[i].name] = []
-      for( let j=0 ; j<list[i].areas.length ; j++ ){
-        let area = list[i].areas[j]
-        if( i === 0 && j === 0 ){
-          setSelectedLocation({
-            id: area.id,
-            name: area.name,
-          })
-        }
-        location[list[i].name].push({
-          id: area.id,
-          name: area.name,
-        })
-      }
-    }
-    setIslands(islands)
-    setLocations(location)
-  }
-
-  const doDeactive = (e) => {
-    e.preventDefault()
-    Swal.fire({
-      text: "Are you sure want to deactivate this user?",
-      confirmButtonText: 'Yes',
-      confirmButtonColor: '#a9acaf',
-      cancelButtonText: 'No',
-      cancelButtonColor: '#163b55',
-      showCloseButton: true,
-      showCancelButton: true,
-    })
-  }
-  
   const onChangeImage = (imageList, addUpdateIndex) => {
     setImages(imageList);
   };
-
-  const initImage = (allImages) => {
-    let data = []
-    for( let i=0 ;i<allImages.length ; i++){
-      data.push({data_url: allImages[i].imageUrl})
-    }
-    setImages(data)
-  }
-
-  // useEffect(()=>{
-  //   if( dataShipyard.islandResp.data ){
-  //     manageLocation()
-  //   }
-  // },[dataShipyard.islandResp])
-
-  // useEffect(()=>{
-  //   if( dataShipyard.addShipyardResp ){
-  //     // navigate("../shipyardListed");
-  //     resetAddShipyardResp(dispatch)
-  //     setPosition("Dock Facility")
-  //     localStorage.setItem("pagePos","Dock Facility")
-  //   }
-  // },[dataShipyard.addShipyardResp])
-
-  // useEffect(()=>{
-  //   if( dataShipyard.updateShipyardResp ){
-  //     resetUpdateShipyard(dispatch)
-  //     setPosition("Dock Facility")
-  //     localStorage.setItem("pagePos","Dock Facility")
-  //   }
-  // },[dataShipyard.updateShipyardResp])
 
   const setData = (data) => {
     console.log("SETDATA ", data)
@@ -193,7 +56,6 @@ const Information = ({
   }
 
   useEffect(()=>{
-    setLocation()
   },[])
 
   useEffect(()=>{
@@ -386,8 +248,6 @@ const Information = ({
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
-    }else{
-      doRegisterUpdateShipyard(event)
     }
     setValidated(true);
   };
@@ -433,7 +293,7 @@ const Information = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 

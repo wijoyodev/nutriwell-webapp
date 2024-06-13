@@ -1,7 +1,7 @@
 const initialState = {
-  allOrderResp:null,
+  orderSearchResp:null,
   orderDetailResp:null,
-
+  changeOrderStatusResp:null,
   vesselTypeResp:[],
   shipDeleteResp:{},
   oneReadyStockResp:null,
@@ -13,19 +13,26 @@ const initialState = {
   updateShipResp:null,
   updateSiupal:null,
   createShipOwnerResp:null,
+  trackShipmentResp: null,
 }
   
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_ALL_ORDER': {
-      console.log("SET_ALL_ORDER", action.payload)
-      return {...state, allOrderResp: action.payload}
+    case 'SET_ORDER_SEARCH': {
+      console.log("SET_ORDER_SEARCH", action.payload)
+      return {...state, orderSearchResp: action.payload}
+    }
+    case 'SET_CHANGE_ORDER_STATUS': {
+      console.log("SET_CHANGE_ORDER_STATUS", action.payload)
+      return {...state, changeOrderStatusResp: action.payload}
+    }
+    case 'SET_TRACK_SHIPMENT': {
+      console.log("SET_TRACK_SHIPMENT", action.payload)
+      return {...state, trackShipmentResp: action.payload}
     }
     case 'SET_ORDER_DETAIL': {
       return {...state, orderDetailResp: action.payload}
     }
-
-
     case 'SET_VESSEL_TYPE': {
       return {...state, vesselTypeResp: action.payload.data.vesselTypes}
     }

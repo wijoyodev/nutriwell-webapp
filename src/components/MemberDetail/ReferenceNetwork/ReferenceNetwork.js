@@ -9,11 +9,8 @@ import ReferenceNetworkTable from "../../Table/MemberDetail/ReferenceNetworkTabl
 import { setNetworkById, setNetworkSummaryById } from '../../../store/actions/memberAction'
 
 const ReferenceNetwork = ({
-  pageFor,
   dispatch, 
   dataMember,
-  setPosition,
-  dataOneShipyard,
 }) => {
   const { orderId, memberId } = useParams()
   const [memberNetwork, setMemberNetwork] = useState("");
@@ -60,20 +57,12 @@ const ReferenceNetwork = ({
   }
 
   useEffect(()=>{
-    // testing purpose only
-      // setData(dataOneShipyard)
   },[])
 
   const backPage = (e) => {
     e.preventDefault()
     navigate(-1)
   }
-
-  useEffect(()=>{
-    if( dataOneShipyard !== "not available" ){
-      setData(dataOneShipyard)
-    }
-  },[dataOneShipyard])
   
   const dataForm = [
     {

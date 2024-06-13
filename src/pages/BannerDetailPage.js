@@ -53,12 +53,29 @@ const BannerDetailPage = ({
 
   const doUpdateBanner = (e) => {
     e.preventDefault()
-    const data = {
-      title,
-      description: content,
-      imageUrl: images
+    let data = {}
+    if( images.length === 0 ){
+      Swal.fire({
+        title: 'Photo required',
+        text: "Need to add Photo",
+        icon: 'warning',
+        confirmButtonColor: '#1b4460',
+      })
+    }else{
+      if( images[0].file ){
+        data = {
+          title,
+          description: content,
+          imageUrl: images
+        }
+      }else{
+        data = {
+          title,
+          description: content,
+        }
+      }
+      setUpdateBanner(dispatch, bannerId, data)
     }
-    setUpdateBanner(dispatch, bannerId, data)
   }
 
   useEffect(()=>{
@@ -68,7 +85,7 @@ const BannerDetailPage = ({
   useEffect(()=>{
     if( dataBanner.bannerUpdateResp ){
       resetUpdateBanner(dispatch)
-      navigate('../supplierBanner')
+      navigate('../bannerManagement')
     }
   },[dataBanner.bannerUpdateResp])
 
@@ -82,7 +99,7 @@ const BannerDetailPage = ({
         const data = {
           data_url: dataBanner.bannerDetailResp.image_url,
         }
-        // setImages([data])
+        setImages([data])
       }else{
         setImages([])
       }
@@ -156,7 +173,7 @@ const BannerDetailPage = ({
   return (    
     <div className="container_right_form">
       <MainForm
-        pageName={"Supplier Banner Detail"}
+        pageName={"Banner Detail"}
         progress={progress}
         onClickFunc={clicked}
         dataForm={dataForm}

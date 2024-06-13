@@ -4,8 +4,6 @@ import MainFormMember from '../components/MainFormMember/MainFormMember'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
-import { setUploadFile, resetUploadFile, setDetailShipyard, resetDetailShipyard, setOneMemberByShipyardId, setUpdateDetailShipyard } from '../store/actions/shipyardAction'
-import { setActiveDeactive } from '../store/actions/loginRegisterAction'
 import { setDetailMember } from '../store/actions/memberAction'
 
 const MemberDetailPage = ({ dispatch, dataMember }) => {
@@ -41,11 +39,7 @@ const MemberDetailPage = ({ dispatch, dataMember }) => {
       email,
       status,
     }
-    setUpdateDetailShipyard(dispatch, dataUpdate, id)
-  }
-
-  const triggerUpload = (e, section) => {
-    setUploadFile(dispatch, e.target.files[0], section)
+    // setUpdateDetailShipyard(dispatch, dataUpdate, id)
   }
 
   const packageDetail = () => {
@@ -113,14 +107,6 @@ const MemberDetailPage = ({ dispatch, dataMember }) => {
 
   useEffect(()=>{
     setDetailMember(dispatch, memberId)
-
-    // FOR SLICING DATA ONLY 
-    // setId("ODO00001")
-    // setName("Yanti Sumartini")
-    // setEmail("yanti@sumartini@yahooo.com")
-    // setStatus("Berhasil")
-    // FOR SLICING DATA ONLY
-
   },[])
 
   const dataForm = [

@@ -64,8 +64,10 @@ const BaseTable = ({
     }else if( section === "disbursement" ){
       if( status === "COMPLETED" ){
         return <p className={`${styles.statusDone} ${styles.buttonStatus}`}> Berhasil </p>
-      } else if( status === "Pending" ){
+      } else if( status === "Pending"  || status === "PENDING" ){
         return <p className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </p>
+      } else if( status === "FAILED"){
+        return <p className={`${styles.statusCancelled} ${styles.buttonStatus}`}> Gagal </p>
       } 
     }else if( section === "adminManagement" ){
       if( status === 1 ){
@@ -84,7 +86,7 @@ const BaseTable = ({
   }
 
   const printData = (data, title) => {
-    if( title == "Total Komisi" ){
+    if( title == "Total Komisi" || title == "Net Income" ){
       return <p className={styles.data_row}> {"Rp. "  + data} </p>
     }else if( title == "Tanggal" ){
       console.log("printData", data,title, data[title])
@@ -92,6 +94,16 @@ const BaseTable = ({
     }else{
       return <p className={styles.data_row}> {data} </p>
       // return <p className={styles.data_row}> {data[title]} </p>
+    }
+  }
+
+  const linkToDetail = (section, link, id, memberId, disbursementId) => {
+    if( section === "disbursementMember" ){
+      return link + memberId + `/${id}` 
+    }else if( section === "disbursement" ){
+      return link + disbursementId + `/${id}` 
+    }else{
+      return link + id
     }
   }
 
@@ -106,9 +118,11 @@ const BaseTable = ({
           <thead>
             <tr className={styles.table_head}>
               { Object.keys(data[0]).map( (item,index) => (
-                <th key={index}>
-                  <p className={styles.th_text}> {item} </p>
-                </th>
+                !item.includes("HIDDEN") && (
+                  <th key={index}>
+                    <p className={styles.th_text}> {item} </p>
+                  </th>
+                )
               ))}
               {linkDetail && 
                 <th>
@@ -122,43 +136,40 @@ const BaseTable = ({
             <tr key={index}>
             {console.log("oneData>> ", oneData)}
               { Object.keys(oneData).map( (item,index) => (
-                section === "disbursementMember" || section === "RewardTable" ||
-                section === "orderManagement" || section === "adminManagement" || 
-                section === "salesReport" || section === "disbursement" || 
-                section === "referenceNetwork" ? 
-                  <>
-                    { printSection(index, oneData[item], item) }
-                  </>
-                  :
-                  <>
-                    {item === "STATUS" ? 
-                      <td key={index}>
-                        {oneData['STATUS'] ?
-                          <p className={styles.verif}> <RiCheckLine/> Verified </p>
+                !item.includes("HIDDEN") && (
+                  section === "disbursementMember" || section === "RewardTable" ||
+                  section === "orderManagement" || section === "adminManagement" || 
+                  section === "salesReport" || section === "disbursement" || 
+                  section === "referenceNetwork" ? 
+                    <>
+                      { printSection(index, oneData[item], item) }
+                    </>
+                    :
+                    <>
+                      {item === "STATUS" ? 
+                        <td key={index}>
+                          {oneData['STATUS'] ?
+                            <p className={styles.verif}> <RiCheckLine/> Verified </p>
+                          :
+                            <p className={styles.notVerif}> Not Verified </p>
+                          }
+                        </td>
                         :
-                          <p className={styles.notVerif}> Not Verified </p>
-                        }
-                      </td>
-                      :
-                      <td key={index}>
-                        { printData(oneData, item) }
-                      </td>
-                    }
-                  </>
+                        <td key={index}>
+                          { printData(oneData, item) }
+                        </td>
+                      }
+                    </>
+                  )
                 ))}
-              { linkDetail &&
-                <td>
-                  <Link to={
-                      section === "disbursementMember" ? 
-                        ( linkDetail + memberId + `/${oneData["ID"]}` )
-                        :
-                        ( linkDetail + (oneData["ID"] || oneData["ADMIN ID"]) )
-                    } className={styles.no_underline}>
-                    <p className={styles.detail}><BiSearchAlt/></p>
-                  </Link>
-                </td>
-              }
-            </tr>
+                { linkDetail &&
+                  <td>
+                    <Link to={linkToDetail(section, linkDetail, oneData["ID"], memberId, oneData['HIDDEN user_id'])} className={styles.no_underline}>
+                      <p className={styles.detail}><BiSearchAlt/></p>
+                    </Link>
+                  </td>
+                }
+              </tr>
           ))}
           </tbody>
         </Table>

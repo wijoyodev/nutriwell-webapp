@@ -11,8 +11,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const DisbursementMemberTable = ({
   pageName,
-  linkAddNew,
-  dispatch, 
   dataDisbursement,
 }) => {
 
@@ -49,15 +47,6 @@ const DisbursementMemberTable = ({
         {pageName}
       </p>
       <Container className={styles.container_2}>
-        <Row>
-          {/* <Col xs="3">
-            <Link to={linkAddNew}>
-              <Button className={styles.save_button_2}>
-                {"New "+pageName}
-              </Button>
-            </Link>
-          </Col> */}
-        </Row>
         {data.length > 0 ?
           <BaseTable 
             data={data} 
@@ -72,7 +61,7 @@ const DisbursementMemberTable = ({
             <br/>
             <br/>
             <p>
-              Curently no Sales Report data..
+              Curently no Disbursement Member data..
             </p>
           </>
         }
@@ -83,7 +72,7 @@ const DisbursementMemberTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 

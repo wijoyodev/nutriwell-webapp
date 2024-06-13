@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginRegister from '../components/LoginRegister/LoginRegister'
 import { connect } from "react-redux";
-import { setLoginResp, setAuthResp } from '../store/actions/loginRegisterAction'
+import { setLoginResp } from '../store/actions/loginRegisterAction'
 
 const LoginPage = ({ dispatch, dataLoginRegister }) => {
   const [email, setEmail] = useState("");
@@ -47,7 +47,7 @@ const LoginPage = ({ dispatch, dataLoginRegister }) => {
     },{
       label: "Log In",
       type: "button_submit",
-      link: "../shipyard",
+      link: "../orderManagement",
       spaceMd: "12",
       spaceXs: "12",
     }

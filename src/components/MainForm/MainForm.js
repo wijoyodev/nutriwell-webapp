@@ -9,30 +9,22 @@ import 'rsuite/dist/rsuite.min.css';
 import FieldHandler from './FieldHandler'
 import Swal from 'sweetalert2'
 import { Link } from "react-router-dom";
-import { setVerifyUser, resetVerifyUser, setForgotPassword } from '../../store/actions/loginRegisterAction'
 
 const MainForm = ({
   pageName,
   onClickFunc,
   dispatch, 
-  dataLoginRegister, 
   dataForm,
   pageFor,
+  trackShipment,
   status,
-  allShipyard,
   orderId,
   isVerified,
-  email,
-  isActive,
   onSubmit,
   whiteBackground,
 }) => {
   const [validated, setValidated] = useState(false);
   console.log(dataForm,"<<dataForm")
-  const doResendPass = (e) => {
-    e.preventDefault()
-    setForgotPassword(dispatch, email, isVerified.role)
-  }
 
   //  status {
   //   'Belum Bayar' = 0,
@@ -41,7 +33,6 @@ const MainForm = ({
   //   'Selesai' = 3,
   //   'Dibatalkan' = 4,
   // }
-
   const printStatusLabel = (status) => {
     if( pageName === "Order Detail" ){
       if( status === 3 ){ // STATUS : Selesai
@@ -60,33 +51,12 @@ const MainForm = ({
     }else if( pageName === "Disbursement Detail" ){
       if( status === "Berhasil" || status === "COMPLETED" ){
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Berhasil </font>
-      } else if( status === "Pending" ){
+      } else if( status === "Pending" || status === "PENDING" ){
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
       } else {
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
       }
     }
-  }
-  
-  const doVerify = (e) => {
-    e.preventDefault()
-    Swal.fire({
-      text: "Are you sure want to verify this user?",
-      confirmButtonText: 'Yes',
-      confirmButtonColor: '#a9acaf',
-      cancelButtonText: 'No',
-      cancelButtonColor: '#163b55',
-      showCloseButton: true,
-      showCancelButton: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const data ={
-          email: isVerified.email, 
-          role: isVerified.role
-        }
-        setVerifyUser(dispatch, data)
-      }
-    })
   }
   
   const handleSubmit = (event) => {
@@ -100,12 +70,6 @@ const MainForm = ({
     setValidated(true);
   };
 
-  useEffect(()=>{
-    if( dataLoginRegister.verifyUserResp ){
-      resetVerifyUser(dispatch)
-    }
-  },[dataLoginRegister.verifyUserResp])
-	
 	return (
 		<>
       { pageFor === "detail" && 
@@ -172,7 +136,7 @@ const MainForm = ({
           <Form noValidate validated={validated} onSubmit={handleSubmit} className={whiteBackground && styles.backgroundWhite}>
             <Row className={styles.field_container}>
               {dataForm.map( (item, index)=>{
-                return <FieldHandler item={item} index={index} key={index} onClickFunc={onClickFunc}/>
+                return <FieldHandler item={item} index={index} key={index} onClickFunc={onClickFunc} trackShipment={trackShipment}/>
               })}
             </Row>
           </Form>

@@ -28,12 +28,6 @@
   text-align: left;
 }
 
-.company_listed_container{
-  padding-top: 13%;
-  background-color: #595a5d !important;
-  height: 100vh !important;
-}
-
 .box_company_listed{
   background-color: white !important;
   border-radius: 20px;

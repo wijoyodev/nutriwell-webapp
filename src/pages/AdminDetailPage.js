@@ -4,7 +4,6 @@ import MainForm from '../components/MainForm/MainForm'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
-import { setActiveDeactive } from '../store/actions/loginRegisterAction'
 import { setAdminById, setUpdateDetaiAdmin } from '../store/actions/adminAction'
 
 const AdminDetailPage = ({ dispatch, dataAdmin }) => {
@@ -110,14 +109,6 @@ const AdminDetailPage = ({ dispatch, dataAdmin }) => {
 
   useEffect(()=>{
     setAdminById(dispatch, adminId)
-
-    // FOR SLICING DATA ONLY 
-    // setId("ODO00001")
-    // setName("Yanti Sumartini")
-    // setEmail("yanti@sumartini@yahooo.com")
-    // setStatus("Berhasil")
-    // FOR SLICING DATA ONLY
-
   },[])
 
   const dataForm = [

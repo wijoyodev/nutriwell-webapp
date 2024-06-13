@@ -9,17 +9,36 @@ import { setProductDetail, setUpdateProduct } from '../store/actions/productActi
 const ProductDetailPage = ({ dispatch, dataProduct }) => {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
+  const [id, setId] = useState("");
+  const [pricing, setPricing] = useState("");
   const [images, setImages] = useState("");
   const navigate = useNavigate()
 	
   const doEditProductDetail = (e) => {
     e.preventDefault()
-    const dataEdit = {
-      name,
-      desc,
-      images,
+    let dataEdit = {}
+    if( images.length === 0 ){
+      Swal.fire({
+        title: 'Photo required',
+        text: "Need to add Photo",
+        icon: 'warning',
+        confirmButtonColor: '#1b4460',
+      })
+    }else{
+      if( images[0].file ){
+        dataEdit = {
+          name,
+          desc,
+          images,
+        }
+      }else{
+        dataEdit = {
+          name,
+          desc,
+        }
+      }
+      setUpdateProduct(dispatch, dataEdit, id)
     }
-    setUpdateProduct(dispatch, dataEdit)
   }
   
   const onChangeImage = (imageList, addUpdateIndex) => {
@@ -32,13 +51,23 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
 
   useEffect(()=>{
     if( dataProduct.productDetailResp ){
-      // navigate("../produc")
+      console.log(dataProduct.productDetailResp,"<<dataProduct.productDetailResp")
+      setName(dataProduct.productDetailResp.product_name)
+      setPricing(dataProduct.productDetailResp.price)
+      setDesc(dataProduct.productDetailResp.description)
+      setId(dataProduct.productDetailResp.id)
     }
   },[dataProduct.productDetailResp])
 
   useEffect(()=>{
     if( dataProduct.productEditResp ){
-      // navigate("../produc")
+      console.log( "dataProduct.productEditResp" , dataProduct.productEditResp )
+      Swal.fire({
+        title: 'Success',
+        text: "Product Information Updated",
+        icon: 'success',
+        confirmButtonColor: '#1b4460',
+      })
     }
   },[dataProduct.productEditResp])
 
@@ -46,6 +75,7 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
     {
       label: "Gambar",
       type: "uploadPhoto",
+      desc: "Anda dapat mengupload maksimal 8 gambar dengan min. size 1029x1029 px",
       spaceMd: "6",
       spaceXs: "6",
       maxImage: "1",
@@ -54,11 +84,16 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
       multiplePhoto: true,
       required: true,
     },{
+      type: "SPACE",
+      spaceMd: "6",
+      spaceXs: "6",
+    },{
       label: "Nama",
       type: "text",
       placeholder: "Input Nama",
       spaceMd: "6",
       spaceXs: "6",
+      value: name,
       required: true,
       action: setName,
     },{
@@ -71,6 +106,7 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
       placeholder: "Input Deskripsi",
       spaceMd: "6",
       spaceXs: "6",
+      value: desc,
       required: true,
       action: setDesc,
     },{
@@ -80,11 +116,12 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
     },{
       label: "Harga",
       type: "text",
+      value: pricing,
       placeholder: "Input Harga",
       spaceMd: "6",
       spaceXs: "162",
       required: true,
-      action: setName,
+      action: setPricing,
     },{
       type: "SPACE",
       spaceMd: "6",
@@ -98,6 +135,7 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
       type: "button_submit",
       spaceMd: "3",
       spaceXs: "3",
+      action: doEditProductDetail,
       link: "../accountReview"
     },{
       label: "Batal",

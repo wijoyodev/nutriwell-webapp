@@ -11,36 +11,21 @@ import 'rsuite/dist/rsuite.min.css';
 import FieldHandler from './FieldHandler'
 import Swal from 'sweetalert2'
 import { Link, useParams } from "react-router-dom";
-import { setVerifyUser, resetVerifyUser, setForgotPassword } from '../../store/actions/loginRegisterAction'
 import OrderTable from "../Table/MemberDetail/OrderTable";
 import Reward from "../MemberDetail/Reward/Reward";
 import Disbursement from "../MemberDetail/Disbursement/Disbursement";
 
 const MainFormMember = ({
   pageName,
-  onClickFunc,
-  dispatch, 
-  dataLoginRegister, 
-  dataForm,
   pageFor,
   status,
   dataOneMember,
-  allShipyard,
   orderId,
-  isVerified,
-  email,
-  isActive,
   onSubmit,
-  whiteBackground,
 }) => {
   const [validated, setValidated] = useState(false);
   const [position, setPosition] = useState("")
   const { memberId } = useParams()
-
-  const doResendPass = (e) => {
-    e.preventDefault()
-    setForgotPassword(dispatch, email, isVerified.role)
-  }
 
   const printStatusLabel = (status) => {
     if( pageName === "Order Detail" ){
@@ -60,7 +45,7 @@ const MainFormMember = ({
     }else if( pageName === "Disbursement Detail" ){
       if( status == "Berhasil" ){
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Berhasil </font>
-      } else if( status == "Pending" ){
+      } else if( status == "Pending" || status === "PENDING" ){
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
       } else {
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
@@ -78,12 +63,6 @@ const MainFormMember = ({
     }
     setValidated(true);
   };
-
-  useEffect(()=>{
-    if( dataLoginRegister.verifyUserResp ){
-      resetVerifyUser(dispatch)
-    }
-  },[dataLoginRegister.verifyUserResp])
 
   useEffect(()=>{
     if(position && localStorage.getItem('memberDetailPos') != position){
@@ -206,7 +185,7 @@ const MainFormMember = ({
 
 const storage = state => {
   return {
-    dataLoginRegister: state.loginRegister,
+    dataMember: state.member,
   };
 };
 

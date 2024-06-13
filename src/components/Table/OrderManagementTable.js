@@ -30,19 +30,19 @@ const OrderManagementTable = ({
     if( status ){
       status ==  99 ? params['status'] = '' : params['status'] = status;
     }
-    setSearchOrders(dispatch, params)
+    setAllOrder(dispatch, 0, params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchOrders(dispatch, params)
+    setAllOrder(dispatch, 0, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllOrder(dispatch)
+    setAllOrder(dispatch, (pageNumber-1)*10)
   }
 
   const setDataShown = (datas) => {
@@ -80,56 +80,16 @@ const OrderManagementTable = ({
 
 	useEffect(()=>{
     console.log("masuk flow order table")
-    setAllOrder(dispatch)
-    
-    // FOR SLICING DATA ONLY 
-    // setDataShown([{
-    //   id: "ORO000",
-    //   orderDate: 1709735589,
-    //   name: "PT Sukro",
-    //   quantity: 9,
-    //   total: 999,
-    //   status: "Selesai"
-    // },{
-    //   id: "ORO001",
-    //   orderDate: 1709735589,
-    //   name: "Alima Putra",
-    //   quantity: 1,
-    //   total: 102,
-    //   status: "Dikemas"
-    // },{
-    //   id: "ORO002",
-    //   orderDate: 1709735589,
-    //   name: "Yuloha Sukima",
-    //   quantity: 1,
-    //   total: 102,
-    //   status: "Belum Bayar"
-    // },{
-    //   id: "ORO003",
-    //   orderDate: 1709735589,
-    //   name: "Maratus K",
-    //   quantity: 1,
-    //   total: 102,
-    //   status: "Dikirim"
-    // },{
-    //   id: "ORO004",
-    //   orderDate: 1709735589,
-    //   name: "Saikoji",
-    //   quantity: 1,
-    //   total: 1,
-    //   status: "Dibatalkan"
-    // }])
-    // FOR SLICING DATA ONLY 
-
+    setAllOrder(dispatch, 0)
 	},[])
 
   useEffect(()=>{
     console.log(dataOrder," <<DATA PRDER")
-    if( dataOrder.allOrderResp ){
-      setDataShown(dataOrder.allOrderResp)
-      // setPagination(dataOrder.allOrderResp.pagination)
+    if( dataOrder.orderSearchResp ){
+      setDataShown(dataOrder.orderSearchResp)
+      // setPagination(dataOrder.orderSearchResp.pagination)
     }
-  },[dataOrder.allOrderResp])
+  },[dataOrder.orderSearchResp])
 
 	return (
     <>
@@ -156,7 +116,7 @@ const OrderManagementTable = ({
               <Form.Control 
                 className={styles.field_search}
                 type={"text"} 
-                placeholder={"Search"}
+                placeholder={"Search shipment number here .."}
                 onChange={(e)=>setSearchKeyword(e.target.value)}
                 value={searchKeyword}
               />

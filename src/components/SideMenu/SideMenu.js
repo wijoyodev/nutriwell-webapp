@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Container } from 'react-bootstrap'
-import { FaHome, FaTools, FaChartBar } from 'react-icons/fa'
+import { FaTools, FaChartBar } from 'react-icons/fa'
 import { FaMoneyBills } from 'react-icons/fa6'
-import { RiShipFill, RiAccountCircleFill } from 'react-icons/ri'
 import { IoDocumentTextOutline } from 'react-icons/io5'
-import { GrFolder  } from 'react-icons/gr'
-import { CiImageOn } from 'react-icons/ci'
-import { BsFillTagFill } from 'react-icons/bs'
 import { MdPeople } from 'react-icons/md'
 import { CgProfile } from 'react-icons/cg'
 import {  Link } from 'react-router-dom';
@@ -51,37 +47,6 @@ const SideMenu = () => {
     type:"menu",
     link:"./adminManagement"
   }
-  // ,{
-  //   title: "Supplier Banner",
-  //   icon: <CiImageOn/>,
-  //   isActive: false,
-  //   type:"menu",
-  //   link:"../supplierBanner"
-  // },{
-  //   title: "Contractor Banner",
-  //   icon: <BsFillTagFill/>,
-  //   isActive: false,
-  //   type:"menu",
-  //   link:"../contractorBanner"
-  // },{
-  //   title: "Contact Information",
-  //   icon: <RiAccountCircleFill/>,
-  //   isActive: false,
-  //   type:"menu",
-  //   link:"./contactInformation"
-  // }
-  // ,{
-  //   title: "MASTER DATA",
-  //   icon: <FaTools/>,
-  //   type:"title",
-  // }
-  // ,{
-  //   title: "FAQ",
-  //   icon: <RiErrorWarningFill/>,
-  //   isActive: false,
-  //   type:"menu",
-  //   link:"./faq"
-  // }
   ] 
   
   const menuAdminPacking = [{
@@ -89,8 +54,7 @@ const SideMenu = () => {
     icon: <IoDocumentTextOutline/>,
     type:"menu",
     link:"../orderManagement"
-  }
-  ]
+  }]
   
   const selectMenu = (index) => {
     localStorage.setItem("activeMenu", index)
@@ -111,17 +75,12 @@ const SideMenu = () => {
 
   },[])
 
-  // useEffect(()=>{
-  //   selectMenu(0)
-  // },[menuList])
-
-
 	return (
     <Container className={styles.container}>
       { menuList.length > 0 && <>
         <Row>
           <Col className={styles.logo}>
-            <a href="/dashboard">
+            <a href="/orderManagement">
               <img height={"238px"} width={"238px"} src={"/images/main.png"}/>
             </a>
           </Col>

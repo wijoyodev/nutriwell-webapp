@@ -5,7 +5,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
 import { setCreateAdmin } from '../store/actions/adminAction'
-import { setActiveDeactive } from '../store/actions/loginRegisterAction'
 
 const AddAdminPage = ({ dispatch, dataAdmin }) => {
   const { disbursementId } = useParams()
@@ -19,7 +18,6 @@ const AddAdminPage = ({ dispatch, dataAdmin }) => {
   const [isVerified, setIsVerified] = useState(true);
   // const [isVerified, setIsVerified] = useState(null);
   
-  const [allShipyard, setAllShipyard] = useState(null);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -49,13 +47,6 @@ const AddAdminPage = ({ dispatch, dataAdmin }) => {
       setIsLoading(false)
     }
   },[dataAdmin.createAdminResp])
-
-  useEffect(()=>{
-    if( dataAdmin.allShipyardByShipyardIdResp ){
-      setAllShipyard(dataAdmin.allShipyardByShipyardIdResp)
-      setIsLoading(false)
-    }
-  },[dataAdmin.allShipyardByShipyardIdResp])
 
   useEffect(()=>{
   },[])
@@ -123,7 +114,6 @@ const AddAdminPage = ({ dispatch, dataAdmin }) => {
         pageName={"Tambah Admin"}
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
-        allShipyard={allShipyard}
         pageFor={"detail"}
         isVerified={isVerified}
         email={email}

@@ -14,7 +14,7 @@ const SalesReportPage = () => {
     <div className="container_right_form">
       <SalesReportTable 
         pageName={"Sales Report"}
-        linkAddNew={"../newShipyardOwner"}
+        linkAddNew={""}
       />
     </div>
   );
