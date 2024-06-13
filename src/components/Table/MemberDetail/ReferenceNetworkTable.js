@@ -11,9 +11,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const ReferenceNetworkTable = ({
   pageName,
-  linkAddNew,
-  dispatch, 
-  dataShipyard,
   memberNetwork,
 }) => {
 
@@ -118,7 +115,7 @@ const ReferenceNetworkTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 
