@@ -8,18 +8,19 @@ import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllShipyard, setSearchShipyardOwner } from '../../store/actions/shipyardAction'
+import { setDisbursementList } from '../../store/actions/memberAction'
 
 const DisbursementTable = ({
   pageName,
   linkAddNew,
   dispatch, 
-  dataShipyard,
+  dataMember,
 }) => {
 
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
   const [activePage, setActivePage] = useState(1)
+  const [status, setStatus] = useState(0);
   const [data, setData] = useState([])
   const [pagination, setPagination] = useState({})
   const [searchKeyword, setSearchKeyword] = useState(null)
@@ -28,21 +29,30 @@ const DisbursementTable = ({
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    if( status && status !== "Select Status" ){
+      params['status'] = status
+    }
+    if( startDate && endDate ){
+      params['start'] = Math.floor(new Date(startDate).getTime() / 1000)
+      params['end'] = Math.floor(new Date(endDate).getTime() / 1000)
+    }
+    setDisbursementList(dispatch, 0, params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
-   
+    e.preventDefault()
+    let params = {search: ""}
+    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    setDisbursementList(dispatch, 0, params)
+    setDateRange([null, null])
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    setDisbursementList(dispatch, (pageNumber-1)*10)
   }
 
   const setDataShown = (datas) => {
@@ -50,66 +60,26 @@ const DisbursementTable = ({
     for (let idx in datas) {
       listData.push({
         'ID': datas[idx].id,
-        'Tanggal Request': new Date(datas[idx].requestDate).toLocaleString(),
-        'Tanggal Disbursement': new Date(datas[idx].disbursementDate).toLocaleString(),
-        'Nama': datas[idx].name,
-        'Jumlah Ditarik': datas[idx].totalPayment,
-        'STATUS': datas[idx].status,
+        'Tanggal Request': new Date(datas[idx].created_at).toLocaleString(),
+        'Tanggal Disbursement': new Date(datas[idx].success_disbursement_date).toLocaleString(),
+        'Nama': datas[idx].full_name,
+        'HIDDEN user_id': datas[idx].user_id,
+        'Jumlah Ditarik': datas[idx].disbursement_value,
+        'STATUS': datas[idx].status_disbursement,
       })
     }
     setData(listData)
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "DI0100",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "PT Sukro",
-      totalPayment: 98000,
-      status: "Berhasil"
-    },{
-      id: "DI0101",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "Alima Putra",
-      totalPayment: 122000,
-      status: "Pending"
-    },{
-      id: "DI0102",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "Yuloha Sukima",
-      totalPayment: 10000,
-      status: "Berhasil"
-    },{
-      id: "DI0103",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "Maratus K",
-      totalPayment: 10000,
-      status: "Pending"
-    },{
-      id: "DI0104",
-      requestDate: 1709735589,
-      disbursementDate: 1709735589,
-      name: "Saikoji",
-      totalPayment: 10000,
-      status: "Berhasil"
-    }])
-    // FOR SLICING DATA ONLY 
-
+    setDisbursementList(dispatch, 0)
 	},[])
 
   useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
+    if( dataMember.allDisbursementResp ){
+      setDataShown(dataMember.allDisbursementResp.data)
     }
-  },[dataShipyard.allShipyardResp])
+  },[dataMember.allDisbursementResp])
 
 	return (
     <>
@@ -144,10 +114,12 @@ const DisbursementTable = ({
           </Col>
           <Col xs="3">
             <Form.Label htmlFor="basic-url">Filter by Status</Form.Label>
-            <Form.Select aria-label="Choose Status" className={styles.field_form} >
+            <Form.Select aria-label="Choose Status" className={styles.field_form} 
+              onChange={ (e)=> setStatus(e.target.value)}
+            >
               <option>{"Select Status"}</option>
               <option>{"Pending"}</option>
-              <option>{"Berhasil"}</option>
+              <option>{"Complete"}</option>
             </Form.Select>
           </Col>
           <Col xs="3">
@@ -159,6 +131,7 @@ const DisbursementTable = ({
               endDate={endDate}
               className={styles.date_picker}
               onChange={(update) => {
+                console.log("update date", update)
                 setDateRange(update);
               }}
               isClearable={true}
@@ -190,7 +163,7 @@ const DisbursementTable = ({
             <br/>
             <br/>
             <p>
-              Curently no Sales Report data..
+              Curently no Disbursement data..
             </p>
           </>
         }
@@ -201,7 +174,7 @@ const DisbursementTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 

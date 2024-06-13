@@ -8,18 +8,18 @@ import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllShipyard, setSearchShipyardOwner } from '../../store/actions/shipyardAction'
+import { setAllMember } from '../../store/actions/memberAction'
 
 const MemberTable = ({
   pageName,
   linkAddNew,
   dispatch, 
-  dataShipyard,
+  dataMember,
 }) => {
 
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
-  const [activePage, setActivePage] = useState(1)
+  const [activePage, setActivePage] = useState(0)
   const [data, setData] = useState([])
   const [pagination, setPagination] = useState({})
   const [searchKeyword, setSearchKeyword] = useState(null)
@@ -28,21 +28,25 @@ const MemberTable = ({
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    if( startDate && endDate ){
+      params['start'] = Math.floor(new Date(startDate).getTime() / 1000)
+      params['end'] = Math.floor(new Date(endDate).getTime() / 1000)
+    }
+    setAllMember(dispatch, 0 ,params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    setAllMember(dispatch, 0, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    setAllMember(dispatch, (pageNumber-1)*10)
   }
 
   const setDataShown = (datas) => {
@@ -50,60 +54,31 @@ const MemberTable = ({
     for (let idx in datas) {
       listData.push({
         'ID': datas[idx].id,
-        'Nama': datas[idx].name,
-        'Domisili': datas[idx].domisili,
-        'Jumlah Downline': datas[idx].totalDownline,
-        'Total Komisi': datas[idx].totalComission,
+        'Nama': datas[idx].full_name,
+        'Domisili': 'datas[idx].address_detail.city',
+        'Jumlah Downline': datas[idx].total_downlines,
+        'Total Komisi': "123",
+        // 'Total Komisi': datas[idx].total_profit,
       })
     }
     setData(listData)
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "DI0100",
-      name: "PT Sukro",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "15000000"
-    },{
-      id: "DI0101",
-      name: "Alima Putra",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "2000000"
-    },{
-      id: "DI0102",
-      name: "Yuloha Sukima",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "15000000"
-    },{
-      id: "DI0103",
-      name: "Maratus K",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "500000"
-    },{
-      id: "DI0104",
-      name: "Saikoji",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "150000000"
-    }])
-    // FOR SLICING DATA ONLY 
-
+    setAllMember(dispatch, 0)
 	},[])
 
   useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
+    if( dataMember.allMemberResp ){
+      console.log(dataMember.allMemberResp, "<<dataMember.allMemberResp")
+      setDataShown(dataMember.allMemberResp.data)
+      setPagination({
+        offset: dataMember.allMemberResp.offset, 
+        limit: dataMember.allMemberResp.limit, 
+        total: dataMember.allMemberResp.total, 
+      })
     }
-  },[dataShipyard.allShipyardResp])
+  },[dataMember.allMemberResp])
 
 	return (
     <>
@@ -139,15 +114,8 @@ const MemberTable = ({
             </InputGroup >
           </Col>
           <Col xs="3">
-            <Form.Label htmlFor="basic-url">Filter by Status</Form.Label>
-            <Form.Select aria-label="Choose Status" className={styles.field_form} >
-              <option>{"Select Status"}</option>
-              <option>{"Pending"}</option>
-              <option>{"Berhasil"}</option>
-            </Form.Select>
-          </Col>
-          <Col xs="3">
             <Form.Label htmlFor="basic-url">Range Date</Form.Label>
+            <br/>
             <DatePicker
               selectsRange={true}
               placeholderText="Choose Range Date"
@@ -186,7 +154,7 @@ const MemberTable = ({
             <br/>
             <br/>
             <p>
-              Curently no Sales Report data..
+              Curently no Member data..
             </p>
           </>
         }
@@ -197,7 +165,7 @@ const MemberTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member,
   };
 };
 

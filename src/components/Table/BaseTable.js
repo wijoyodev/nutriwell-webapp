@@ -14,7 +14,37 @@ const BaseTable = ({
   section,
   activePage,
   handlePageChange,
+  memberId,
 }) => {
+
+  console.log("MASUK BASE TABLE", data)
+
+  const printSection = (index, data, title) => {
+    console.log("masuk printsection", index, data, title)
+    if( title === "STATUS" ){
+      return (
+        <td key={index}>
+          { printStatusLabel(data) }
+        </td>
+      )
+    }else{
+      return (
+        <td key={index}>
+          { printData(data, title) }
+        </td>
+      )
+    }
+  }
+
+  // const printRoleLabel = (role) => {
+  //   if( role === 1 ){
+  //     return <p> Super Admin </p>
+  //   }else if( role === 2 ){
+  //     return <p> Manager </p>
+  //   }else if( role === 3 ){
+  //     return <p> Admin Packing </p>
+  //   }
+  // }
 
   const printStatusLabel = (status) => {
     if( section === "orderManagement" ){
@@ -32,15 +62,17 @@ const BaseTable = ({
         return <p className={`${styles.statusDone} ${styles.buttonStatus}`}> Selesai </p>
       }
     }else if( section === "disbursement" ){
-      if( status === "Berhasil" ){
+      if( status === "COMPLETED" ){
         return <p className={`${styles.statusDone} ${styles.buttonStatus}`}> Berhasil </p>
-      } else if( status === "Pending" ){
+      } else if( status === "Pending"  || status === "PENDING" ){
         return <p className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </p>
+      } else if( status === "FAILED"){
+        return <p className={`${styles.statusCancelled} ${styles.buttonStatus}`}> Gagal </p>
       } 
     }else if( section === "adminManagement" ){
-      if( status === "Active" ){
+      if( status === 1 ){
         return <p className={`${styles.statusDone} ${styles.buttonStatus}`}> Active </p>
-      } else if( status === "Inactive" ){
+      } else if( status === 2 ){
         return <p className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Inactive </p>
       }
     }
@@ -48,17 +80,30 @@ const BaseTable = ({
 
   const printDate = (unix) => {
     const date = new Date(unix);
+    console.log(date, unix, "<<<")
     const formatter = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
     return formatter.format(date);
   }
 
-  const printData = (data, item) => {
-    if( item == "Total Komisi" ){
+  const printData = (data, title) => {
+    if( title == "Total Komisi" || title == "Net Income" ){
       return <p className={styles.data_row}> {"Rp. "  + data} </p>
-    }else if( item == "Tanggal" ){
+    }else if( title == "Tanggal" ){
+      console.log("printData", data,title, data[title])
       return <p className={styles.data_row}> {printDate(data)}</p>
     }else{
       return <p className={styles.data_row}> {data} </p>
+      // return <p className={styles.data_row}> {data[title]} </p>
+    }
+  }
+
+  const linkToDetail = (section, link, id, memberId, disbursementId) => {
+    if( section === "disbursementMember" ){
+      return link + memberId + `/${id}` 
+    }else if( section === "disbursement" ){
+      return link + disbursementId + `/${id}` 
+    }else{
+      return link + id
     }
   }
 
@@ -66,15 +111,18 @@ const BaseTable = ({
 	},[])
 
 	return (
+    data && 
     <>
       <Row>
         <Table className={styles.table}>
           <thead>
             <tr className={styles.table_head}>
               { Object.keys(data[0]).map( (item,index) => (
-                <th key={index}>
-                  <p className={styles.th_text}> {item} </p>
-                </th>
+                !item.includes("HIDDEN") && (
+                  <th key={index}>
+                    <p className={styles.th_text}> {item} </p>
+                  </th>
+                )
               ))}
               {linkDetail && 
                 <th>
@@ -84,51 +132,44 @@ const BaseTable = ({
             </tr>
           </thead>
           <tbody>
-          { data.map((data, index) => (
+          { data.map((oneData, index) => (
             <tr key={index}>
-              { Object.keys(data).map( (item,index) => (
-                section === "orderManagement" || section === "adminManagement" || section === "salesReport" || section === "disbursement" ? 
-                  <>
-                    {item === "STATUS" ? 
-                      <td key={index}>
-                        { printStatusLabel(data['STATUS']) }
-                        {/* {data['STATUS'] ?
-                          <p className={styles.active}> Selesai </p>
+            {console.log("oneData>> ", oneData)}
+              { Object.keys(oneData).map( (item,index) => (
+                !item.includes("HIDDEN") && (
+                  section === "disbursementMember" || section === "RewardTable" ||
+                  section === "orderManagement" || section === "adminManagement" || 
+                  section === "salesReport" || section === "disbursement" || 
+                  section === "referenceNetwork" ? 
+                    <>
+                      { printSection(index, oneData[item], item) }
+                    </>
+                    :
+                    <>
+                      {item === "STATUS" ? 
+                        <td key={index}>
+                          {oneData['STATUS'] ?
+                            <p className={styles.verif}> <RiCheckLine/> Verified </p>
+                          :
+                            <p className={styles.notVerif}> Not Verified </p>
+                          }
+                        </td>
                         :
-                          <p className={styles.inactive}> Pending </p>
-                        } */}
-                      </td>
-                      :
-                      <td key={index}>
-                        { printData(data[item], item) }
-                      </td>
-                    }
-                  </>
-                  :
-                  <>
-                    {item === "STATUS" ? 
-                      <td key={index}>
-                        {data['STATUS'] ?
-                          <p className={styles.verif}> <RiCheckLine/> Verified </p>
-                        :
-                          <p className={styles.notVerif}> Not Verified </p>
-                        }
-                      </td>
-                      :
-                      <td key={index}>
-                        { printData(data[item], item) }
-                      </td>
-                    }
-                  </>
+                        <td key={index}>
+                          { printData(oneData, item) }
+                        </td>
+                      }
+                    </>
+                  )
                 ))}
-              { linkDetail &&
-                <td>
-                  <Link to={linkDetail + (data["ID"] || data["ADMIN ID"])} className={styles.no_underline}>
-                    <p className={styles.detail}><BiSearchAlt/></p>
-                  </Link>
-                </td>
-              }
-            </tr>
+                { linkDetail &&
+                  <td>
+                    <Link to={linkToDetail(section, linkDetail, oneData["ID"], memberId, oneData['HIDDEN user_id'])} className={styles.no_underline}>
+                      <p className={styles.detail}><BiSearchAlt/></p>
+                    </Link>
+                  </td>
+                }
+              </tr>
           ))}
           </tbody>
         </Table>
@@ -139,7 +180,7 @@ const BaseTable = ({
             {...bootstrap5PaginationPreset}
             className={"pagination text-left"}
             current={activePage}
-            total={pagination.pageCount}
+            total={Math.ceil(pagination.total/pagination.limit)}
             onPageChange={(e)=>handlePageChange(e)}
           />
         </Col>
@@ -153,7 +194,7 @@ const BaseTable = ({
         </Col> */}
         <Col xs={{span: "2", offset: "4"}} className={styles.page_data}>
           <p>
-            {`Total: ${pagination.totalCount} data`}
+            {`Total: ${pagination.total} data`}
           </p>
         </Col>
       </Row>

@@ -4,11 +4,10 @@ import MainFormMember from '../components/MainFormMember/MainFormMember'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
-import { setUploadFile, resetUploadFile, setDetailShipyard, resetDetailShipyard, setAllShipyardByShipyardId, setUpdateDetailShipyard } from '../store/actions/shipyardAction'
-import { setActiveDeactive } from '../store/actions/loginRegisterAction'
+import { setDetailMember } from '../store/actions/memberAction'
 
-const MemberDetailPage = ({ dispatch, dataShipyard }) => {
-  const { disbursementId } = useParams()
+const MemberDetailPage = ({ dispatch, dataMember }) => {
+  const { memberId } = useParams()
 
   // const [isLoading, setIsLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,12 +17,20 @@ const MemberDetailPage = ({ dispatch, dataShipyard }) => {
   const [isVerified, setIsVerified] = useState(true);
   // const [isVerified, setIsVerified] = useState(null);
   
-  const [allShipyard, setAllShipyard] = useState(null);
+  const [oneMember, setOneMember] = useState(null);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [accountBank, setAccountBank] = useState("");
+  const [accountBankName, setAccountBankName] = useState("");
+  const [accountBankNumber, setAccountBankNumber] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [dob, setDOB] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [gender, setGender] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [status, setStatus] = useState("");
-  const navigate = useNavigate()
+  const [role, setRole] = useState("");
 
   const doUpdate = (e) => {
     e.preventDefault()
@@ -32,11 +39,7 @@ const MemberDetailPage = ({ dispatch, dataShipyard }) => {
       email,
       status,
     }
-    setUpdateDetailShipyard(dispatch, dataUpdate, id)
-  }
-
-  const triggerUpload = (e, section) => {
-    setUploadFile(dispatch, e.target.files[0], section)
+    // setUpdateDetailShipyard(dispatch, dataUpdate, id)
   }
 
   const packageDetail = () => {
@@ -95,33 +98,15 @@ const MemberDetailPage = ({ dispatch, dataShipyard }) => {
   }
 
   useEffect(()=>{
-    if( dataShipyard.detailShipyardResp ){
-      let data = dataShipyard.detailShipyardResp
-      setId(data.id)
-      setName(data.name)
-      setEmail(data.email)
-      setStatus(data.status)
-    }
-  },[dataShipyard.detailShipyardResp])
-
-  useEffect(()=>{
-    if( dataShipyard.allShipyardByShipyardIdResp ){
-      setAllShipyard(dataShipyard.allShipyardByShipyardIdResp)
+    if( dataMember.detailMemberResp ){
+      let data = dataMember.detailMemberResp
+      setOneMember(data)
       setIsLoading(false)
     }
-  },[dataShipyard.allShipyardByShipyardIdResp])
+  },[dataMember.detailMemberResp])
 
   useEffect(()=>{
-    setDetailShipyard(dispatch, disbursementId)
-    setAllShipyardByShipyardId(dispatch, disbursementId)
-
-    // FOR SLICING DATA ONLY 
-    setId("ODO00001")
-    setName("Yanti Sumartini")
-    setEmail("yanti@sumartini@yahooo.com")
-    setStatus("Berhasil")
-    // FOR SLICING DATA ONLY
-
+    setDetailMember(dispatch, memberId)
   },[])
 
   const dataForm = [
@@ -156,13 +141,13 @@ const MemberDetailPage = ({ dispatch, dataShipyard }) => {
     }
   ]
   return (    
-    isLoading === false && 
+    oneMember && 
     <div className="container_right_form">
       <MainFormMember
         pageName={"Detail Member"}
         // dataForm={dataForm}
         linkAccReview={"../accountReview"}
-        allShipyard={allShipyard}
+        dataOneMember={oneMember}
         status={status}
         orderId={id}
         pageFor={"detail"}
@@ -177,7 +162,7 @@ const MemberDetailPage = ({ dispatch, dataShipyard }) => {
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard,
+    dataMember: state.member,
   };
 };
 

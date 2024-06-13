@@ -2,29 +2,21 @@ import React, { useEffect, useState } from "react";
 // import { useMediaQuery } from 'react-responsive'
 import MainForm from '../components/MainForm/MainForm'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 import { connect } from "react-redux";
-import { setUploadFile, resetUploadFile, setDetailShipyard, resetDetailShipyard, setAllShipyardByShipyardId, setUpdateDetailShipyard } from '../store/actions/shipyardAction'
-import { setActiveDeactive } from '../store/actions/loginRegisterAction'
+import { setCreateMember } from '../store/actions/memberAction'
 
-const AddMemberPage = ({ dispatch, dataShipyard }) => {
-  const { disbursementId } = useParams()
-
-  // const [isLoading, setIsLoading] = useState(true);
+const AddMemberPage = ({ dispatch, dataMember }) => {
   const [isLoading, setIsLoading] = useState(false);
-
-  const [transactionTotal, setTrasactionTotal] = useState(null);
-
   const [isVerified, setIsVerified] = useState(true);
-  // const [isVerified, setIsVerified] = useState(null);
-  
-  const [allShipyard, setAllShipyard] = useState(null);
-  const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
-  const [upline, setUpline] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [phoneNumberCountry, setPhoneNumberCountry] = useState("ID");
+  const [phone, setPhone] = useState("ID");
   const [status, setStatus] = useState("");
   const [images, setImages] = useState("");
   const [dob, setDOB] = useState("");
@@ -34,40 +26,30 @@ const AddMemberPage = ({ dispatch, dataShipyard }) => {
     setImages(imageList);
   };
 
-  const doUpdate = (e) => {
+  const createMember = (e) => {
     e.preventDefault()
-    const dataUpdate = {
-      name,
-      email,
-      status,
-      gender,
-      upline,
-      phone,
+    if( password !== confirmPassword ){
+      Swal.fire({
+        title: 'Error',
+        text: "Password & Confirmation not equal",
+        icon: 'error',
+        confirmButtonColor: '#1b4460',
+      })
+    }else{
+      const dataMember = {
+        email,
+        name,
+        phone,
+        phoneNumberCountry,
+        gender,
+        dob,
+        code,
+        password,
+        status,
+      }
+      setCreateMember(dispatch, dataMember)
     }
-    setUpdateDetailShipyard(dispatch, dataUpdate, id)
   }
-
-  useEffect(()=>{
-    if( dataShipyard.detailShipyardResp ){
-      let data = dataShipyard.detailShipyardResp
-      setId(data.id)
-      setName(data.name)
-      setEmail(data.email)
-      setStatus(data.status)
-    }
-  },[dataShipyard.detailShipyardResp])
-
-  useEffect(()=>{
-    if( dataShipyard.allShipyardByShipyardIdResp ){
-      setAllShipyard(dataShipyard.allShipyardByShipyardIdResp)
-      setIsLoading(false)
-    }
-  },[dataShipyard.allShipyardByShipyardIdResp])
-
-  useEffect(()=>{
-    setDetailShipyard(dispatch, disbursementId)
-    setAllShipyardByShipyardId(dispatch, disbursementId)
-  },[])
 
   const dataForm = [
     {
@@ -80,15 +62,6 @@ const AddMemberPage = ({ dispatch, dataShipyard }) => {
       action: onChangeImage,
       required: true,
     },{
-      label: "Nama",
-      type: "text",
-      placeholder: "Input Name",
-      spaceMd: "6",
-      spaceXs: "6",
-      value: name,
-      action: setName,
-      required: true,
-    },{
       label: "Email",
       type: "text",
       placeholder: "Input Email",
@@ -96,6 +69,33 @@ const AddMemberPage = ({ dispatch, dataShipyard }) => {
       spaceXs: "6",
       value: email,
       action: setEmail,
+      required: true,
+    },{
+      label: "Password",
+      type: "password",
+      placeholder: "Input Password",
+      spaceMd: "6",
+      spaceXs: "6",
+      value: password,
+      action: setPassword,
+      required: true,
+    },{
+      label: "Confirm Password",
+      type: "text",
+      placeholder: "Input Confirm Password",
+      spaceMd: "6",
+      spaceXs: "6",
+      value: confirmPassword,
+      action: setConfirmPassword,
+      required: true,
+    },{
+      label: "Nama",
+      type: "text",
+      placeholder: "Input Name",
+      spaceMd: "6",
+      spaceXs: "6",
+      value: name,
+      action: setName,
       required: true,
     },{
       label: "No Telepon",
@@ -125,16 +125,16 @@ const AddMemberPage = ({ dispatch, dataShipyard }) => {
       value: gender,
       action: setGender,
       required: true,
-      dataDropdown:[{id: 1, name:"Laki-Laki"},{id: 2, name:"Perempuan"}]
+      dataDropdown:[{id: 1, name:"Male"},{id: 2, name:"Female"}]
     },{
-      label: "Upline",
-      type: "dropdown",
-      placeholder: "Pilih Upline",
+      label: "Referrer Code",
+      type: "text",
+      placeholder: "Input Referrer Code",
       spaceMd: "6",
       spaceXs: "6",
-      value: upline,
-      action: setUpline,
-      dataDropdown:[{id: 1, name:"Shawn Mendes - 123"},{id: 2, name:"Roy Martin - 22222"}]
+      value: code,
+      action: setCode,
+      required: false,
     },{
       type: "SPACE",
       spaceMd: "12",
@@ -159,12 +159,11 @@ const AddMemberPage = ({ dispatch, dataShipyard }) => {
         pageName={"Tambah Admin"}
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
-        allShipyard={allShipyard}
         status={status}
         pageFor={"detail"}
         isVerified={isVerified}
         email={email}
-        onSubmit={doUpdate}
+        onSubmit={createMember}
         whiteBackground={true}
       />
     </div>
@@ -173,7 +172,7 @@ const AddMemberPage = ({ dispatch, dataShipyard }) => {
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard,
+    dataMember: state.member,
   };
 };
 

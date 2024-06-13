@@ -1,20 +1,23 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-export const setAllAdmin = async (dispatch) => {
+export const setAllAdmin = async (dispatch, page, filter) => {
   const options = {
     method  : 'get',
     headers : {
       'Authorization': localStorage.getItem('token'),
+      "ngrok-skip-browser-warning": "true" ,
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",
       "Accept": "*/*",
     },
-    url     : `${process.env.REACT_APP_API_URL}/v1/admin`,
+    params  : filter ,
+    url     : `${process.env.REACT_APP_API_URL}/user?offset=${page}&userType=admin`,
   }
 
   axios(options).then(({data}) => {
-    dispatch({ type: 'SET_ALL_ADMIN', payload: data })
+    console.log("DATA ADMIN NIH" ,data.result)
+    dispatch({ type: 'SET_ALL_ADMIN', payload: data.result })
   }).catch((error)=>{
     Swal.fire({
       title: 'Error',
@@ -26,9 +29,11 @@ export const setAllAdmin = async (dispatch) => {
 }
 
 export const setCreateAdmin = async (dispatch, data) => {
-  axios.post(`${process.env.REACT_APP_API_URL}/v1/admin`, data, {
+  console.log("masuk set create admin", data)
+  axios.post(`${process.env.REACT_APP_API_URL}/register/admin`, data, {
     headers: {
       "Authorization": localStorage.getItem('token'),
+      "ngrok-skip-browser-warning": "true" ,
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",
       "Accept": "*/*",
@@ -57,17 +62,19 @@ export const setCreateAdmin = async (dispatch, data) => {
 }
 
 export const setUpdateDetaiAdmin = async (dispatch, data, id) => {
-  axios.put(`${process.env.REACT_APP_API_URL}/v1/admin/${id}`, data, {
+  console.log("setUpdateDetaiAdmin", data, id)
+  axios.patch(`${process.env.REACT_APP_API_URL}/user/${id}`, data, {
     headers: {
       "Authorization": localStorage.getItem('token'),
+      "ngrok-skip-browser-warning": "true" ,
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",
       "Accept": "*/*",
     },
   },{
   }).then(({data}) => {
-    dispatch({ type: 'SET_UPDATE_SHIPYARD_RESP', payload: data })
-    localStorage.setItem("shipyardId", id);
+    console.log("DATA set update detail admin", data)
+    dispatch({ type: 'SET_UPDATE_ADMIN_RESP', payload: data })
     Swal.fire({
       title: 'Success',
       text: "Admin Information Updated",
@@ -81,7 +88,7 @@ export const setUpdateDetaiAdmin = async (dispatch, data, id) => {
     console.log("response error", error)
     Swal.fire({
       title: 'Error',
-      text: error.response.data.message,
+      text: error,
       icon: 'error',
       confirmButtonColor: '#1b4460',
     })
@@ -89,21 +96,23 @@ export const setUpdateDetaiAdmin = async (dispatch, data, id) => {
 }
 
 export const setAdminById = async (dispatch, adminId) => {
-  axios.get(`${process.env.REACT_APP_API_URL}/v1/admin/${adminId}`,{
+  axios.get(`${process.env.REACT_APP_API_URL}/user/${adminId}`,{
     headers: {
       "Authorization": localStorage.getItem('token'),
+      "ngrok-skip-browser-warning": "true" ,
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",
       "Accept": "*/*",
     },
   },{
   }).then(({data}) => {
-    dispatch({ type: 'SET_ADMIN_DETAIL_RESP', payload: data })
+    console.log(data, "<<DATA set admin by ID")
+    dispatch({ type: 'SET_ADMIN_DETAIL_RESP', payload: data.result })
   }).catch((error)=>{
     console.log("response error", error)
     Swal.fire({
       title: 'Error',
-      text: error.response.data.message,
+      text: error,
       icon: 'error',
       confirmButtonColor: '#1b4460',
     })
@@ -136,8 +145,29 @@ export const setSearchAdmin = async (dispatch, params) => {
   })
 }
 
-export const resetVerifyUser = async (dispatch) => {
-  dispatch({ type: 'RESET_VERIFY_USER' })
+export const setAllMember = async (dispatch) => {
+  const options = {
+    method  : 'get',
+    headers : {
+      'Authorization': localStorage.getItem('token'),
+      "ngrok-skip-browser-warning": "true" ,
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+      "Accept": "*/*",
+    },
+    url     : `${process.env.REACT_APP_API_URL}/user?role=4`,
+  }
+
+  axios(options).then(({data}) => {
+    dispatch({ type: 'SET_ALL_MEMBER', payload: data.result })
+  }).catch((error)=>{
+    Swal.fire({
+      title: 'Error',
+      text: error.response.data.message,
+      icon: 'error',
+      confirmButtonColor: '#1b4460',
+    })
+  })
 }
 
 export const resetCreateAdmin = async (dispatch) => {

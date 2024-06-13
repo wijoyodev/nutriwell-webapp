@@ -6,39 +6,35 @@ import { Link } from "react-router-dom";
 import styles from '../BaseTable.module.scss';
 import BaseTable from "../BaseTable";
 import { connect } from "react-redux";
-import { setAllShipyard, setSearchShipyardOwner } from '../../../store/actions/shipyardAction'
 
 const OrderTable   = ({
   pageName,
-  linkAddNew,
-  dispatch, 
-  dataShipyard,
 }) => {
 
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
-  const [pagination, setPagination] = useState({})
+  const [pagination, setPagination] = useState(0)
   const [searchKeyword, setSearchKeyword] = useState(null)
 
   const doSearch = (e) => {
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    // setSearchShipyardOwner(dispatch, params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    // setSearchShipyardOwner(dispatch, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    // setAllShipyard(dispatch, pageNumber)
   }
 
   const setDataShown = (datas) => {
@@ -57,55 +53,7 @@ const OrderTable   = ({
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "ORO000",
-      orderDate: 1709735589,
-      name: "PT Sukro",
-      quantity: 9,
-      total: 999,
-      status: "Selesai"
-    },{
-      id: "ORO001",
-      orderDate: 1709735589,
-      name: "Alima Putra",
-      quantity: 1,
-      total: 102,
-      status: "Dikemas"
-    },{
-      id: "ORO002",
-      orderDate: 1709735589,
-      name: "Yuloha Sukima",
-      quantity: 1,
-      total: 102,
-      status: "Belum Bayar"
-    },{
-      id: "ORO003",
-      orderDate: 1709735589,
-      name: "Maratus K",
-      quantity: 1,
-      total: 102,
-      status: "Dikirim"
-    },{
-      id: "ORO004",
-      orderDate: 1709735589,
-      name: "Saikoji",
-      quantity: 1,
-      total: 1,
-      status: "Dibatalkan"
-    }])
-    // FOR SLICING DATA ONLY 
-
 	},[])
-
-  useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
-    }
-  },[dataShipyard.allShipyardResp])
 
 	return (
     <>
@@ -170,7 +118,7 @@ const OrderTable   = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 

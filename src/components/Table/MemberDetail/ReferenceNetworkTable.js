@@ -8,13 +8,10 @@ import BaseTable from "../BaseTable";
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllShipyard, setSearchShipyardOwner } from '../../../store/actions/shipyardAction'
 
 const ReferenceNetworkTable = ({
   pageName,
-  linkAddNew,
-  dispatch, 
-  dataShipyard,
+  memberNetwork,
 }) => {
 
   const [dateRange, setDateRange] = useState([null, null]);
@@ -28,82 +25,55 @@ const ReferenceNetworkTable = ({
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    // setSearchShipyardOwner(dispatch, params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    // setSearchShipyardOwner(dispatch, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    // setAllShipyard(dispatch, pageNumber)
   }
+
+  console.log("memberNetworkmemberNetwork", memberNetwork)
 
   const setDataShown = (datas) => {
     let listData = []
     for (let idx in datas) {
       listData.push({
-        'ID': datas[idx].id,
-        'Nama': datas[idx].name,
+        'Nama': datas[idx].full_name,
+        'Nomor Telepon': datas[idx].phone_number,
         'Email': datas[idx].email,
-        'Role': datas[idx].role,
-        'STATUS': datas[idx].status,
+        'Tanggal Join': datas[idx].join_date,
+        'Domisili': "datas[idx].city",
+        'Level': datas[idx].level,
       })
     }
     setData(listData)
+    console.log(listData, "<<<list data")
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "DI0100",
-      name: "PT Sukro",
-      email: "suryo.kencono@mail.com",
-      role: "Super Admin",
-      status: "Active"
-    },{
-      id: "DI0101",
-      name: "Alima Putra",
-      email: "AlimaPutra@gmail.com",
-      role: "Super Admin",
-      status: "Active"
-    },{
-      id: "DI0102",
-      name: "Yuloha Sukima",
-      email: "YulohaSukima@gmail.com",
-      role: "Admin Packing",
-      status: "Inactive"
-    },{
-      id: "DI0103",
-      name: "Maratus K",
-      email: "MaratusK@gmail.com",
-      role: "Super Admin",
-      status: "Inactive"
-    },{
-      id: "DI0104",
-      name: "Saikoji",
-      email: "Saikoji.putra@gmail.com",
-      role: "Manager",
-      status: "Inactive"
-    }])
-    // FOR SLICING DATA ONLY 
-
 	},[])
 
   useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
+    if( memberNetwork ){
+      setDataShown(memberNetwork.data)
+      setPagination({
+          offset: memberNetwork.offset, 
+          limit: memberNetwork.limit, 
+          total: memberNetwork.total, 
+        })
     }
-  },[dataShipyard.allShipyardResp])
+    console.log(memberNetwork,"<<memberNetwork")
+  },[memberNetwork])
 
 	return (
     <>
@@ -125,7 +95,7 @@ const ReferenceNetworkTable = ({
             data={data} 
             // linkDetail={"../adminDetail/"} 
             pagination={pagination}
-            section={"ReferenceNetworkTable"}
+            section={"referenceNetwork"}
             activePage={activePage}
             handlePageChange={handlePageChange}
           />
@@ -134,7 +104,7 @@ const ReferenceNetworkTable = ({
             <br/>
             <br/>
             <p>
-              Curently no Sales Report data..
+              Curently no Reference Network data..
             </p>
           </>
         }
@@ -145,7 +115,7 @@ const ReferenceNetworkTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member
   };
 };
 

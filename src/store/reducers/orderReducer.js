@@ -1,21 +1,38 @@
 const initialState = {
+  orderSearchResp:null,
+  orderDetailResp:null,
+  changeOrderStatusResp:null,
   vesselTypeResp:[],
-  onePortoResp:null,
   shipDeleteResp:{},
   oneReadyStockResp:null,
   portoCreateResp:null,
   readyStockCreateResp:null,
   portoUpdateResp:null,
   readyStockUpdateResp:null,
-  allShipOwnerResp:null,
   oneShipOwnerResp:null,
   updateShipResp:null,
   updateSiupal:null,
   createShipOwnerResp:null,
+  trackShipmentResp: null,
 }
   
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case 'SET_ORDER_SEARCH': {
+      console.log("SET_ORDER_SEARCH", action.payload)
+      return {...state, orderSearchResp: action.payload}
+    }
+    case 'SET_CHANGE_ORDER_STATUS': {
+      console.log("SET_CHANGE_ORDER_STATUS", action.payload)
+      return {...state, changeOrderStatusResp: action.payload}
+    }
+    case 'SET_TRACK_SHIPMENT': {
+      console.log("SET_TRACK_SHIPMENT", action.payload)
+      return {...state, trackShipmentResp: action.payload}
+    }
+    case 'SET_ORDER_DETAIL': {
+      return {...state, orderDetailResp: action.payload}
+    }
     case 'SET_VESSEL_TYPE': {
       return {...state, vesselTypeResp: action.payload.data.vesselTypes}
     }
@@ -25,17 +42,11 @@ const reducer = (state = initialState, action) => {
     case 'SET_CREATE_SHIP_OWNER': {
       return {...state, createShipOwnerResp: action.payload}
     }
-    case 'SET_ONE_PORTO': {
-      return {...state, onePortoResp: action.payload.data.ship}
-    }
     case 'SET_UPDATE_SHIP_OWNER': {
       return {...state, updateShipResp: action.payload}
     }
     case 'SET_PORTO_CREATE': {
       return {...state, portoCreateResp: action.payload}
-    }
-    case 'SET_ALL_SHIP_OWNER': {
-      return {...state, allShipOwnerResp: action.payload.data}
     }
     case 'SET_ONE_SHIP_OWNER': {
       return {...state, oneShipOwnerResp: action.payload.data}

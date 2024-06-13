@@ -169,7 +169,7 @@ const FieldHandler = ({
           <Form.Control
             className={item.notEditable ? styles.field_form_disabled  : styles.field_form}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             onChange={(e)=>item.action(e.target.value)}
             value={item.value}
@@ -386,7 +386,7 @@ const FieldHandler = ({
           <Form.Control
             className={styles.field_form_disabled_upload}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             tabIndex={item.notEditable ? "-1" : "1"}
           />
@@ -412,14 +412,13 @@ const FieldHandler = ({
   } else if (item.type === "date"){
     return (
       item.availability && 
-        <Col md={item.spaceMd} xs={item.spaceXs} key={index}>
+        <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
           <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label> 
           <br/>
-          <DatePicker appearance="default" placeholder="Default" style={{ width: "100%"}} 
+          <DatePicker appearance="default" placeholder="Default" style={{ width: "100%", marginTop: "2%"}} 
           onChange={(e)=> {item.action(e[0], e[1])}}
           // value={[
-          //   new Date(item.availableFrom * 1000),
-          //   new Date(item.availableUntil * 1000)
+            // new Date(item.value * 1000)
           // ]}
           />
         </Col>

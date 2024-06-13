@@ -16,17 +16,6 @@ const FieldHandlerLogin = ({
 	const [showPassword, setShowPassword] = useState(false);
   const [value, setValue] = useState('');
   const navigate = useNavigate()
-  
-  const handleChange = (otp) =>{
-    setValue(otp)
-    
-    if (otp.length === 4 && otp === "1111"){
-      localStorage.setItem('username', "userTest");
-      navigate("/home/shipyards");
-    } else if (otp.length === 4 && otp != "1111") {
-       alert("1111 to login")
-     }
-  };
 	
   const handleShowPass = () => {
     let curr = showPassword
@@ -89,7 +78,7 @@ const FieldHandlerLogin = ({
           <Form.Control
             className={item.notEditable ? styles.field_form_disabled  : styles.field_form}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             onChange={(e)=>item.action(e.target.value)}
             aria-describedby="basic-addon1"
             value={item.value}

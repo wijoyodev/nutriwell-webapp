@@ -15,6 +15,8 @@ const BannerDetailPage = ({
   const [id, setId] = useState("");
   const [content, setContent] = useState(true);
   const [images, setImages] = useState([]);
+  const [imagez, setImagez] = useState([]);
+
   const navigate = useNavigate()
 
   const clicked = () => {
@@ -34,7 +36,7 @@ const BannerDetailPage = ({
     }).then((result) => {
       if (result.isConfirmed) {
         setDeleteBanner(dispatch, bannerId)
-        navigate('../supplierBanner')
+        navigate('../bannerManagement')
       }
     })
   }
@@ -44,14 +46,36 @@ const BannerDetailPage = ({
     setImages(imageList);
   };
 
+  const onChangeImagez = (e) => {
+    // data for submit
+    setImagez(e.target.files[0]);
+  };
+
   const doUpdateBanner = (e) => {
     e.preventDefault()
-    const data = {
-      title,
-      content,
-      imageUrl: images
+    let data = {}
+    if( images.length === 0 ){
+      Swal.fire({
+        title: 'Photo required',
+        text: "Need to add Photo",
+        icon: 'warning',
+        confirmButtonColor: '#1b4460',
+      })
+    }else{
+      if( images[0].file ){
+        data = {
+          title,
+          description: content,
+          imageUrl: images
+        }
+      }else{
+        data = {
+          title,
+          description: content,
+        }
+      }
+      setUpdateBanner(dispatch, bannerId, data)
     }
-    setUpdateBanner(dispatch, bannerId, data)
   }
 
   useEffect(()=>{
@@ -61,24 +85,26 @@ const BannerDetailPage = ({
   useEffect(()=>{
     if( dataBanner.bannerUpdateResp ){
       resetUpdateBanner(dispatch)
-      navigate('../supplierBanner')
+      navigate('../bannerManagement')
     }
   },[dataBanner.bannerUpdateResp])
 
-  // useEffect(()=>{
-  //   if( dataBanner.bannerDetailResp ){
-  //     setTitle(dataBanner.bannerDetailResp.title)
-  //     setLinkUrl(dataBanner.bannerDetailResp.linkUrl)
-  //     if( dataBanner.bannerDetailResp.imageUrl ){
-  //       const data = {
-  //         data_url: dataBanner.bannerDetailResp.imageUrl,
-  //       }
-  //       setImages([data])
-  //     }else{
-  //       setImages([])
-  //     }
-  //   }
-  // },[dataBanner.bannerDetailResp])
+  useEffect(()=>{
+    if( dataBanner.bannerDetailResp ){
+      console.log("masuk data banner", dataBanner)
+      setTitle(dataBanner.bannerDetailResp.title)
+      setId(dataBanner.bannerDetailResp.id)
+      setContent(dataBanner.bannerDetailResp.description)
+      if( dataBanner.bannerDetailResp.image_url ){
+        const data = {
+          data_url: dataBanner.bannerDetailResp.image_url,
+        }
+        setImages([data])
+      }else{
+        setImages([])
+      }
+    }
+  },[dataBanner.bannerDetailResp])
 
   const dataForm = [
     {
@@ -128,12 +154,13 @@ const BannerDetailPage = ({
       type: "button_submit",
       spaceMd: "3",
       spaceXs: "3",
+      action: doUpdateBanner,
     },{
       label: "Cancel",
       type: "buttonWhite",
       spaceMd: "3",
       spaceXs: "3",
-      link: '../supplierBanner'
+      link: '../bannerManagement'
     },{
       label: "Delete",
       type: "buttonDelete",
@@ -146,7 +173,7 @@ const BannerDetailPage = ({
   return (    
     <div className="container_right_form">
       <MainForm
-        pageName={"Supplier Banner Detail"}
+        pageName={"Banner Detail"}
         progress={progress}
         onClickFunc={clicked}
         dataForm={dataForm}

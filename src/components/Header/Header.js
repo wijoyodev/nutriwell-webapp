@@ -7,9 +7,9 @@ import { useMediaQuery } from 'react-responsive'
 import styles from './Header.module.scss'
 import Swal from 'sweetalert2'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { setLogoutResp } from '../../store/actions/loginRegisterAction'
+import { setLogoutResp, setRefreshToken } from '../../store/actions/loginRegisterAction'
 
-const Header = ({ dispatch, isLogin, needLogin}) => {
+const Header = ({ dispatch, isLogin, needLogin, dataLoginRegister}) => {
   const navigate = useNavigate()
   const location = useLocation();
   const [menuProfile, setMenuProfile] = useState(false)
@@ -71,26 +71,48 @@ const Header = ({ dispatch, isLogin, needLogin}) => {
     setIsLoading(false)
   }
 
-  const doLogout = () => {
-    Swal.fire({
-      title: 'Success',
-      text: "Logout success",
-      icon: 'success',
-      confirmButtonColor: '#1b4460',
-    })
-    localStorage.clear()
+  const doLogout = (e) => {
+    e.preventDefault();
+    console.log("MASUK LOGOUN")
+    // Swal.fire({
+    //   title: 'Success',
+    //   text: "Logout success",
+    //   icon: 'success',
+    //   confirmButtonColor: '#1b4460',
+    // })
     setLogoutResp(dispatch)
-    setTimeout(() => { 
-      navigate('/');
-    }, 1000)
+    // localStorage.clear()
+    // setTimeout(() => { 
+    //   navigate('/');
+    // }, 1000)
   }
 
 	useEffect(()=>{
     checkWebAuth(localStorage.getItem('web'))
     checkLocation(location.pathname)
-    // resetError(dispatch)
     // isTokenExpired()
 	},[location, isLogin])
+
+  useEffect(()=>{
+    if( dataLoginRegister.logoutResp ){
+      if( dataLoginRegister.logoutResp.success ){
+        localStorage.clear()
+        const myTimeout = setTimeout(reloadFunc, 2000);
+
+        function reloadFunc() {
+          window.location.reload();
+        }
+        myTimeout()
+      }
+    }
+  },[dataLoginRegister.logoutResp])
+
+	useEffect(()=>{
+    if(localStorage.getItem("token")){
+      // setRefreshToken(dispatch)
+    }
+    // isTokenExpired()
+	},[])
 
 	return (
     isLoading === false &&
@@ -132,31 +154,7 @@ const Header = ({ dispatch, isLogin, needLogin}) => {
                 { menuProfile && 
                   <Container className={styles.profile_container}>
                     <Row>
-                      <a className={styles.link} href="/myAccount">
-                        <Col xs={12} className={styles.profile_menu}>
-                          <p className={styles.profile_text_container}>
-                            <CgProfile className={styles.profile_text}/>
-                              {"My Account"}
-                          </p>
-                        </Col>
-                      </a> 
-                      <a className={styles.link} href="/privacyPolicy">
-                        <Col xs={12} className={styles.profile_menu}>
-                          <p className={styles.profile_text_container}>
-                            <CgFileDocument className={styles.profile_text}/>
-                              {"Privacy Policy"}
-                          </p>
-                        </Col>
-                      </a> 
-                      <a className={styles.link} href="/helpCenter">
-                        <Col xs={12} className={styles.profile_menu}>
-                          <p className={styles.profile_text_container}>
-                            <FaQuestion className={styles.profile_text}/>
-                              {"Help Center"}
-                          </p>
-                        </Col>
-                      </a> 
-                      <Col xs={12} className={styles.profile_menu} onClick={()=>doLogout()}>
+                      <Col xs={12} className={styles.profile_menu} onClick={(e)=>doLogout(e)}>
                         <a className={styles.link} href="/">
                           <p className={styles.profile_text_container_2}>
                             <CgProfile className={styles.profile_text}/>

@@ -3,6 +3,7 @@ import MainForm from '../components/MainForm/MainForm'
 import { connect } from "react-redux";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { setCreateBanner, resetCreateBanner } from '../store/actions/bannerAction'
+import Swal from 'sweetalert2';
 
 const NewBannerManagementPage = ({
   dispatch, 
@@ -12,6 +13,7 @@ const NewBannerManagementPage = ({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
+  const [imagez, setImagez] = useState([]);
   const navigate = useNavigate()
 
   useEffect(()=>{
@@ -20,7 +22,7 @@ const NewBannerManagementPage = ({
   useEffect(()=>{
     if( dataBanner.bannerCreatetResp ){
       resetCreateBanner(dispatch)
-      navigate('../supplierBanner')
+      navigate('../bannerManagement')
     }
   },[dataBanner.bannerCreatetResp])
 
@@ -34,14 +36,28 @@ const NewBannerManagementPage = ({
     setImages(imageList);
   };
 
+  const onChangeImagez = (e) => {
+    // data for submit
+    setImagez(e.target.files[0]);
+  };
+
   const doCreateBanner = (e) => {
     e.preventDefault()
-    const data = {
-      bannerType: "supplier",
-      title,
-      content,
-      imageUrl: images
-   }
+    let data = {}
+    if( images.length === 0 ){
+      Swal.fire({
+        title: 'Photo required',
+        text: "Need to add Photo",
+        icon: 'warning',
+        confirmButtonColor: '#1b4460',
+      })
+    }else{
+      const data = {
+        title,
+        description: content,
+        imageUrl: images
+      }
+    }
     setCreateBanner(dispatch, data)
   }
 
@@ -53,7 +69,9 @@ const NewBannerManagementPage = ({
       spaceXs: "12",
       maxImage: "1",
       images: images,
+      // images: imagez,
       action: onChangeImage,
+      // action: onChangeImagez,
     },{
       type: "SPACE",
       spaceMd: "6",
@@ -90,12 +108,13 @@ const NewBannerManagementPage = ({
       type: "button_submit",
       spaceMd: "3",
       spaceXs: "3",
+      action: doCreateBanner,
     },{
       label: "Cancel",
       type: "buttonWhite",
       spaceMd: "3",
       spaceXs: "3",
-      link: '../supplierBanner'
+      link: '../bannerManagement'
     }
   ]
 
