@@ -116,7 +116,7 @@ const AdminDetailPage = ({ dispatch, dataAdmin }) => {
       label: "ID",
       type: "text",
       notEditable: true,
-      placeholder: "Input Max Light Ship Weight (ton)",
+      placeholder: "Input Id",
       spaceMd: "4",
       spaceXs: "12",
       value: id,

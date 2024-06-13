@@ -1,9 +1,7 @@
 const initialState = {
   loginResp: null,
   logoutResp: {},
-  resetPassResp: {},
   activeDeactiveResp: null,
-  contactInfoResp:null,
   allAdminResp: null,
   logout: null,
 }
@@ -24,12 +22,6 @@ const reducer = (state = initialState, action) => {
     }
     case 'SET_LOGOUT': {
       return {...state, loginResp: {}}
-    }
-    case 'SET_RESET_PASSWORD':{
-      return state.resetPassResp
-    }
-    case 'SET_CONTACT_INFO':{
-      return {...state, contactInfoResp: action.payload.data.contactInformation}
     }
     default:
       return state
