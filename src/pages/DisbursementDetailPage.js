@@ -35,26 +35,24 @@ const DisbursementDetailPage = ({ dispatch, dataMember }) => {
 
   const setData = (data) => {
     let oneData = data.data[0];
-    console.log(oneData, "ONEDATA")
+    console.log(oneData, "ONEDATA", isDisbMemberDetail)
     setBankAccount({
       "account_bank" : oneData?.account_bank || "",
       "account_bank_number" : oneData?.account_bank_number || "",
       "account_bank_name" : oneData?.account_bank_name || "",
     })
     setStatus(oneData.status_disbursement)
-    setTotal(data.disburse_success.total_value)
+    setTotal(data.disburse_success?.total_value || data.disburse_pending?.total_value)
     setId(disbursementId)
     setName(oneData.full_name)
     setRequestDate(oneData.created_at)
     setSuccessDate(oneData.success_disbursement_date)
     setIsLoading(false)
 
-    if(isDisbMemberDetail){
-      setTrasactionTotal({
-        totalPrice: oneData.disbursement_value,
-        pph: oneData.total_tax,
-      })
-    }
+    setTrasactionTotal({
+      totalPrice: oneData.disbursement_value,
+      pph: oneData.total_tax,
+    })
   }
 
   useEffect(()=>{

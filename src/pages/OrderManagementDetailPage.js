@@ -4,7 +4,8 @@ import MainForm from '../components/MainForm/MainForm'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
-import { setDetailOrder, setChangeOrderStatus, setTrackShipment } from '../store/actions/orderAction'
+import dateFormat from "dateformat";
+import { setDetailOrder, setChangeOrderStatus, setTrackShipment, resetTrackShipment } from '../store/actions/orderAction'
 
 const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   const { orderId } = useParams()
@@ -36,14 +37,15 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   const [isOnShipping, setIsOnShipping] = useState(false);
   const [courierType, setCourierType] = useState("");
   const [courierPrice, setCourierPrice] = useState("");
-
+  const [shippingNo, setShippingNo] = useState("");
+  const [externalId, setExternalId] = useState("");
+  
   const [productDetails, setProductDetails] = useState("");
   const [transactionNumber, setTransactionNumber] = useState("");
   const [reason, setReason] = useState("");
   const [customerDetail, setCustomerDetail] = useState("");
   const [status, setStatus] = useState("");
   const [transactionDate, setTransactionDate] = useState("");
-  const [shippingNo, setShippingNo] = useState("");
   const [shippingDate, setShippingDate] = useState("");
 
   const navigate = useNavigate()
@@ -200,31 +202,61 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       }
     })
   }
+
+  const updatedTime = (date) =>{
+
+  }
+
+  const printTracking = (data) => {
+    let textHistory = ''
+    textHistory += `
+      <table class="table table-sm table-st">
+        <tr>
+          <td> Ekspedisi </td>
+          <td> ${data.company || ""} </td>
+        </tr>
+        <tr>
+          <td> Type Pengiriman </td>
+          <td> ${data.type || ""} </td>
+        </tr>
+        <tr>
+          <td> Nama Kurir </td>
+          <td> ${data.driver_name || ""} </td>
+        </tr>
+        <tr>
+          <td> No Resi </td>
+          <td> ${data.waybill_id || ""} </td>
+        </tr>
+        <tr>
+          <td> Status Terakhir </td>
+          <td> ${data.history[data.history.length-1].status|| ""} </td>
+        </tr>
+        <tr>
+          <td> Waktu Update Terakhir </td>
+          <td> ${dateFormat(data.history[data.history.length-1].updated_at, " dS mmmm, yyyy, h:MM:ss") || ""} </td>
+        </tr>
+        <tr>
+          <td> Notes </td>
+          <td> ${data.history[data.history.length-1].note} </td>
+        </tr>
+      </table>
+    `
+    return textHistory
+  }
   
   useEffect(()=>{ 
     if( dataOrder.trackShipmentResp ){
       console.log(dataOrder.trackShipmentResp, "<<di useeffect trackShipmentResp`")
       Swal.fire({
-        title: 'Shipment' + dataOrder.trackShipmentResp   ,
-        text: dataOrder.trackShipmentResp,
-        icon: 'success',
+        title: 'Lacak Pengiriman',
+        html: printTracking(dataOrder.trackShipmentResp),
+        // icon: 'success',
         confirmButtonColor: '#1b4460',
       })
+      resetTrackShipment(dispatch)
     }
   },[dataOrder.trackShipmentResp])
   
-  useEffect(()=>{ 
-    if( dataOrder.changeOrderStatusResp ){
-      console.log(dataOrder.changeOrderStatusResp, "<<di useeffect changeOrderStatusResp")
-      Swal.fire({
-        title: 'Sukses',
-        text: "Mengganti status",
-        icon: 'success',
-        confirmButtonColor: '#0975B6',
-      })
-    }
-  },[dataOrder.changeOrderStatusResp])
-
   useEffect(()=>{
     if( dataOrder.orderDetailResp ){
       console.log(dataOrder.orderDetailResp, "< dataOrder.orderDetailResp")
@@ -241,6 +273,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
         setShippingNo(data.shipment_number)
         setShippingDate(data.delivery_date)
         setIsOnShipping(true)
+        setExternalId(data.external_id)
       }
 
       if(data.status === 1 || data.status === 2 || data.status === 3){
@@ -332,6 +365,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
           courierType: courierType,
           detailInfo: customerDetail,
           shippingNo: shippingNo,
+          externalId: externalId,
           shippingDate: shippingDate,
         }
       ]

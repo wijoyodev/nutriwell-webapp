@@ -146,6 +146,13 @@ textarea{
   background-color: #f6f9fb !important;
 }
 
+.container_product{
+  border-radius: 8px;
+  background-color: white;
+  padding: 2% 3% 3% 3%;
+  margin: 0% 1%;
+}
+
 .ft-9{
   font-size: 9pt !important;
 }

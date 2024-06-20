@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
-import { AiOutlineCheck, AiOutlineWarning } from 'react-icons/ai'
-import { BiSearchAlt } from 'react-icons/bi'
+import React, { useState } from "react";
+import { Row, Col, Form, } from 'react-bootstrap'
 import styles from './MainForm.module.scss'
 import { connect } from "react-redux";
 import 'rsuite/dist/rsuite.min.css';
 import FieldHandler from './FieldHandler'
-import Swal from 'sweetalert2'
-import { Link } from "react-router-dom";
 
 const MainForm = ({
   pageName,
   onClickFunc,
-  dispatch, 
   dataForm,
   pageFor,
   trackShipment,
   status,
   orderId,
-  isVerified,
   onSubmit,
   whiteBackground,
 }) => {

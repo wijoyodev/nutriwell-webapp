@@ -68,8 +68,13 @@ const AdminTable = ({
 
   useEffect(()=>{
     if( dataAdmin.allAdminResp ){
-      console.log(dataAdmin.allAdminResp, "<<dataAdmin.allAdminResp")
-      setDataShown(dataAdmin.allAdminResp)
+      console.log(dataAdmin.allAdminResp.data, "<<dataAdmin.allAdminResp")
+      setDataShown(dataAdmin.allAdminResp.data)
+      setPagination({
+        offset: dataAdmin.allAdminResp.offset, 
+        limit: dataAdmin.allAdminResp.limit, 
+        total: dataAdmin.allAdminResp.total, 
+      })
     }
   },[dataAdmin.allAdminResp])
 

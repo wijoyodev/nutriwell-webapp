@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Row, Col, Form, InputGroup, Button, FormGroup } from 'react-bootstrap'
+import React, { useState } from "react";
+import { Row, Col, Form  } from 'react-bootstrap'
 import { useMediaQuery } from 'react-responsive'
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from './LoginRegister.module.scss'
-import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineLeft } from 'react-icons/ai';
 import FieldHandlerLogin from "./FieldHandlerLogin";
 
 const LoginRegister = ({
-  pageName,
-  linkForgotPass,
-  linkCreateAcc,
-  linkCreatePass,
   dataField,
   linkLogin,
   onSubmit,

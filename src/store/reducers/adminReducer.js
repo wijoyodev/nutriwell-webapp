@@ -9,7 +9,7 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_ALL_ADMIN': {
       console.log("MASUK SET ALL ADMNI", action)
-      return {...state, allAdminResp: action.payload.data}
+      return {...state, allAdminResp: action.payload}
     }
     case 'SET_CREATE_ADMIN': {
       return {...state, createAdminResp: action.payload.data}

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom'
 import { setProductDetail, setUpdateProduct } from '../store/actions/productAction'
+import { Container } from 'react-bootstrap';
 
 const ProductDetailPage = ({ dispatch, dataProduct }) => {
   const [name, setName] = useState("");
@@ -17,7 +18,7 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
   const doEditProductDetail = (e) => {
     e.preventDefault()
     let dataEdit = {}
-    if( images.length === 0 ){
+    if( images.length === 9 ){
       Swal.fire({
         title: 'Photo required',
         text: "Need to add Photo",
@@ -27,15 +28,19 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
     }else{
       if( images[0].file ){
         dataEdit = {
-          name,
-          desc,
-          images,
+          product_name: name,
+          description: desc,
+          imagesUrl: images,
+          price: pricing,
         }
+        console.log("if( images[0].file ){",  dataEdit)
       }else{
         dataEdit = {
-          name,
-          desc,
-        }
+          product_name: name,
+          description: desc,
+          price: pricing,
+          }
+        console.log("}else{", dataEdit)
       }
       setUpdateProduct(dispatch, dataEdit, id)
     }
@@ -43,7 +48,18 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
   
   const onChangeImage = (imageList, addUpdateIndex) => {
     setImages(imageList);
+    console.log(imageList, "<<<")
   };
+
+  const setImageShow = (images) => {
+    let result = []
+    for( let i = 0 ; i<images.length ; i++ ){
+      result.push({
+        "data_url": images[i]
+      })
+    }
+    setImages(result)
+  }
 
   useEffect(()=>{
     setProductDetail(dispatch)
@@ -56,6 +72,7 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
       setPricing(dataProduct.productDetailResp.price)
       setDesc(dataProduct.productDetailResp.description)
       setId(dataProduct.productDetailResp.id)
+      setImageShow(dataProduct.productDetailResp.product_images)
     }
   },[dataProduct.productDetailResp])
 
@@ -73,20 +90,25 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
 
   const dataForm = [
     {
-      label: "Gambar",
-      type: "uploadPhoto",
-      desc: "Anda dapat mengupload maksimal 8 gambar dengan min. size 1029x1029 px",
+      label: "Product Detail",
+      type: "Title",
       spaceMd: "6",
       spaceXs: "6",
-      maxImage: "1",
-      images: images,
-      action: onChangeImage,
-      multiplePhoto: true,
-      required: true,
     },{
       type: "SPACE",
       spaceMd: "6",
       spaceXs: "6",
+    },{
+      label: "Gambar",
+      type: "uploadPhoto",
+      desc: "Anda dapat mengupload maksimal 8 gambar dengan min. size 1029x1029 px",
+      spaceMd: "12",
+      spaceXs: "12",
+      maxImage: "8",
+      images: images,
+      action: onChangeImage,
+      multiplePhoto: true,
+      required: true,
     },{
       label: "Nama",
       type: "text",
@@ -114,10 +136,10 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
       spaceMd: "6",
       spaceXs: "6",
     },{
-      label: "Harga",
+      label: "Harga (Rp)",
       type: "text",
       value: pricing,
-      placeholder: "Input Harga",
+      placeholder: "Input Harga (Rp)",
       spaceMd: "6",
       spaceXs: "162",
       required: true,
@@ -138,12 +160,6 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
       action: doEditProductDetail,
       link: "../accountReview"
     },{
-      label: "Batal",
-      type: "button_white",
-      spaceMd: "3",
-      spaceXs: "3",
-      link: "../productDetail"
-    },{
       type: "SPACE",
       spaceMd: "6",
       spaceXs: "6",
@@ -152,12 +168,14 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
 
   return (    
     <div className="container_right_form">
-      <MainForm
-        pageName={"Product Detail"}
-        dataForm={dataForm}
-        linkAccReview={"../accountReview"}
-        onSubmit={doEditProductDetail}
-      />
+      <Container className={"container_product"}>
+        <MainForm
+          pageName={"Product Detail"}
+          dataForm={dataForm}
+          linkAccReview={"../accountReview"}
+          onSubmit={doEditProductDetail}
+        />
+      </Container>
     </div>
   );
 };

@@ -7,11 +7,13 @@ const initialState = {
   userDetailUpdateResp: null,
   createUserResp: null,
   createMemberResp: null,
+  updateMemberResp: null,
   rewardDetailResp: null,
   disbursementGeneralResp: null,
   disbursementDetailResp: null,
   allDisbursementResp: null,
   disbursementDetailMemberResp: null,
+  setAllLocationResp: null,
 }
   
 const reducer = (state = initialState, action) => {
@@ -20,8 +22,16 @@ const reducer = (state = initialState, action) => {
       return {...state, allMemberResp: action.payload}
     }
     case 'SET_CREATE_MEMBER': {
-      console.log("SET CREATE MEMBER", )
+      console.log("SET CREATE MEMBER", action.payload.data )
       return {...state, createMemberResp: action.payload.data}
+    }
+    case 'SET_UPDATE_MEMBER': {
+      console.log("SET_UPDATE_MEMBER", action.payload.data )
+      return {...state, updateMemberResp: action.payload.data}
+    }
+    case 'SET_ALL_LOCATION': {
+      console.log("SET_ALL_LOCATION", action.payload)
+      return {...state, setAllLocationResp: action.payload}
     }
     case 'SET_DETAIL_MEMBER': {
       return {...state, detailMemberResp: action.payload.data[0]}

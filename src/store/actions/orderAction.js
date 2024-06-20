@@ -16,7 +16,7 @@ export const setAllOrder = async (dispatch, page, paramFilter) => {
   }
 
   axios(options).then(({data}) => {
-    dispatch({ type: 'SET_ORDER_SEARCH', payload: data.result.data })
+    dispatch({ type: 'SET_ORDER_SEARCH', payload: data.result })
   }).catch((error)=>{
     Swal.fire({
       title: 'Error',
@@ -42,7 +42,7 @@ export const setTrackShipment = async (dispatch, shipNum) => {
 
   axios(options).then(({data}) => {
     console.log("setTrackshipment", data)
-    dispatch({ type: 'SET_TRACK_SHIPMENT', payload: data.result.data })
+    dispatch({ type: 'SET_TRACK_SHIPMENT', payload: data.result })
   }).catch((error)=>{
     Swal.fire({
       title: 'Error',
@@ -103,6 +103,12 @@ export const setChangeOrderStatus = async (dispatch, orderId, params) => {
   axios(options).then(({data}) => {
     console.log("SET CHANGE ORDER STATUS")
     dispatch({ type: 'SET_CHANGE_ORDER_STATUS', payload: data.result })
+    Swal.fire({
+      title: 'Sukses',
+      text: "Mengganti status",
+      icon: 'success',
+      confirmButtonColor: '#0975B6',
+    })
   }).catch((error)=>{
     console.log("response error", error)
     Swal.fire({
@@ -137,4 +143,8 @@ export const setDetailOrder = async (dispatch, id) => {
       confirmButtonColor: '#1b4460',
     })
   })
+}
+
+export const resetTrackShipment = async (dispatch) => {
+  dispatch({ type: 'RESET_TRACK_SHIPMENT'})
 }

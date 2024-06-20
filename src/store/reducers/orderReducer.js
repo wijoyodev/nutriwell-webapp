@@ -22,6 +22,9 @@ const reducer = (state = initialState, action) => {
     case 'SET_ORDER_DETAIL': {
       return {...state, orderDetailResp: action.payload}
     }
+    case 'RESET_TRACK_SHIPMENT': {
+      return {...state, trackShipmentResp: null}
+    }
     default:
       return state
   }

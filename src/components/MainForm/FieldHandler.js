@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
 import styles from './MainForm.module.scss'
 import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineSearch } from 'react-icons/ai';
@@ -14,7 +13,6 @@ import Select from 'react-select'
 const FieldHandler = ({
   item, 
   index,
-  onClickFunc,
   trackShipment,
 }) => {
   const uploadFile= useRef(null);
@@ -63,8 +61,6 @@ const FieldHandler = ({
           <Row>
             <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.isCurrency && "Rp. "}{item.value}</Form.Label>
           </Row>
-          {console.log("ITEM", item)}
-          {console.log("ITEM", item.value)}
           {item.bankInfo &&
             <Row>
               <Form.Label htmlFor="basic-url" className={styles.filed_label_3 + ' mb-0  pb-0'}>{item.valueAccBank}</Form.Label>
@@ -88,7 +84,7 @@ const FieldHandler = ({
               <Form.Label htmlFor="basic-url" className={styles.filed_label_info}>
                 {`No Resi ` + item.shippingNo} 
                 &nbsp;
-                <u className={styles.link} onClick={(e)=>trackShipment(e, item.shippingNo)}> Lacak </u>
+                <u className={styles.link} onClick={(e)=>trackShipment(e, item.externalId)}>Lacak </u>
                 <br/>
                 {`Terkirim ` + new Date(item.shippingDate).toLocaleString()}
               </Form.Label>
@@ -152,7 +148,6 @@ const FieldHandler = ({
                 <Col md={{ span:3, offset:3 }} xc={{ span:3, offset:3 }} className={"p-3"}>
                   {data}
                 </Col>
-                {console.log ("ITEM", item)}
                 { data === "Total yang dapat ditarik" &&
                   <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
                     {'Rp' + item?.transactionTotal?.totalPrice}
@@ -189,7 +184,6 @@ const FieldHandler = ({
                 <Col md={{ span:3, offset:6 }} xc={{ span:3, offset:6 }} className={"p-3"}>
                   {data}
                 </Col>
-                {console.log ("ITEM", item)}
                 { data === "Total yang dapat ditarik" &&
                   <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
                     {'Rp' + item?.transactionTotal?.totalPrice}
@@ -498,12 +492,9 @@ const FieldHandler = ({
         <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
           <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label> 
           <br/>
-          <DatePicker className={styles.field_form} appearance="default" placeholder="Default" style={{ width: "100%", marginTop: "5px"  }} 
-          onChange={(e)=> {item.action(e[0], e[1])}} 
-          // value={[
-          //   new Date(item.availableFrom * 1000),
-          //   new Date(item.availableUntil * 1000)
-          // ]}
+          <DatePicker oneTap calendarDefaultDate={new Date("12/12/1995")} className={styles.field_form} appearance="default" placeholder="Default" style={{ width: "100%", marginTop: "5px"  }} 
+          onChange={(e)=> item.action(e)}
+          value={new Date(item.value * 1000)}
           />
         </Col>
     )
@@ -524,7 +515,13 @@ const FieldHandler = ({
   } else if (item.type === "LABEL"){
     return (
       <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
-        <Form.Label htmlFor="basic-url" className={styles.field_title_3}>{item.label}</Form.Label> 
+        <Form.Label htmlFor="basic-url" className={styles.field_title_4}>{item.label}</Form.Label> 
+      </Col>
+    )
+  } else if (item.type === "Title"){
+    return (
+      <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
+        <Form.Label htmlFor="basic-url" className={styles.field_title_4}>{item.label}</Form.Label> 
       </Col>
     )
   } else if (item.type === "SPACE"){

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import LoginRegister from '../components/LoginRegister/LoginRegister'
 import { connect } from "react-redux";
 import { setLoginResp } from '../store/actions/loginRegisterAction'
@@ -7,14 +6,13 @@ import { setLoginResp } from '../store/actions/loginRegisterAction'
 const LoginPage = ({ dispatch, dataLoginRegister }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate()
   
   const doLogin = (e) => {
     e.preventDefault()
     let data = { user_account : email, password }
     setLoginResp(dispatch, data)
   }
-  // 
+
   const dataField=[
     {
       label: "Log In",

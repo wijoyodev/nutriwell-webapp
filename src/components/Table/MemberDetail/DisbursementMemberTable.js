@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
-import { BiSearchAlt } from 'react-icons/bi'
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styles from '../BaseTable.module.scss';
 import BaseTable from "../BaseTable";
 import { connect } from "react-redux";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const DisbursementMemberTable = ({
@@ -14,13 +12,10 @@ const DisbursementMemberTable = ({
   dataDisbursement,
 }) => {
 
-  const [dateRange, setDateRange] = useState([null, null]);
-  const { orderId, memberId } = useParams()
-  const [startDate, endDate] = dateRange;
+  const { memberId } = useParams()
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
   const [pagination, setPagination] = useState({})
-  const [searchKeyword, setSearchKeyword] = useState(null)
 
   const setDataShown = (datas) => {
     let listData = []

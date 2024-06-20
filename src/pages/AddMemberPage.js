@@ -10,45 +10,68 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isVerified, setIsVerified] = useState(true);
   const [name, setName] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState("male");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [code, setCode] = useState("");
   const [phoneNumberCountry, setPhoneNumberCountry] = useState("ID");
-  const [phone, setPhone] = useState("ID");
+  const [phone, setPhone] = useState("");
   const [status, setStatus] = useState("");
-  const [images, setImages] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [dob, setDOB] = useState("");
   const navigate = useNavigate()
   
   const onChangeImage = (imageList, addUpdateIndex) => {
-    setImages(imageList);
+    setAvatar(imageList);
   };
 
   const createMember = (e) => {
     e.preventDefault()
-    if( password !== confirmPassword ){
+    if( !avatar ){
       Swal.fire({
         title: 'Error',
-        text: "Password & Confirmation not equal",
+        text: 'Please set profile image',
+        icon: 'error',
+        confirmButtonColor: '#1b4460',
+      })
+    }else if( password.length !== 6 || !(/^\d+$/.test(password)) ){
+      Swal.fire({
+        title: 'Error',
+        text: 'Password should be exactly 6 digit number long',
+        icon: 'error',
+        confirmButtonColor: '#1b4460',
+      })
+    }else if( password !== confirmPassword ){
+      Swal.fire({
+        title: 'Error',
+        text: 'Password & Confirmation not equal',
         icon: 'error',
         confirmButtonColor: '#1b4460',
       })
     }else{
       const dataMember = {
+        avatar,
         email,
-        name,
-        phone,
-        phoneNumberCountry,
-        gender,
-        dob,
-        code,
-        password,
         status,
+        gender,
+        full_name: name,
+        phone_number_country: phoneNumberCountry,
+        phone_number: phone,
+        date_of_birth: dob,
+        referrer_code: code,
+        password,
+        confirm_password: confirmPassword,
       }
+      console.log(dataMember, "<DATA MEMBER")
       setCreateMember(dispatch, dataMember)
     }
+  }
+  
+  const handleSelect = (e, type) => {
+    console.log("masuk handleSelect", e)
+    const splitValue = e.target.value.split("||")
+    setGender(splitValue[1]) 
   }
 
   const dataForm = [
@@ -58,7 +81,7 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
       spaceMd: "12",
       spaceXs: "12",
       maxImage: "1",
-      images: images,
+      images: avatar,
       action: onChangeImage,
       required: true,
     },{
@@ -71,6 +94,15 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
       action: setEmail,
       required: true,
     },{
+      label: "Nama",
+      type: "text",
+      placeholder: "Input Name",
+      spaceMd: "6",
+      spaceXs: "6",
+      value: name,
+      action: setName,
+      required: true,
+    },{
       label: "Password",
       type: "password",
       placeholder: "Input Password",
@@ -81,21 +113,12 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
       required: true,
     },{
       label: "Confirm Password",
-      type: "text",
+      type: "password",
       placeholder: "Input Confirm Password",
       spaceMd: "6",
       spaceXs: "6",
       value: confirmPassword,
       action: setConfirmPassword,
-      required: true,
-    },{
-      label: "Nama",
-      type: "text",
-      placeholder: "Input Name",
-      spaceMd: "6",
-      spaceXs: "6",
-      value: name,
-      action: setName,
       required: true,
     },{
       label: "No Telepon",
@@ -123,11 +146,11 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
       spaceMd: "6",
       spaceXs: "6",
       value: gender,
-      action: setGender,
+      action: handleSelect,
       required: true,
-      dataDropdown:[{id: 1, name:"Male"},{id: 2, name:"Female"}]
+      dataDropdown:[{id: 1, name:"male"},{id: 2, name:"female"}]
     },{
-      label: "Referrer Code",
+      label: "Referrer Code (only valid code)",
       type: "text",
       placeholder: "Input Referrer Code",
       spaceMd: "6",
@@ -143,6 +166,7 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
       label: "Simpan",
       type: "button_submit",
       spaceMd: "3",
+      action: createMember,
       spaceXs: "3",
     },{
       label: "Batal",
@@ -152,11 +176,23 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
     }
   ]
 
+  useEffect(()=>{
+    if( dataMember.createMemberResp ){
+      console.log(dataMember.createMemberResp, "<<< dataMember.createMemberResp")
+      Swal.fire({
+        title: 'Success',
+        text: "Register Success",
+        icon: 'success',
+        confirmButtonColor: '#1b4460',
+      })
+    }
+  },[dataMember.createMemberResp])
+
   return (    
     isLoading === false && 
     <div className="container_right_form">
       <MainForm
-        pageName={"Tambah Admin"}
+        pageName={"Tambah Member"}
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
         status={status}

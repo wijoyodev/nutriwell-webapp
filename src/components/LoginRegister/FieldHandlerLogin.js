@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
+import { Col, Form, InputGroup, Button } from 'react-bootstrap'
 import { useMediaQuery } from 'react-responsive'
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from './LoginRegister.module.scss'
-import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineLeft } from 'react-icons/ai';
-import ImageUploading from "react-images-uploading";
-import { DateRangePicker } from 'rsuite';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import 'rsuite/dist/rsuite.min.css';
 
 const FieldHandlerLogin = ({
@@ -14,8 +12,6 @@ const FieldHandlerLogin = ({
 }) => {
 	const isWebMobile = useMediaQuery({ query: '(max-width: 600px)' })
 	const [showPassword, setShowPassword] = useState(false);
-  const [value, setValue] = useState('');
-  const navigate = useNavigate()
 	
   const handleShowPass = () => {
     let curr = showPassword

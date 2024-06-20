@@ -17,10 +17,8 @@ const BaseTable = ({
   memberId,
 }) => {
 
-  console.log("MASUK BASE TABLE", data)
 
   const printSection = (index, data, title) => {
-    console.log("masuk printsection", index, data, title)
     if( title === "STATUS" ){
       return (
         <td key={index}>
@@ -80,7 +78,6 @@ const BaseTable = ({
 
   const printDate = (unix) => {
     const date = new Date(unix);
-    console.log(date, unix, "<<<")
     const formatter = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
     return formatter.format(date);
   }
@@ -89,7 +86,6 @@ const BaseTable = ({
     if( title == "Total Komisi" || title == "Net Income" ){
       return <p className={styles.data_row}> {"Rp. "  + data} </p>
     }else if( title == "Tanggal" ){
-      console.log("printData", data,title, data[title])
       return <p className={styles.data_row}> {printDate(data)}</p>
     }else{
       return <p className={styles.data_row}> {data} </p>
@@ -134,7 +130,6 @@ const BaseTable = ({
           <tbody>
           { data.map((oneData, index) => (
             <tr key={index}>
-            {console.log("oneData>> ", oneData)}
               { Object.keys(oneData).map( (item,index) => (
                 !item.includes("HIDDEN") && (
                   section === "disbursementMember" || section === "RewardTable" ||

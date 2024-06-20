@@ -6,9 +6,8 @@ import { Link } from "react-router-dom";
 import styles from './BaseTable.module.scss';
 import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllMember } from '../../store/actions/memberAction'
+import { setAllMember,setAllLocation } from '../../store/actions/memberAction'
 
 const MemberTable = ({
   pageName,
@@ -18,11 +17,12 @@ const MemberTable = ({
 }) => {
 
   const [dateRange, setDateRange] = useState([null, null]);
-  const [startDate, endDate] = dateRange;
   const [activePage, setActivePage] = useState(0)
+  const [locations, setLocations] = useState([])
   const [data, setData] = useState([])
   const [pagination, setPagination] = useState({})
   const [searchKeyword, setSearchKeyword] = useState(null)
+  const [selectedLoc, setSelectedLoc] = useState(null)
 
   const doSearch = (e) => {
     e.preventDefault()
@@ -30,10 +30,10 @@ const MemberTable = ({
     if( searchKeyword ){
       params['search'] = searchKeyword
     }
-    if( startDate && endDate ){
-      params['start'] = Math.floor(new Date(startDate).getTime() / 1000)
-      params['end'] = Math.floor(new Date(endDate).getTime() / 1000)
+    if( selectedLoc && selectedLoc !== '0' ){
+      params['location_id'] = selectedLoc
     }
+    console.log(params, "<PARAMS", selectedLoc)
     setAllMember(dispatch, 0 ,params)
   }
 
@@ -55,17 +55,28 @@ const MemberTable = ({
       listData.push({
         'ID': datas[idx].id,
         'Nama': datas[idx].full_name,
-        'Domisili': 'datas[idx].address_detail.city',
+        'Domisili': datas[idx].address_detail.city,
         'Jumlah Downline': datas[idx].total_downlines,
-        'Total Komisi': "123",
-        // 'Total Komisi': datas[idx].total_profit,
+        'Total Komisi': datas[idx].total_profit,
       })
     }
     setData(listData)
   }
 
+  const setLocationShown = (datas) => {
+    let listData = []
+    for (let idx in datas) {
+      listData.push({
+        'id': datas[idx].id,
+        'value': datas[idx].city,
+      })
+    }
+    setLocations(listData)
+  }
+
 	useEffect(()=>{
     setAllMember(dispatch, 0)
+    setAllLocation(dispatch)
 	},[])
 
   useEffect(()=>{
@@ -79,6 +90,13 @@ const MemberTable = ({
       })
     }
   },[dataMember.allMemberResp])
+
+  useEffect(()=>{
+    if( dataMember.setAllLocationResp ){
+      console.log(dataMember.setAllLocationResp, "<<dataMember.setAllLocationResp")
+      setLocationShown(dataMember.setAllLocationResp)
+    }
+  },[dataMember.setAllLocationResp])
 
 	return (
     <>
@@ -114,19 +132,13 @@ const MemberTable = ({
             </InputGroup >
           </Col>
           <Col xs="3">
-            <Form.Label htmlFor="basic-url">Range Date</Form.Label>
-            <br/>
-            <DatePicker
-              selectsRange={true}
-              placeholderText="Choose Range Date"
-              startDate={startDate}
-              endDate={endDate}
-              className={styles.date_picker}
-              onChange={(update) => {
-                setDateRange(update);
-              }}
-              isClearable={true}
-            />
+            <Form.Label htmlFor="basic-url">Filter by Location</Form.Label>
+            <Form.Select aria-label="Choose Location" className={styles.field_form} onChange={(e)=>setSelectedLoc(e.target.value)} >
+              <option value="0">{"Select Location"}</option>
+              {locations.map( (item, index)=>{
+                return <option index={index} value={item.id} id={item.id}>{item.value}</option>
+              })}
+            </Form.Select>
           </Col>
           <Col xs="3" className="mt-4">
             <Button className={styles.save_button} onClick={(e)=>doSearch(e)}>

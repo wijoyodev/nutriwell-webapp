@@ -13,7 +13,6 @@ const NewBannerManagementPage = ({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
-  const [imagez, setImagez] = useState([]);
   const navigate = useNavigate()
 
   useEffect(()=>{
@@ -36,11 +35,6 @@ const NewBannerManagementPage = ({
     setImages(imageList);
   };
 
-  const onChangeImagez = (e) => {
-    // data for submit
-    setImagez(e.target.files[0]);
-  };
-
   const doCreateBanner = (e) => {
     e.preventDefault()
     let data = {}
@@ -52,7 +46,7 @@ const NewBannerManagementPage = ({
         confirmButtonColor: '#1b4460',
       })
     }else{
-      const data = {
+      data = {
         title,
         description: content,
         imageUrl: images

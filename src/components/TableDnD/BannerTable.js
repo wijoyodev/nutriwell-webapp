@@ -37,6 +37,14 @@ const BannerTable = ({
     setBannerSearch(dispatch, params)
   }
 
+  const doClearFilter = (e) => {
+    e.preventDefault()
+    let params = {search: ""}
+    
+    setSearchKeyword("")
+    setBannerSearch(dispatch, params)
+  }
+
   const manageListBanner = (listData) => {
     let finalData = []
     for( let i=0 ; i < listData.length ; i++ ){
@@ -103,6 +111,12 @@ const BannerTable = ({
           <Button className={styles.save_button} onClick={(e)=>doSearch(e)}>
             {"Apply"}
           </Button>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <Button className={styles.cancel_button} onClick={(e)=>doClearFilter(e)} >
+              {"Cancel"}
+            </Button>
         </Col>
       </Row>
       {

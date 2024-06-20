@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, } from 'react-bootstrap'
+import { Row, Col, Container, Form, } from 'react-bootstrap'
 import styles from './Disbursement.module.scss'
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FieldHandler from '../../MainFormMember/FieldHandler'
-import Swal from 'sweetalert2'
 import { connect } from "react-redux";
 import DisbursementMemberTable from "../../Table/MemberDetail/DisbursementMemberTable";
 import { setDisbursementGeneral } from '../../../store/actions/memberAction'
@@ -12,16 +11,12 @@ const Disbursement = ({
   dispatch, 
   dataMember,
 }) => {
-  const { orderId, memberId } = useParams()
+  const { memberId } = useParams()
   const [isLoading, setIsLoading] = useState(true);
-  const [progress, setProgress] = useState(true);
-  const [islands, setIslands] = useState(null)
-  const [locations, setLocations] = useState(null)
   const [onHold, setOnHold] = useState(0);
   const [withDrawn, setWithDrawn] = useState(0);
   const [images, setImages] = useState("");
   const [validated, setValidated] = useState(false);
-  const [whatsappNumber, setWhatsappNumber] = useState("");
   const [monthlyReward, setMonthlyReward] = useState("");
   const [lvl5, setLvl5] = useState("");
   const [gender, setGender] = useState("");
@@ -39,7 +34,6 @@ const Disbursement = ({
   const navigate = useNavigate()
   
   const setData = (data) => {
-    console.log("setData", data)
     setWithDrawn(data?.disburse_success?.total_value)
     setOnHold(data?.disburse_pending?.total_value)
     setMonthlyReward(data)
@@ -66,9 +60,7 @@ const Disbursement = ({
   ]
 
   useEffect(()=>{
-    console.log("dataMember", dataMember)
     if( dataMember.disbursementGeneralResp){
-      console.log(dataMember.disbursementGeneralResp, "<<disbursementGeneralResp")
       setData(dataMember.disbursementGeneralResp)
       // setMemberNetworkSummary(dataReward)
       // setTotalRefNetwork(dataReward.sum_transaction)
@@ -84,27 +76,6 @@ const Disbursement = ({
     setDisbursementGeneral(dispatch, memberId)
 	},[])
   
-
-  // useEffect(()=>{
-  //   if( pageFor === "detail" ){
-  //     let data = [...dataForm]
-  //     data.push({
-  //       label: "Deactive",
-  //       type: "buttonWhite",
-  //       spaceMd: "3",
-  //       spaceXs: "3",
-  //       onClickAction: doDeactive,
-  //     })
-  //     data.push({
-  //       label: "Cancel",
-  //       type: "buttonWhite",
-  //       spaceMd: "3",
-  //       spaceXs: "3",
-  //     })
-  //     setDataForm(data)
-  //   }
-	// },[pageFor])
-  // 
 	return (
     isLoading ==false &&
     <>
@@ -114,7 +85,7 @@ const Disbursement = ({
             <Form noValidate validated={validated}>
               <Row className={styles.field_container}>
                 {dataForm.map( (item, index)=>{
-                    return <FieldHandler item={item} index={index} key={index}/>
+                  return <FieldHandler item={item} index={index} key={index}/>
                 })}
               </Row>
             </Form>

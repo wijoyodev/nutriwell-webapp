@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { MdDescription } from 'react-icons/md';
 import Swal from 'sweetalert2';
 
 export const setBanner = async (dispatch) => {
@@ -58,7 +57,6 @@ export const setDetailBanner = async (dispatch, id) => {
     headers: {
       "Authorization": localStorage.getItem('token'),
       "Cache-Control": "no-cache",
-      "Content-Type": "application/json",
       "Accept": "*/*",
       "ngrok-skip-browser-warning": "true" ,
       "Content-Type": "application/json"
@@ -82,10 +80,9 @@ export const setDeleteBanner = async (dispatch, id) => {
     headers: {
       "Authorization": localStorage.getItem('token'),
       "Cache-Control": "no-cache",
-      "Content-Type": "application/json",
       "Accept": "*/*",
-      "ngrok-skip-browser-warning": "true" ,
-      "Content-Type": "application/json"
+      "ngrok-skip-browser-warning": "true",
+      "Content-Type": "application/json",
     },
   },{
   }).then(({data}) => {
@@ -118,8 +115,6 @@ export const setUpdateBanner = async (dispatch, id, mainData) => {
   // }else{
     console.log(mainData,"<< main data")
     let files = new FormData();
-    let noNewImage = true
-    let currImg = []
     
     if(mainData.imageUrl){
       files.append('banner', mainData.imageUrl[0].file);
@@ -208,6 +203,7 @@ export const setUpdateBanner = async (dispatch, id, mainData) => {
 // }
 
 export const setCreateBanner = async (dispatch, mainData) => {
+  console.log("maindata" , mainData)
   if(mainData.imageUrl.length === 0 || mainData.imageUrl === ""){
     Swal.fire({
       title: 'Photo required',
@@ -240,8 +236,6 @@ export const setCreateBanner = async (dispatch, mainData) => {
     
       console.log(mainData,"<< main data")
       let files = new FormData();
-      let noNewImage = true
-      let currImg = []
       
       files.append('banner', mainData.imageUrl[0].file);
       files.append('title', mainData.title);

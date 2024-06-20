@@ -61,7 +61,7 @@ const DisbursementTable = ({
       listData.push({
         'ID': datas[idx].id,
         'Tanggal Request': new Date(datas[idx].created_at).toLocaleString(),
-        'Tanggal Disbursement': new Date(datas[idx].success_disbursement_date).toLocaleString(),
+        'Tanggal Disbursement': datas[idx].success_disbursement_date ? new Date(datas[idx].success_disbursement_date).toLocaleString() : "-",
         'Nama': datas[idx].full_name,
         'HIDDEN user_id': datas[idx].user_id,
         'Jumlah Ditarik': datas[idx].disbursement_value,
@@ -78,6 +78,11 @@ const DisbursementTable = ({
   useEffect(()=>{
     if( dataMember.allDisbursementResp ){
       setDataShown(dataMember.allDisbursementResp.data)
+      setPagination({
+        offset: dataMember.allDisbursementResp.offset, 
+        limit: dataMember.allDisbursementResp.limit, 
+        total: dataMember.allDisbursementResp.total_disbursement_data, 
+      })
     }
   },[dataMember.allDisbursementResp])
 
@@ -119,7 +124,7 @@ const DisbursementTable = ({
             >
               <option>{"Select Status"}</option>
               <option>{"Pending"}</option>
-              <option>{"Complete"}</option>
+              <option>{"Completed"}</option>
             </Form.Select>
           </Col>
           <Col xs="3">

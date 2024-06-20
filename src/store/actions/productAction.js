@@ -3,12 +3,27 @@ import Swal from 'sweetalert2';
 
 export const setUpdateProduct = async (dispatch, data, id) => {
   console.log("setUpdateDetaiAdmin", data, id)
-  axios.patch(`${process.env.REACT_APP_API_URL}/product/${id}`, data, {
+    
+  let files = new FormData();
+
+  if( data.imagesUrl ){
+    let prodImages = []
+    for( let i = 0 ; i<data.imagesUrl.length ; i++ ){
+      // prodImages.push(data.imagesUrl[i].file)
+      files.append('product', data.imagesUrl[i].file);
+    }
+    // files.append('product', prodImages);
+  }
+  files.append('price', data.price);
+  files.append('description', data.description);
+  files.append('product_name', data.product_name);
+
+  axios.patch(`${process.env.REACT_APP_API_URL}/product/${id}`, files, {
     headers: {
       "Authorization": localStorage.getItem('token'),
       "ngrok-skip-browser-warning": "true" ,
       "Cache-Control": "no-cache",
-      "Content-Type": "application/json",
+      'Content-Type': 'multipart/form-data',
       "Accept": "*/*",
     },
   },{

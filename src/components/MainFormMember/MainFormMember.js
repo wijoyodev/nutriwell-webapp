@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
-import { AiOutlineCheck, AiOutlineWarning } from 'react-icons/ai'
-import { BiSearchAlt } from 'react-icons/bi'
+import { Row, Col, } from 'react-bootstrap'
 import styles from './MainFormMember.module.scss'
 import Information from '../MemberDetail/Information/Information'
 import ReferenceNetwork from '../MemberDetail/ReferenceNetwork/ReferenceNetwork'
 import { connect } from "react-redux";
 import 'rsuite/dist/rsuite.min.css';
-import FieldHandler from './FieldHandler'
-import Swal from 'sweetalert2'
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import OrderTable from "../Table/MemberDetail/OrderTable";
 import Reward from "../MemberDetail/Reward/Reward";
 import Disbursement from "../MemberDetail/Disbursement/Disbursement";
@@ -21,11 +16,8 @@ const MainFormMember = ({
   status,
   dataOneMember,
   orderId,
-  onSubmit,
 }) => {
-  const [validated, setValidated] = useState(false);
   const [position, setPosition] = useState("")
-  const { memberId } = useParams()
 
   const printStatusLabel = (status) => {
     if( pageName === "Order Detail" ){
@@ -53,17 +45,6 @@ const MainFormMember = ({
     }
   }
   
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }else{
-      onSubmit(event)
-    }
-    setValidated(true);
-  };
-
   useEffect(()=>{
     if(position && localStorage.getItem('memberDetailPos') != position){
       localStorage.setItem('memberDetailPos', position)
@@ -72,22 +53,18 @@ const MainFormMember = ({
 
   useEffect(()=>{
     if(!localStorage.getItem('memberDetailPos')){
-      console.log("if(!localStorage.getItem('memberDetailPos')){", localStorage.getItem('memberDetailPos'))
       localStorage.setItem('memberDetailPos','info')
       setPosition('info')
     }else{
-      console.log("}else{", localStorage.getItem('memberDetailPos'))
       setPosition(localStorage.getItem('memberDetailPos'))
     }
   },[])
 
-  console.log("mainFormMember")
 	
 	return (
 		<>
       { pageFor === "detail" && dataOneMember &&
       <>
-      {console.log("dataOneMember", dataOneMember)}
         <Row>
           <Col xs={9}>
             <p className={styles.main_title_2}>
@@ -98,29 +75,6 @@ const MainFormMember = ({
               }
               &nbsp; &nbsp; &nbsp;
               { printStatusLabel(status) }
-              {/* { isActive?
-                <font className={styles.label_active}>
-                  Active
-                </font>
-                :
-                <font className={styles.label_inactive}>
-                  Inactive
-                </font>
-              } */}
-              {/* &nbsp;
-              {pageName !== "Admin Detail" && 
-                <>
-                  { isVerified.isVerified ?
-                    <font className={styles.label_verified}>
-                      <AiOutlineCheck/> &nbsp; Verified
-                    </font>
-                    :
-                    <font className={styles.label_not_verified}>
-                      Not Verified
-                    </font>
-                  }
-                </>
-              } */}
             </p>
           </Col>
         </Row>

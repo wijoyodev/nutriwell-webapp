@@ -96,7 +96,6 @@ const SideMenu = () => {
                 </Link>
               </Row>
             :
-              // data.type === "title" ? 
               <Row key={index}>
                 <Col xs="12" className={styles.list_menu_title}>
                   <p> {data.title} </p>

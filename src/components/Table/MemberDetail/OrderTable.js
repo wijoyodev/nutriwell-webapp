@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
-import { BiSearchAlt } from 'react-icons/bi'
-import { Link } from "react-router-dom";
 import styles from '../BaseTable.module.scss';
 import BaseTable from "../BaseTable";
 import { connect } from "react-redux";

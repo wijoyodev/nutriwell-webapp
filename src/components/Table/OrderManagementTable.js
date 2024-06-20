@@ -86,8 +86,12 @@ const OrderManagementTable = ({
   useEffect(()=>{
     console.log(dataOrder," <<DATA PRDER")
     if( dataOrder.orderSearchResp ){
-      setDataShown(dataOrder.orderSearchResp)
-      // setPagination(dataOrder.orderSearchResp.pagination)
+      setDataShown(dataOrder.orderSearchResp.data)
+      setPagination({
+        offset: dataOrder.orderSearchResp.offset, 
+        limit: dataOrder.orderSearchResp.limit, 
+        total: dataOrder.orderSearchResp.total, 
+      })
     }
   },[dataOrder.orderSearchResp])
 
@@ -116,7 +120,7 @@ const OrderManagementTable = ({
               <Form.Control 
                 className={styles.field_search}
                 type={"text"} 
-                placeholder={"Search shipment number here .."}
+                placeholder={"no resi-tanpa huruf / no order .."}
                 onChange={(e)=>setSearchKeyword(e.target.value)}
                 value={searchKeyword}
               />

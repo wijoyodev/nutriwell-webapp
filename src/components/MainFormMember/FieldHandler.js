@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useRef } from "react";
 import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
 import styles from './MainFormMember.module.scss'
 import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineSearch } from 'react-icons/ai';
@@ -14,7 +13,6 @@ import Select from 'react-select'
 const FieldHandler = ({
   item, 
   index,
-  onClickFunc,
 }) => {
   const uploadFile= useRef(null);
   
@@ -31,9 +29,6 @@ const FieldHandler = ({
       </Col>
     )
   }
-
-	useEffect(()=>{
-	},[])
 
   const sectionFieldHanlder = (item, index) => {
     if(item.type === "text" ){
@@ -415,11 +410,11 @@ const FieldHandler = ({
         <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
           <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label> 
           <br/>
-          <DatePicker appearance="default" placeholder="Default" style={{ width: "100%", marginTop: "2%"}} 
-          onChange={(e)=> {item.action(e[0], e[1])}}
-          // value={[
-            // new Date(item.value * 1000)
-          // ]}
+          <DatePicker oneTap appearance="default" placeholder="Default" style={{ width: "100%", marginTop: "2%"}} 
+          onChange={(e)=> {item.action(e)}}
+          value={
+            new Date(item.value)
+          }
           />
         </Col>
     )

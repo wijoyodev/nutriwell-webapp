@@ -1,45 +1,75 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, } from 'react-bootstrap'
+import { Row, Col, Container, Form, } from 'react-bootstrap'
 import styles from './Information.module.scss'
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FieldHandler from '../../MainFormMember/FieldHandler'
-import Swal from 'sweetalert2'
 import { connect } from "react-redux";
+import Swal from 'sweetalert2';
+import { setUpdateMember } from '../../../store/actions/memberAction'
 
 const Information = ({
   dataOneMember,
+  dispatch
 }) => {
-  const { orderId, memberId } = useParams()
+  const { memberId } = useParams()
   const [progress, setProgress] = useState(true);
-  const [islands, setIslands] = useState(null)
-  // const [locations, setLocations] = useState(null)
   const [name, setName] = useState("");
   const [id, setId] = useState("");
-  const [images, setImages] = useState("");
   const [validated, setValidated] = useState(false);
-  const [whatsappNumber, setWhatsappNumber] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [gender, setGender] = useState("");
-  const [bankName, setBankName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [upline, setUpline] = useState("");
   const [dob, setDOB] = useState("");
+  const [bankName, setBankName] = useState("");
   const [bankAccount, setBankAccount] = useState("");
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [phone, setPhone] = useState("");
   const [bankAccountName, setBankAccountName] = useState();
-  // // const [selectedLocation, setSelectedLocation] = useState();
+  const [phone, setPhone] = useState("");
   const [referrerCode, setReferrerCode] = useState("");
   
   const navigate = useNavigate()
 
   const onChangeImage = (imageList, addUpdateIndex) => {
-    setImages(imageList);
+    setAvatarUrl(imageList);
   };
 
+  const updateInfo = (e) =>{
+    e.preventDefault()
+    let dataMember
+    if( avatarUrl.length === 0 ){
+      Swal.fire({
+        title: 'Photo',
+        text: "Need to upload photo",
+        icon: 'warning',
+        confirmButtonColor: '#1b4460',
+      })
+    }else if( !avatarUrl[0].file ){
+      dataMember = {
+        full_name: name,
+        email,
+        phone_number: phone,
+        date_of_birth: dob,
+        account_bank: bankName,
+        account_bank_name: bankAccountName,
+        account_bank_number: bankAccount,
+      }
+    }else{
+      dataMember = {
+        avatar: avatarUrl,
+        full_name: name,
+        email,
+        phone_number: phone,
+        date_of_birth: dob,
+        account_bank: bankName,
+        account_bank_name: bankAccountName,
+        account_bank_number: bankAccount,
+      }
+    }
+    setUpdateMember(dispatch, memberId, dataMember)
+  }
+
   const setData = (data) => {
-    console.log("SETDATA ", data)
     setId(data.id)
     setName(data.full_name)
     setEmail(data.email)
@@ -48,11 +78,14 @@ const Information = ({
     setAddress(data.address_detail.address_detail + ', ' + data.address_detail.district + ', ' + data.address_detail.city + ', ' + data.address_detail.province)
     setGender(data.gender)
     // setUpline(data)
-    setAvatarUrl(data.avatar_url)
     setBankAccountName(data.account_bank_number)
     setBankName(data.account_bank_name)
     setBankAccount(data.account_bank)
     setReferrerCode(data.referral_code)
+    setProgress(false)
+    if( data.avatar_url ){
+      setAvatarUrl([{"data_url": data.avatar_url}])
+    }
   }
 
   useEffect(()=>{
@@ -81,7 +114,7 @@ const Information = ({
       spaceMd: "12",
       spaceXs: "12",
       maxImage: "1",
-      images: images,
+      images: avatarUrl,
       action: onChangeImage,
       required: true,
     },{
@@ -100,6 +133,7 @@ const Information = ({
       spaceMd: "6",
       spaceXs: "6",
       value: name,
+      action: setName,
       required: true,
     },{
       label: "Email",
@@ -184,8 +218,8 @@ const Information = ({
       placeholder: "input Nama Rekening",
       spaceMd: "6",
       spaceXs: "6",
-      value: setBankAccountName,
-      action: bankAccountName,
+      value: bankAccountName,
+      action: setBankAccountName,
       required: false,
     },{
       label: "Nama Bank",
@@ -193,8 +227,8 @@ const Information = ({
       placeholder: "input Nama Bank",
       spaceMd: "6",
       spaceXs: "6",
-      value: setBankName,
-      action: bankName,
+      value: bankName,
+      action: setBankName,
       required: false,
     },{
       label: "Nomor Rekening",
@@ -202,8 +236,8 @@ const Information = ({
       placeholder: "input Nomor Rekening",
       spaceMd: "6",
       spaceXs: "6",
-      value: setBankAccount,
-      action: bankAccount,
+      value: bankAccount,
+      action: setBankAccount,
       required: false,
     },{
       label: "Informasi Upline",
@@ -213,10 +247,11 @@ const Information = ({
     },{
       label: "Upline",
       type: "text",
-      placeholder: "input Upline",
+      placeholder: "Upline",
       spaceMd: "6",
       spaceXs: "6",
-      action: upline,
+      action: setUpline,
+      value: upline,
       required: false,
       notEditable: true,
     },{
@@ -232,6 +267,7 @@ const Information = ({
       type: "button_submit",
       spaceMd: "3",
       spaceXs: "3",
+      action: updateInfo,
     },{
       label: "Cancel",
       type: "button_white",
@@ -241,7 +277,6 @@ const Information = ({
     }
   ]
   
-  console.log("masuk information")
   
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -251,28 +286,9 @@ const Information = ({
     }
     setValidated(true);
   };
-
-  // useEffect(()=>{
-  //   if( pageFor === "detail" ){
-  //     let data = [...dataForm]
-  //     data.push({
-  //       label: "Deactive",
-  //       type: "buttonWhite",
-  //       spaceMd: "3",
-  //       spaceXs: "3",
-  //       onClickAction: doDeactive,
-  //     })
-  //     data.push({
-  //       label: "Cancel",
-  //       type: "buttonWhite",
-  //       spaceMd: "3",
-  //       spaceXs: "3",
-  //     })
-  //     setDataForm(data)
-  //   }
-	// },[pageFor])
-  // 
+  
 	return (
+    progress == false &&
     <>
       <Container className={styles.container}>
         <Row>
