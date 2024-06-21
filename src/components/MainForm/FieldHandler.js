@@ -617,7 +617,7 @@ const FieldHandler = ({
     )
   } else if (item.type === "cardAdd"){
     return (
-      <Link to={item.link} className={styles.no_link} className={styles.card}>
+      <Link to={item.link} className={styles.no_link}>
         <Col md={item.spaceMd} xs={item.spaceXs} key={index}>
           <Row>
             <Col xs={7}>

@@ -8,11 +8,11 @@ export const checkResponseMessage = async (isSuccess, title, text) => {
           icon: 'success',
         })
     }else{
-        if( text === "" ){
+        if( text === "TokenExpiredError" ){
             localStorage.clear()
             Swal.fire({
-                title: title,
-                text: text,
+                title: "Token Expired",
+                text: "Your login session Expired, please relogin",
                 icon: 'error',
                 confirmButtonColor: '#1b4460',
             })
