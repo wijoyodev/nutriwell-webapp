@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Container, Form, } from 'react-bootstrap'
 import styles from './Disbursement.module.scss'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import FieldHandler from '../../MainFormMember/FieldHandler'
 import { connect } from "react-redux";
 import DisbursementMemberTable from "../../Table/MemberDetail/DisbursementMemberTable";
@@ -15,29 +15,12 @@ const Disbursement = ({
   const [isLoading, setIsLoading] = useState(true);
   const [onHold, setOnHold] = useState(0);
   const [withDrawn, setWithDrawn] = useState(0);
-  const [images, setImages] = useState("");
-  const [validated, setValidated] = useState(false);
-  const [monthlyReward, setMonthlyReward] = useState("");
-  const [lvl5, setLvl5] = useState("");
-  const [gender, setGender] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [upline, setUpline] = useState("");
-  const [lvl4, setLvl4] = useState("");
-  const [bankAccount, setBankAccount] = useState("");
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [lvl3, setLvl3] = useState("");
-  const [bankAccountName, setBankAccountName] = useState();
-  const [selectedLocation, setSelectedLocation] = useState();
-  const [referalCode, setReferalCode] = useState("");
   const [dataDisbursement, setDataDisbursement] = useState("");
-  
-  const navigate = useNavigate()
   
   const setData = (data) => {
     setWithDrawn(data?.disburse_success?.total_value)
     setOnHold(data?.disburse_pending?.total_value)
-    setMonthlyReward(data)
-    setDataDisbursement(data.data)
+    setDataDisbursement(data)
     setIsLoading(false)
   }
 
@@ -62,27 +45,20 @@ const Disbursement = ({
   useEffect(()=>{
     if( dataMember.disbursementGeneralResp){
       setData(dataMember.disbursementGeneralResp)
-      // setMemberNetworkSummary(dataReward)
-      // setTotalRefNetwork(dataReward.sum_transaction)
-      // setLvl1(dataReward.level_1)
-      // setLvl2(dataReward.level_2)
-      // setLvl3(dataReward.level_3)
-      // setLvl4(dataReward.level_4)
-      // setLvl5(dataReward.level_5)
     }
   },[dataMember.disbursementGeneralResp])
 
   useEffect(()=>{
-    setDisbursementGeneral(dispatch, memberId)
-	},[])
+    setDisbursementGeneral(dispatch, memberId, 0)
+	},[dispatch, memberId])
   
 	return (
-    isLoading ==false &&
+    isLoading === false &&
     <>
       <Container className={styles.container}>
         <Row>
           <Col className={styles.container_about} xs={12}>
-            <Form noValidate validated={validated}>
+            <Form noValidate >
               <Row className={styles.field_container}>
                 {dataForm.map( (item, index)=>{
                   return <FieldHandler item={item} index={index} key={index}/>
@@ -92,7 +68,11 @@ const Disbursement = ({
           </Col>
         </Row>
         <Row>
-          <DisbursementMemberTable dataDisbursement={dataDisbursement}/>
+          <DisbursementMemberTable 
+            dataDisbursement={dataDisbursement} 
+            setDisbursementGeneral={setDisbursementGeneral} 
+            dispatch={dispatch}
+          />
         </Row>
       </Container>
     </>

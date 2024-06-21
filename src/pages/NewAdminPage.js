@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import MainForm from '../components/MainForm/MainForm'
 import { connect } from "react-redux";
 import Swal from 'sweetalert2';
@@ -16,7 +15,7 @@ const NewAdminPage = ({ dispatch, dataAdmin }) => {
   const navigate = useNavigate()
 	
   const handleShowPass = (type) => {
-    if( type=="conf" ){
+    if( type === "conf" ){
       let curr = showConfPassword
       setShowConfPassword(!curr)
     }else{
@@ -49,7 +48,7 @@ const NewAdminPage = ({ dispatch, dataAdmin }) => {
       resetCreateAdmin(dispatch)
       navigate("../adminManagement")
     }
-  },[dataAdmin.createAdminResp])
+  },[dataAdmin.createAdminResp, dispatch])
 
   const dataForm = [
     {

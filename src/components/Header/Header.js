@@ -3,29 +3,17 @@ import { Row, Col, Container } from 'react-bootstrap'
 import { CgProfile } from 'react-icons/cg'
 import { connect } from "react-redux";
 import styles from './Header.module.scss'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { setLogoutResp } from '../../store/actions/loginRegisterAction'
 
 const Header = ({ dispatch, isLogin, needLogin, dataLoginRegister}) => {
-  const navigate = useNavigate()
   const location = useLocation();
   const [menuProfile, setMenuProfile] = useState(false)
   const [transparentHeader, setTransparentHeader] = useState(false)
 
   const doLogout = (e) => {
     e.preventDefault();
-    console.log("MASUK LOGOUN")
-    // Swal.fire({
-    //   title: 'Success',
-    //   text: "Logout success",
-    //   icon: 'success',
-    //   confirmButtonColor: '#1b4460',
-    // })
     setLogoutResp(dispatch)
-    // localStorage.clear()
-    // setTimeout(() => { 
-    //   navigate('/');
-    // }, 1000)
   }
 
 	useEffect(()=>{
@@ -50,11 +38,6 @@ const Header = ({ dispatch, isLogin, needLogin, dataLoginRegister}) => {
     }
   },[dataLoginRegister.logoutResp])
 
-	useEffect(()=>{
-    if(localStorage.getItem("token")){
-    }
-	},[])
-
 	return (
     <Container className="ml-0">
       <Row className={transparentHeader ? styles.header_wrapper_transparent : styles.header_wrapper}>
@@ -78,7 +61,7 @@ const Header = ({ dispatch, isLogin, needLogin, dataLoginRegister}) => {
                 {/* <Col xs={{ span:2, offset:0 }} className={styles.notif_bell}>
                   <FaRegBell size={18}/>
                 </Col> */}
-                <Col xs={{ span:10, offset:0 }} className={styles.profile}>
+                <Col xs={{ span:10, offset:2 }} className={styles.profile}>
                   <Row>
                     <Col xs={4}>
                       <CgProfile className={styles.profile_pic}/>

@@ -1,28 +1,21 @@
 import React, { useEffect, useState } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import MainForm from '../components/MainForm/MainForm'
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { connect } from "react-redux";
 import { setCreateMember } from '../store/actions/memberAction'
 
 const AddMemberPage = ({ dispatch, dataMember }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isVerified, setIsVerified] = useState(true);
   const [name, setName] = useState("");
   const [gender, setGender] = useState("male");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [code, setCode] = useState("");
-  const [phoneNumberCountry, setPhoneNumberCountry] = useState("ID");
   const [phone, setPhone] = useState("");
-  const [status, setStatus] = useState("");
   const [avatar, setAvatar] = useState("");
   const [dob, setDOB] = useState("");
-  const navigate = useNavigate()
   
-  const onChangeImage = (imageList, addUpdateIndex) => {
+  const onChangeImage = (imageList) => {
     setAvatar(imageList);
   };
 
@@ -53,23 +46,21 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
       const dataMember = {
         avatar,
         email,
-        status,
+        status: "",
         gender,
         full_name: name,
-        phone_number_country: phoneNumberCountry,
+        phone_number_country: "ID",
         phone_number: phone,
         date_of_birth: dob,
         referrer_code: code,
         password,
         confirm_password: confirmPassword,
       }
-      console.log(dataMember, "<DATA MEMBER")
       setCreateMember(dispatch, dataMember)
     }
   }
   
   const handleSelect = (e, type) => {
-    console.log("masuk handleSelect", e)
     const splitValue = e.target.value.split("||")
     setGender(splitValue[1]) 
   }
@@ -178,7 +169,6 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
 
   useEffect(()=>{
     if( dataMember.createMemberResp ){
-      console.log(dataMember.createMemberResp, "<<< dataMember.createMemberResp")
       Swal.fire({
         title: 'Success',
         text: "Register Success",
@@ -189,15 +179,12 @@ const AddMemberPage = ({ dispatch, dataMember }) => {
   },[dataMember.createMemberResp])
 
   return (    
-    isLoading === false && 
     <div className="container_right_form">
       <MainForm
         pageName={"Tambah Member"}
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
-        status={status}
         pageFor={"detail"}
-        isVerified={isVerified}
         email={email}
         onSubmit={createMember}
         whiteBackground={true}

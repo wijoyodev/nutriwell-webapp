@@ -30,7 +30,7 @@ const Information = ({
   
   const navigate = useNavigate()
 
-  const onChangeImage = (imageList, addUpdateIndex) => {
+  const onChangeImage = (imageList) => {
     setAvatarUrl(imageList);
   };
 
@@ -87,9 +87,6 @@ const Information = ({
       setAvatarUrl([{"data_url": data.avatar_url}])
     }
   }
-
-  useEffect(()=>{
-  },[])
 
   useEffect(()=>{
     if(dataOneMember){
@@ -288,7 +285,7 @@ const Information = ({
   };
   
 	return (
-    progress == false &&
+    progress === false &&
     <>
       <Container className={styles.container}>
         <Row>

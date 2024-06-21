@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import MainForm from '../components/MainForm/MainForm'
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
 import dateFormat from "dateformat";
@@ -9,24 +8,14 @@ import { setDetailOrder, setChangeOrderStatus, setTrackShipment, resetTrackShipm
 
 const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   const { orderId } = useParams()
-
-  // const [isLoading, setIsLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [transactionTotal, setTrasactionTotal] = useState(null);
   const [transactionSubTotal, setTrasactionSubTotal] = useState(null);
   const [isVerified, setIsVerified] = useState(true);
-  // const [isVerified, setIsVerified] = useState(null);
-  
-  const [details, setDetails] = useState(null);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [requestDate, setRequestDate] = useState("");  
   const [receivedDate, setReceivedDate] = useState("");
-
-  // bank info
-  const [bankName, setBankName] = useState("");
-  const [bankNumber, setBankNumber] = useState("");
-  const [bankAccountName, setBankAccountName] = useState("");
 
   // payment info
   const [isPaymentDone, setIsPaymentDone] = useState(false);
@@ -42,30 +31,14 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   
   const [productDetails, setProductDetails] = useState("");
   const [transactionNumber, setTransactionNumber] = useState("");
-  const [reason, setReason] = useState("");
   const [customerDetail, setCustomerDetail] = useState("");
   const [status, setStatus] = useState("");
   const [transactionDate, setTransactionDate] = useState("");
   const [shippingDate, setShippingDate] = useState("");
 
-  const navigate = useNavigate()
-
   const reqChangeStat = (orderStatus, dataReq) => {
-    // order status
-    // Belum Bayar = 0 
-    // Dikemas = 1
-    // Dikirim = 2
-    // Selesai = 3
-    // Dibatalkan 4
-
     let dataParam = {
       "status": orderStatus,
-      // "delivery_date": "Fri Apr 25 2024 19:50:58 GMT+0700",
-      // "receive_date": "Fri Apr 26 2024 19:50:58 GMT+0700",
-      // "payment_date": "Fri Apr 24 2024 19:50:58 GMT+0700",
-      // "shipment_number": "asdas42112ada",
-      // "payment_method": "BANK_TRANSFER",
-      // "external_id": "ada2323esfdsokro34"
     }
     if( orderStatus === 1 ){
       dataParam["payment_date"] = new Date()
@@ -78,22 +51,6 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       dataParam["reasons"] = dataReq.reason
     }
     setChangeOrderStatus(dispatch, orderId, dataParam)
-  }
-
-  const doUpdate = (e) => {
-    e.preventDefault()
-    const dataUpdate = {
-      name,
-      bankNumber,
-      bankAccountName,
-      status,
-      transactionDate,
-      productDetails: productDetails,
-      transactionNumber: transactionNumber,
-      reason: reason,
-      customerDetail: customerDetail,
-    }
-    // setUpdateDetailShipyard(dispatch, dataUpdate, id)
   }
 
   const packageDetail = () => {
@@ -118,7 +75,6 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
         let courier = document.getElementById("courier").value;
         let ship_number = document.getElementById("ship_number").value;
         
-        console.log("VALUE PAKET", courier, ship_number)
         if (!courier || !ship_number) {
           Swal.fire({
             title: 'Warning',
@@ -129,13 +85,8 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
         }else{
           reqChangeStat(2, {shipment_number: ship_number})
         }
-        // return [
-        //   document.getElementById("swal2-select").value,
-        //   document.getElementById("swal-input2").value
-        // ];
       },
       inputValidator: (value) => {
-        // console.log("VALUE PAKET", value)
         // if (!value) {
         //   return "You need to Choose Shipment Courier and Tracking Number";
         // }else{
@@ -146,7 +97,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   }
 
   const reasonCancel = async () => {
-    const { value: ipAddress } = await Swal.fire({
+    await Swal.fire({
       title: "Alasan",
       inputPlaceholder: "Masukkan alasan",
       input: "text",
@@ -203,10 +154,6 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
     })
   }
 
-  const updatedTime = (date) =>{
-
-  }
-
   const printTracking = (data) => {
     let textHistory = ''
     textHistory += `
@@ -246,28 +193,22 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   
   useEffect(()=>{ 
     if( dataOrder.trackShipmentResp ){
-      console.log(dataOrder.trackShipmentResp, "<<di useeffect trackShipmentResp`")
       Swal.fire({
         title: 'Lacak Pengiriman',
         html: printTracking(dataOrder.trackShipmentResp),
-        // icon: 'success',
         confirmButtonColor: '#1b4460',
       })
       resetTrackShipment(dispatch)
     }
-  },[dataOrder.trackShipmentResp])
+  },[dataOrder.trackShipmentResp, dispatch])
   
   useEffect(()=>{
     if( dataOrder.orderDetailResp ){
-      console.log(dataOrder.orderDetailResp, "< dataOrder.orderDetailResp")
       let data = dataOrder.orderDetailResp
       setId(data.order_number)
       setName(data.user_detail.full_name)
       setRequestDate(data.created_at)
       
-      setBankName(data.user_detail.account_bank)
-      setBankNumber(data.user_detail.account_bank_number)
-      setBankAccountName(data.user_detail.account_bank_name)
 
       if(data.status === 2 || data.status === 3){
         setShippingNo(data.shipment_number)
@@ -290,7 +231,6 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       setCourierPrice(data.courier_rate)
       setProductDetails(data.product_detail)
       setTransactionNumber(data.order_number)
-      setReason(data.reason)
       setCustomerDetail(data.user_detail)
       setStatus(data.status)
       setTransactionDate(data.created_at)
@@ -299,12 +239,12 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       setTrasactionSubTotal(data.product_detail.total_price)
       setIsLoading(false)
     }
-  },[dataOrder.orderDetailResp])
+  },[dataOrder.orderDetailResp, dispatch])
 
   useEffect(()=>{
     setDetailOrder(dispatch, orderId)
     setIsLoading(true)
-  },[])
+  },[dispatch, orderId])
 
   const dataForm = [
     {
@@ -367,6 +307,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
           shippingNo: shippingNo,
           externalId: externalId,
           shippingDate: shippingDate,
+          receivedDate: receivedDate,
         }
       ]
     },
@@ -403,13 +344,11 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
         trackShipment={trackShipment}
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
-        details={details}
         status={status}
         orderId={id}
         pageFor={"detail"}
         isVerified={isVerified}
         requestDate={requestDate}
-        onSubmit={doUpdate}
       />
     </div>
   );

@@ -1,14 +1,9 @@
 import axios from 'axios';
-import Swal from 'sweetalert2';
+import { checkResponseMessage } from '../../helper/helper'
 
 export const setLoginResp = async (dispatch, data) => {
   axios.post(`${process.env.REACT_APP_API_URL}/login`, data,).then(({data}) => {
-    Swal.fire({
-      title: 'Login Success',
-      text: "Please wait..",
-      icon: 'success',
-    })
-    console.log("data", data)
+    checkResponseMessage(true, "Login Success", "Please wait..")
     localStorage.setItem("token", `Bearer ${data.result.token}`);
     localStorage.setItem("refresh_token", `${data.result.refreshToken}`);
     localStorage.setItem("web", `admin_web`);
@@ -19,14 +14,7 @@ export const setLoginResp = async (dispatch, data) => {
     localStorage.setItem("last_login", Date.now());
     dispatch({ type: 'SET_LOGIN_RESP', payload: data })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      // text: error.response.data.message,
-      text: error,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
-    console.log("response error", error)
+    checkResponseMessage(false, "Error", error)
   })
 }
 
@@ -60,29 +48,13 @@ export const setLogoutResp = async (dispatch) => {
         "Content-Type": "application/json"
       }
     }).then(({data}) => {
-      
-      Swal.fire({
-        title: 'Logout Success',
-        text: "Please wait..",
-        icon: 'success',
-      })
+      checkResponseMessage(true, "Logout Success", "Please wait..")
       dispatch({ type: 'SET_LOGOUT_RESP' })
     }).catch((error)=>{
-      Swal.fire({
-        title: 'Error',
-        text: error,
-        icon: 'error',
-        confirmButtonColor: '#1b4460',
-      })
+      checkResponseMessage(false, "Error", error)
     })
   }).catch((error)=>{
-    console.log("response error", error)
-    Swal.fire({
-      title: 'Error',
-      text: error,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error)
 
     localStorage.clear()
     const myTimeout = setTimeout(reloadFunc, 2000);
@@ -112,15 +84,8 @@ export const setRefreshToken = async (dispatch) => {
     localStorage.setItem("refresh_token", `${data.result.refresh_token}`);
     
   }).catch((error)=>{
-    console.log("ERRIR", error)
     if(error){
-      Swal.fire({
-        title: 'Error',
-        text: 'Session Expired Please Re-Login',
-        icon: 'error',
-        confirmButtonColor: '#1b4460',
-      })
-
+      checkResponseMessage(false, "Error", "Session Expired Please Re-Login")
       localStorage.clear()
       const myTimeout = setTimeout(reloadFunc, 2000);
 

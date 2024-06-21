@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Container, Form, } from 'react-bootstrap'
 import styles from './Reward.module.scss'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import FieldHandler from '../../MainFormMember/FieldHandler'
 import { connect } from "react-redux";
 import RewardTable from "../../Table/MemberDetail/RewardTable";
@@ -15,17 +15,14 @@ const Reward = ({
   const [isLoading, setIsLoading] = useState(true);
   const [claimableReward, setClaimableReward] = useState("");
   const [totalReward, setTotalReward] = useState("");
-  const [validated, setValidated] = useState(false);
   const [monthlyReward, setMonthlyReward] = useState("");
   const [dataReward, setDataReward] = useState("");
   
-  const navigate = useNavigate()
-
   const setData = (data) => {
     setTotalReward(data.total_reward)
     setClaimableReward(data.total_cashable)
     setMonthlyReward(data.total_this_month)
-    setDataReward(data.data)
+    setDataReward(data)
     setIsLoading(false)
   }
 
@@ -37,7 +34,7 @@ const Reward = ({
 
   useEffect(()=>{
     setRewardDetail(dispatch, memberId)
-	},[])
+	},[dispatch, memberId])
   
   const dataForm = [
     {
@@ -65,22 +62,26 @@ const Reward = ({
   ]
   
 	return (
-    isLoading == false &&
+    isLoading === false &&
     <>
       <Container className={styles.container}>
         <Row>
           <Col className={styles.container_about} xs={12}>
-            <Form noValidate validated={validated}>
+            <Form noValidate>
               <Row className={styles.field_container}>
                 {dataForm.map( (item, index)=>{
-                    return <FieldHandler item={item} index={index} key={index}/>
+                  return <FieldHandler item={item} index={index} key={index}/>
                 })}
               </Row>
             </Form>
           </Col>
         </Row>
         <Row>
-          <RewardTable dataReward={dataReward}/>
+          <RewardTable 
+            dataReward={dataReward} 
+            setRewardDetail={setRewardDetail} 
+            dispatch={dispatch}
+          />
         </Row>
       </Container>
     </>

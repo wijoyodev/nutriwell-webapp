@@ -22,15 +22,12 @@ const reducer = (state = initialState, action) => {
       return {...state, allMemberResp: action.payload}
     }
     case 'SET_CREATE_MEMBER': {
-      console.log("SET CREATE MEMBER", action.payload.data )
       return {...state, createMemberResp: action.payload.data}
     }
     case 'SET_UPDATE_MEMBER': {
-      console.log("SET_UPDATE_MEMBER", action.payload.data )
       return {...state, updateMemberResp: action.payload.data}
     }
     case 'SET_ALL_LOCATION': {
-      console.log("SET_ALL_LOCATION", action.payload)
       return {...state, setAllLocationResp: action.payload}
     }
     case 'SET_DETAIL_MEMBER': {
@@ -55,15 +52,12 @@ const reducer = (state = initialState, action) => {
       return {...state, memberDetailResp: action.payload.data[0]}
     }
     case 'SET_MEMBER_NETWORK_LIST_RESP':{
-      console.log("SET_MEMBER_NETWORK_LIST_RESP", action.payload)
       return {...state, memberNetworkListResp: action.payload}
     }
     case 'SET_MEMBER_NETWORK_SUMMARY_RESP':{
-      console.log("SET_MEMBER_NETWORK_SUMMARY_RESP", action.payload)
       return {...state, memberNetworkSummaryResp: action.payload}
     }
     case 'SET_UPDATE_USER_RESP':{
-      console.log("SET_UPDATE_USER_RESP", action)
       return {...state, userDetailUpdateResp: action.payload}
     }
     case 'RESET_CREATE_USER':{

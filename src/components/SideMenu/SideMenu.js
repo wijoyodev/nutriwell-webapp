@@ -54,6 +54,11 @@ const SideMenu = () => {
     icon: <IoDocumentTextOutline/>,
     type:"menu",
     link:"../orderManagement"
+  },{
+    title: "Product Detail",
+    icon: <CgProfile/>,
+    type:"menu",
+    link:"./productDetail"
   }]
   
   const selectMenu = (index) => {
@@ -72,8 +77,7 @@ const SideMenu = () => {
     }else{
       setMenuList(defaultMenu)
     }
-
-  },[])
+  },[localStorage.getItem("activeMenu"), ])
 
 	return (
     <Container className={styles.container}>
@@ -81,7 +85,7 @@ const SideMenu = () => {
         <Row>
           <Col className={styles.logo}>
             <a href="/orderManagement">
-              <img height={"238px"} width={"238px"} src={"/images/main.png"}/>
+              <img alt={"images"} height={"238px"} width={"238px"} src={"/images/main.png"}/>
             </a>
           </Col>
         </Row>
@@ -90,7 +94,7 @@ const SideMenu = () => {
             data.type === "menu" ? 
               <Row key={index} onClick={ ()=>selectMenu(index) }>
                 <Link to={data.link} className={styles.link}>
-                  <Col xs="12" className={localStorage.getItem("activeMenu") == index ? styles.list_menu_active : styles.list_menu}>
+                  <Col xs="12" className={localStorage.getItem("activeMenu") === index ? styles.list_menu_active : styles.list_menu}>
                     <p> {data.icon} &nbsp;&nbsp; {data.title} </p>
                   </Col>
                 </Link>

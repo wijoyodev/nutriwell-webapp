@@ -1,37 +1,20 @@
 import React, { useEffect, useState } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import MainForm from '../components/MainForm/MainForm'
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2'
 import { connect } from "react-redux";
 import { setCreateAdmin } from '../store/actions/adminAction'
 
 const AddAdminPage = ({ dispatch, dataAdmin }) => {
-  const { disbursementId } = useParams()
-	const [showPassword, setShowPassword] = useState(false);
-
-  // const [isLoading, setIsLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [transactionTotal, setTrasactionTotal] = useState(null);
-
-  const [isVerified, setIsVerified] = useState(true);
-  // const [isVerified, setIsVerified] = useState(null);
-  
-  const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("1");
-  const navigate = useNavigate()
 
   const doCreateAdmin = (e) => {
-    console.log("masuk do create admiubn")
     e.preventDefault()
     const dataCreate = {
       name,
       email,
-      role,
+      role: "1",
       password,
     }
     setCreateAdmin(dispatch, dataCreate)
@@ -39,17 +22,12 @@ const AddAdminPage = ({ dispatch, dataAdmin }) => {
 
   useEffect(()=>{
     if( dataAdmin.createAdminResp ){
-      console.log(dataAdmin.createAdminResp, "<<< dataAdmin.createAdminResp")
       let data = dataAdmin.createAdminResp
-      setId(data.id)
       setName(data.name)
       setEmail(data.email)
       setIsLoading(false)
     }
   },[dataAdmin.createAdminResp])
-
-  useEffect(()=>{
-  },[])
 
   const dataForm = [
     {
@@ -115,7 +93,6 @@ const AddAdminPage = ({ dispatch, dataAdmin }) => {
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
         pageFor={"detail"}
-        isVerified={isVerified}
         email={email}
         onSubmit={doCreateAdmin}
         whiteBackground={true}

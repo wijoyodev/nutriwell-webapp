@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
 import { Link } from "react-router-dom";
@@ -17,16 +17,8 @@ const BannerTable = ({
 
   const totalPages = 17;
 
-  const [activePage, setActivePage] = useState(1)
   const [searchKeyword, setSearchKeyword] = useState("")
-  const [reorderState, setReorderState] = useState(false)
-  const [tempOrder, setTempOrder] = useState([])
   const [data, setData] = useState(null)
-
-  const handlePageChange = (pageNumber) => {
-    let currPage = pageName
-    setActivePage(currPage)
-  }
   
   const doSearch = (e) => {
     e.preventDefault()
@@ -64,11 +56,10 @@ const BannerTable = ({
 
 	useEffect(()=>{
     setBanner(dispatch)
-	},[])
+	},[dispatch])
 
   useEffect(()=>{
     if( dataBanner.bannerListResp ){
-      console.log("MASUK BANNER TABLE", dataBanner.bannerListResp)
       manageListBanner(dataBanner.bannerListResp)
     }
   },[dataBanner.bannerListResp])
@@ -124,10 +115,8 @@ const BannerTable = ({
           <BaseTableDnD 
             data={data} 
             totalPages={totalPages}
-            reorderState={reorderState}
             linkDetail={"../bannerDetail/"} 
             searchKeyword={searchKeyword}
-            setTempOrder={setTempOrder}
           />
       }
       {

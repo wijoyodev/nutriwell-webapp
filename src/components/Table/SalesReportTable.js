@@ -1,30 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
-import { Link } from "react-router-dom";
 import styles from './BaseTable.module.scss';
 import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllOrder, setSearchOrders } from '../../store/actions/orderAction'
+import { setAllOrder } from '../../store/actions/orderAction'
 
 const SalesReportTable = ({
   pageName,
-  linkAddNew,
   dispatch, 
   dataOrder,
 }) => {
-
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
   const [pagination, setPagination] = useState({})
   const [searchKeyword, setSearchKeyword] = useState(null)
-
-  console.log(startDate, endDate," INI GAES")
 
   const doSearch = (e) => {
     e.preventDefault()
@@ -69,30 +64,11 @@ const SalesReportTable = ({
     setData(listData)
   }
 
-  const setStatusShown = (status) => {
-    switch (status) {
-      case 0:
-        return 'Belum Bayar';
-      case 1:
-        return 'Dikemas';
-      case 2:
-        return 'Dikirim';
-      case 3:
-        return 'Selesai';
-      case 4:
-        return 'Dibatalkan';
-      default:
-        return 'Dibatalkan';
-    }
-  }
-
 	useEffect(()=>{
-    console.log("masuk flow order table")
     setAllOrder(dispatch, 0)
-	},[])
+	},[dispatch])
 
   useEffect(()=>{
-    console.log(dataOrder," <<DATA PRDER")
     if( dataOrder.orderSearchResp ){
       setDataShown(dataOrder.orderSearchResp.data)
       setPagination({
@@ -143,8 +119,6 @@ const SalesReportTable = ({
               placeholderText="Choose Range Date"
               className={styles.date_picker}
               onChange={(update) => {
-                console.log("update date[0]", update[0])
-                console.log("update date[1]", update[1])
                 setDateRange(update);
               }}
               isClearable={true}
@@ -165,7 +139,6 @@ const SalesReportTable = ({
         {data.length > 0 ?
           <BaseTable 
             data={data} 
-            // linkDetail={"../orderManagementDetail/"} 
             pagination={pagination}
             section={"salesReport"}
             activePage={activePage}

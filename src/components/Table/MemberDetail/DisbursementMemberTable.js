@@ -10,12 +10,19 @@ import "react-datepicker/dist/react-datepicker.css";
 const DisbursementMemberTable = ({
   pageName,
   dataDisbursement,
+  setDisbursementGeneral,
+  dispatch,
 }) => {
 
   const { memberId } = useParams()
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
   const [pagination, setPagination] = useState({})
+
+  const handlePageChange = (pageNumber) => {
+    setActivePage(pageNumber)
+    setDisbursementGeneral(dispatch, (pageNumber-1)*10)
+  }
 
   const setDataShown = (datas) => {
     let listData = []
@@ -33,8 +40,13 @@ const DisbursementMemberTable = ({
   }
 
 	useEffect(()=>{
-    setDataShown(dataDisbursement)
-	},[])
+    setDataShown(dataDisbursement.data)
+    setPagination({
+      offset: dataDisbursement.offset, 
+      limit: dataDisbursement.limit, 
+      total: dataDisbursement.total_disbursement_data, 
+    })
+	},[dataDisbursement])
 
 	return (
     <>
@@ -50,6 +62,7 @@ const DisbursementMemberTable = ({
             section={"disbursementMember"}
             activePage={activePage}
             memberId={memberId}
+            handlePageChange={handlePageChange}
           />
           :
           <>

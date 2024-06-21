@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import MainForm from '../components/MainForm/MainForm'
 import { connect } from "react-redux";
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom'
 import { setProductDetail, setUpdateProduct } from '../store/actions/productAction'
 import { Container } from 'react-bootstrap';
 
@@ -13,7 +11,6 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
   const [id, setId] = useState("");
   const [pricing, setPricing] = useState("");
   const [images, setImages] = useState("");
-  const navigate = useNavigate()
 	
   const doEditProductDetail = (e) => {
     e.preventDefault()
@@ -33,22 +30,19 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
           imagesUrl: images,
           price: pricing,
         }
-        console.log("if( images[0].file ){",  dataEdit)
       }else{
         dataEdit = {
           product_name: name,
           description: desc,
           price: pricing,
           }
-        console.log("}else{", dataEdit)
       }
       setUpdateProduct(dispatch, dataEdit, id)
     }
   }
   
-  const onChangeImage = (imageList, addUpdateIndex) => {
+  const onChangeImage = (imageList) => {
     setImages(imageList);
-    console.log(imageList, "<<<")
   };
 
   const setImageShow = (images) => {
@@ -63,11 +57,10 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
 
   useEffect(()=>{
     setProductDetail(dispatch)
-  },[])
+  },[dispatch])
 
   useEffect(()=>{
     if( dataProduct.productDetailResp ){
-      console.log(dataProduct.productDetailResp,"<<dataProduct.productDetailResp")
       setName(dataProduct.productDetailResp.product_name)
       setPricing(dataProduct.productDetailResp.price)
       setDesc(dataProduct.productDetailResp.description)
@@ -78,7 +71,6 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
 
   useEffect(()=>{
     if( dataProduct.productEditResp ){
-      console.log( "dataProduct.productEditResp" , dataProduct.productEditResp )
       Swal.fire({
         title: 'Success',
         text: "Product Information Updated",

@@ -8,7 +8,6 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_BANNER': {
-      console.log("SET_BANNER", action)
       return {...state, bannerListResp: action.payload.result}
     }
     case 'SET_CREATE_BANNER': {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Swal from 'sweetalert2';
+import { checkResponseMessage } from '../../helper/helper'
 
 export const setAllOrder = async (dispatch, page, paramFilter) => {
   const options = {
@@ -18,12 +18,7 @@ export const setAllOrder = async (dispatch, page, paramFilter) => {
   axios(options).then(({data}) => {
     dispatch({ type: 'SET_ORDER_SEARCH', payload: data.result })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
@@ -41,15 +36,9 @@ export const setTrackShipment = async (dispatch, shipNum) => {
   }
 
   axios(options).then(({data}) => {
-    console.log("setTrackshipment", data)
     dispatch({ type: 'SET_TRACK_SHIPMENT', payload: data.result })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
@@ -70,22 +59,10 @@ export const setSearchOrders = async (dispatch, params) => {
   axios(options).then(({data}) => {
     dispatch({ type: 'SET_ORDER_SEARCH', payload: data.result.data })
   }).catch((error)=>{
-    console.log("response error", error)
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
-  // order status
-  // Belum Bayar = 0 
-  // Dikemas = 1
-  // Dikirim = 2
-  // Selesai = 3
-  // Dibatalkan 4
 export const setChangeOrderStatus = async (dispatch, orderId, params) => {
   const options = {
     method  : 'patch',
@@ -101,22 +78,10 @@ export const setChangeOrderStatus = async (dispatch, orderId, params) => {
   }
 
   axios(options).then(({data}) => {
-    console.log("SET CHANGE ORDER STATUS")
     dispatch({ type: 'SET_CHANGE_ORDER_STATUS', payload: data.result })
-    Swal.fire({
-      title: 'Sukses',
-      text: "Mengganti status",
-      icon: 'success',
-      confirmButtonColor: '#0975B6',
-    })
+    checkResponseMessage(true, "Sukses", "Sukese mengganti status")
   }).catch((error)=>{
-    console.log("response error", error)
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
@@ -136,12 +101,7 @@ export const setDetailOrder = async (dispatch, id) => {
   axios(options).then(({data}) => {
     dispatch({ type: 'SET_ORDER_DETAIL', payload: data.result[0] })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error)
   })
 }
 

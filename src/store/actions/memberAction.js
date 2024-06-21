@@ -1,9 +1,7 @@
 import axios from 'axios';
-import Swal from 'sweetalert2';
+import { checkResponseMessage } from '../../helper/helper'
 
 export const setCreateMember = async (dispatch, data) => {
-  console.log("setCreateMember", data)
-  
   let files = new FormData();
   files.append('avatar', data.avatar[0].file);
   files.append('email', data.email);
@@ -27,27 +25,14 @@ export const setCreateMember = async (dispatch, data) => {
     },
   },{
   }).then(({data}) => {
-    console.log("DATA sSET_CREATE_MEMBER", data)
     dispatch({ type: 'SET_CREATE_MEMBER', payload: data })
-    Swal.fire({
-      title: 'Success',
-      text: "Create Member Success",
-      icon: 'success',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(true, "Success", "Create Member Success")
   }).catch((error)=>{
-    console.log("response error", error)
-    Swal.fire({
-      title: 'Error',
-      text: error,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error)
   })
 }
 
 export const setUpdateMember = async (dispatch, id, mainData) => {
-    console.log(mainData,"<< main data")
     let files = new FormData();
     
     if(mainData.avatar){
@@ -75,20 +60,9 @@ export const setUpdateMember = async (dispatch, id, mainData) => {
     }
     axios(options ).then(({data}) => {
       dispatch({ type: 'SET_UPDATE_MEMBER', payload: data })
-      Swal.fire({
-        title: 'Success',
-        text: "Member Updated",
-        icon: 'success',
-        confirmButtonColor: '#1b4460',
-      })
+      checkResponseMessage(true, "Success", "Member Updated")
     }).catch((error)=>{
-      console.log("response error", error)
-      Swal.fire({
-        title: 'Error',
-        text: error.response.data.message,
-        icon: 'error',
-        confirmButtonColor: '#1b4460',
-      })
+      checkResponseMessage(false, "Error", error.response.data.message)
     })
   }
 
@@ -106,20 +80,13 @@ export const setDetailMember = async (dispatch,id) => {
   }
 
   axios(options).then(({data}) => {
-    console.log("DATA member NIH" ,data.result)
     dispatch({ type: 'SET_DETAIL_MEMBER', payload: data.result })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
 export const setAllLocation = async (dispatch) => {
-  console.log("setAllLocation")
   axios.get(`${process.env.REACT_APP_API_URL}/address?filter=true`, {
     headers: {
       "Authorization": localStorage.getItem('token'),
@@ -130,16 +97,9 @@ export const setAllLocation = async (dispatch) => {
     },
   },{
   }).then(({data}) => {
-    console.log("DATA sSET_ALL_LOCATION", data)
     dispatch({ type: 'SET_ALL_LOCATION', payload: data.result })
   }).catch((error)=>{
-    console.log("response error", error)
-    Swal.fire({
-      title: 'Error',
-      text: error,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error)
   })
 }
 
@@ -157,15 +117,9 @@ export const setRewardDetail = async (dispatch,id) => {
   }
 
   axios(options).then(({data}) => {
-    console.log("SET_DETAIL_REWARD" ,data.result)
     dispatch({ type: 'SET_DETAIL_REWARD', payload: data.result })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
@@ -184,19 +138,13 @@ export const setDisbursementList = async (dispatch, page, filter) => {
   }
 
   axios(options).then(({data}) => {
-    console.log("SET_ALL_DISBURSEMENT" ,data.result)
     dispatch({ type: 'SET_ALL_DISBURSEMENT', payload: data.result })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
-export const setDisbursementGeneral = async (dispatch,id) => {
+export const setDisbursementGeneral = async (dispatch,id, page) => {
   const options = {
     method  : 'get',
     headers : {
@@ -206,19 +154,13 @@ export const setDisbursementGeneral = async (dispatch,id) => {
       "Content-Type": "application/json",
       "Accept": "*/*",
     },
-    url     : `${process.env.REACT_APP_API_URL}/disbursement?status=COMPLETED&user_id=${id}`,
+    url     : `${process.env.REACT_APP_API_URL}/disbursement?status=COMPLETED&user_id=${id}&offset=${page}`,
   }
 
   axios(options).then(({data}) => {
-    console.log("SET_GENERAL_DISBURSEMENT" ,data.result)
     dispatch({ type: 'SET_GENERAL_DISBURSEMENT', payload: data.result })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
@@ -236,15 +178,9 @@ export const setDisbursementDetail = async (dispatch,id) => {
   }
 
   axios(options).then(({data}) => {
-    console.log("SET_DETAIL_DISBURSEMENT" ,data.result)
     dispatch({ type: 'SET_DETAIL_DISBURSEMENT', payload: data.result })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
@@ -262,15 +198,9 @@ export const setDisbursementMemberDetail = async (dispatch,id, disbId) => {
   }
 
   axios(options).then(({data}) => {
-    console.log("SET_DETAIL_DISBURSEMENT_MEMBER" ,data.result)
     dispatch({ type: 'SET_DETAIL_DISBURSEMENT_MEMBER', payload: data.result })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 
@@ -285,16 +215,9 @@ export const setNetworkById = async (dispatch, page=0, memberId) => {
     },
   },{
   }).then(({data}) => {
-    console.log(data, "<<DATA ssetNetworkById")
     dispatch({ type: 'SET_MEMBER_NETWORK_LIST_RESP', payload: data.result })
   }).catch((error)=>{
-    console.log("response error", error)
-    Swal.fire({
-      title: 'Error',
-      text: error,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error)
   })
 }
 
@@ -309,16 +232,9 @@ export const setNetworkSummaryById = async (dispatch, memberId) => {
     },
   },{
   }).then(({data}) => {
-    console.log(data, "<<DATA ssetNetworkById")
     dispatch({ type: 'SET_MEMBER_NETWORK_SUMMARY_RESP', payload: data.result })
   }).catch((error)=>{
-    console.log("response error", error)
-    Swal.fire({
-      title: 'Error',
-      text: error,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error)
   })
 }
 
@@ -339,12 +255,7 @@ export const setAllMember = async (dispatch, page, search) => {
   axios(options).then(({data}) => {
     dispatch({ type: 'SET_ALL_MEMBER', payload: data.result })
   }).catch((error)=>{
-    Swal.fire({
-      title: 'Error',
-      text: error.response.data.message,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error.response.data.message)
   })
 }
 

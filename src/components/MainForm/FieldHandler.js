@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
 import styles from './MainForm.module.scss'
 import { Link } from "react-router-dom";
@@ -37,9 +37,6 @@ const FieldHandler = ({
     )
   }
 
-	useEffect(()=>{
-	},[])
-
   const sectionFieldHanlder = (item, index) => {
     if(item.type === "date" ){
       return(
@@ -76,7 +73,7 @@ const FieldHandler = ({
               </Form.Label>
             </Row>
           }
-          {item.isPaymentDone == false && "-"}
+          {item.isPaymentDone === false && "-"}
           
           {item.isOnShipping &&
             <Row>
@@ -86,11 +83,11 @@ const FieldHandler = ({
                 &nbsp;
                 <u className={styles.link} onClick={(e)=>trackShipment(e, item.externalId)}>Lacak </u>
                 <br/>
-                {`Terkirim ` + new Date(item.shippingDate).toLocaleString()}
+                {`Terkirim ` + new Date(item.receivedDate).toLocaleString()}
               </Form.Label>
             </Row>
           }
-          {item.isOnShipping == false && "-"}
+          {item.isOnShipping === false && "-"}
         </Col>
       )
     }else if( item.type === "textCustomer" ){
@@ -378,8 +375,8 @@ const FieldHandler = ({
                 className={styles.field_form_upload_image}>
                   Upload Photo
               </button>
-              &nbsp;
-              { item.maxImage !=1 && 
+              &nbsp; 
+              { item.maxImage !== 1 && 
                 <button onClick={(e) => {
                   e.preventDefault() 
                   onImageRemoveAll()

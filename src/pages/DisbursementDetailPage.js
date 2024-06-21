@@ -1,41 +1,25 @@
 import React, { useEffect, useState } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import MainForm from '../components/MainForm/MainForm'
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import Swal from 'sweetalert2'
+import { useLocation, useParams } from 'react-router-dom';
 import { connect } from "react-redux";
 import { setDisbursementMemberDetail } from '../store/actions/memberAction'
-import { setDisbursementDetail } from '../store/actions/memberAction'
 
 const DisbursementDetailPage = ({ dispatch, dataMember }) => {
   const { memberId, disbursementId } = useParams()
-
   const location = useLocation();
-
   const [isLoading, setIsLoading] = useState(true);
-
   const [transactionTotal, setTrasactionTotal] = useState(null);
-
-  const [isVerified, setIsVerified] = useState(true);
-  // const [isVerified, setIsVerified] = useState(null);
-  
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [requestDate, setRequestDate] = useState("");
   const [successDate, setSuccessDate] = useState("");
   const [bankAccount, setBankAccount] = useState({});
   const [total, setTotal] = useState("");
-  const [transactionNumber, setTransactionNumber] = useState("");
-  const [reason, setReason] = useState("");
-  const [customerDetail, setCustomerDetail] = useState("");
   const [status, setStatus] = useState("");
   const [isDisbMemberDetail, setisDisbMemberDetail] = useState("");
-  const [transactionDate, setTransactionDate] = useState("");
-  const navigate = useNavigate()
 
   const setData = (data) => {
     let oneData = data.data[0];
-    console.log(oneData, "ONEDATA", isDisbMemberDetail)
     setBankAccount({
       "account_bank" : oneData?.account_bank || "",
       "account_bank_number" : oneData?.account_bank_number || "",
@@ -69,12 +53,8 @@ const DisbursementDetailPage = ({ dispatch, dataMember }) => {
 
   useEffect(()=>{
     setisDisbMemberDetail(location.pathname.includes("memberDetail"))
-    // if(location.pathname.includes("memberDetail")){
-      setDisbursementMemberDetail(dispatch, memberId,disbursementId)
-    // }else{
-      // setDisbursementDetail(dispatch, disbursementId)
-    // }
-	},[])
+    setDisbursementMemberDetail(dispatch, memberId,disbursementId)
+	},[dispatch, memberId,disbursementId, location.pathname])
 
   const dataForm = [
     {
@@ -191,7 +171,6 @@ const DisbursementDetailPage = ({ dispatch, dataMember }) => {
         status={status}
         orderId={disbursementId}
         pageFor={"detail"}
-        isVerified={isVerified}
         requestDate={requestDate}
       />
     </div>

@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup, } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
 import { Link } from "react-router-dom";
 import styles from './BaseTable.module.scss';
 import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { setAllAdmin } from '../../store/actions/adminAction'
 
 const AdminTable = ({
   pageName,
-  linkAddNew,
   dispatch, 
   dataAdmin,
 }) => {
 
-  const [dateRange, setDateRange] = useState([null, null]);
   const [status, setStatus] = useState(0);
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
@@ -64,11 +61,10 @@ const AdminTable = ({
 
 	useEffect(()=>{
     setAllAdmin(dispatch, 0)
-	},[])
+	},[dispatch])
 
   useEffect(()=>{
     if( dataAdmin.allAdminResp ){
-      console.log(dataAdmin.allAdminResp.data, "<<dataAdmin.allAdminResp")
       setDataShown(dataAdmin.allAdminResp.data)
       setPagination({
         offset: dataAdmin.allAdminResp.offset, 
@@ -84,15 +80,6 @@ const AdminTable = ({
         {pageName}
       </p>
       <Container className={styles.container}>
-        <Row>
-          {/* <Col xs="3">
-            <Link to={linkAddNew}>
-              <Button className={styles.save_button_2}>
-                {"New "+pageName}
-              </Button>
-            </Link>
-          </Col> */}
-        </Row>
         <Row>
           <Col xs="3">
             <Form.Label htmlFor="basic-url">Search</Form.Label>
@@ -140,7 +127,6 @@ const AdminTable = ({
             </Col>
           }
         </Row>
-        {console.log(data, "<<BEFORE PRESENT")}
         {data.length > 0 ?
           <BaseTable 
             data={data} 

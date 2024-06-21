@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
 import { Link } from "react-router-dom";
@@ -16,7 +16,6 @@ const MemberTable = ({
   dataMember,
 }) => {
 
-  const [dateRange, setDateRange] = useState([null, null]);
   const [activePage, setActivePage] = useState(0)
   const [locations, setLocations] = useState([])
   const [data, setData] = useState([])
@@ -33,7 +32,6 @@ const MemberTable = ({
     if( selectedLoc && selectedLoc !== '0' ){
       params['location_id'] = selectedLoc
     }
-    console.log(params, "<PARAMS", selectedLoc)
     setAllMember(dispatch, 0 ,params)
   }
 
@@ -77,11 +75,10 @@ const MemberTable = ({
 	useEffect(()=>{
     setAllMember(dispatch, 0)
     setAllLocation(dispatch)
-	},[])
+	},[dispatch])
 
   useEffect(()=>{
     if( dataMember.allMemberResp ){
-      console.log(dataMember.allMemberResp, "<<dataMember.allMemberResp")
       setDataShown(dataMember.allMemberResp.data)
       setPagination({
         offset: dataMember.allMemberResp.offset, 
@@ -93,7 +90,6 @@ const MemberTable = ({
 
   useEffect(()=>{
     if( dataMember.setAllLocationResp ){
-      console.log(dataMember.setAllLocationResp, "<<dataMember.setAllLocationResp")
       setLocationShown(dataMember.setAllLocationResp)
     }
   },[dataMember.setAllLocationResp])

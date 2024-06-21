@@ -1,48 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Container } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
-import { BiSearchAlt } from 'react-icons/bi'
-import { Link } from "react-router-dom";
 import styles from '../BaseTable.module.scss';
 import BaseTable from "../BaseTable";
 import { connect } from "react-redux";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const ReferenceNetworkTable = ({
   pageName,
   memberNetwork,
+  dispatch,
+  setNetworkById,
 }) => {
 
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [startDate, endDate] = dateRange;
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
   const [pagination, setPagination] = useState({})
-  const [searchKeyword, setSearchKeyword] = useState(null)
-
-  const doSearch = (e) => {
-    e.preventDefault()
-    let params = {}
-    if( searchKeyword ){
-      params['search'] = searchKeyword
-    }
-    // setSearchShipyardOwner(dispatch, params)
-  }
-
-  const doClearFilter = (e) => {
-    let params = {search: ""}
-   
-    setSearchKeyword("")
-    // setSearchShipyardOwner(dispatch, params)
-  }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    // setAllShipyard(dispatch, pageNumber)
+    setNetworkById(dispatch, (pageNumber-1)*10)
   }
-
-  console.log("memberNetworkmemberNetwork", memberNetwork)
 
   const setDataShown = (datas) => {
     let listData = []
@@ -57,22 +35,17 @@ const ReferenceNetworkTable = ({
       })
     }
     setData(listData)
-    console.log(listData, "<<<list data")
   }
-
-	useEffect(()=>{
-	},[])
 
   useEffect(()=>{
     if( memberNetwork ){
       setDataShown(memberNetwork.data)
       setPagination({
-          offset: memberNetwork.offset, 
-          limit: memberNetwork.limit, 
-          total: memberNetwork.total, 
-        })
+        offset: memberNetwork.offset, 
+        limit: memberNetwork.limit, 
+        total: memberNetwork.total_network, 
+      })
     }
-    console.log(memberNetwork,"<<memberNetwork")
   },[memberNetwork])
 
 	return (

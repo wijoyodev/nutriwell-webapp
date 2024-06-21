@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MainForm from '../components/MainForm/MainForm'
 import { connect } from "react-redux";
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { setDetailBanner, setUpdateBanner, resetUpdateBanner, setDeleteBanner } from '../store/actions/bannerAction'
 import Swal from 'sweetalert2';
 
@@ -15,7 +15,6 @@ const BannerDetailPage = ({
   const [id, setId] = useState("");
   const [content, setContent] = useState(true);
   const [images, setImages] = useState([]);
-  const [imagez, setImagez] = useState([]);
 
   const navigate = useNavigate()
 
@@ -41,14 +40,8 @@ const BannerDetailPage = ({
     })
   }
 
-  const onChangeImage = (imageList, addUpdateIndex) => {
-    // data for submit
+  const onChangeImage = (imageList) => {
     setImages(imageList);
-  };
-
-  const onChangeImagez = (e) => {
-    // data for submit
-    setImagez(e.target.files[0]);
   };
 
   const doUpdateBanner = (e) => {
@@ -80,18 +73,17 @@ const BannerDetailPage = ({
 
   useEffect(()=>{
     setDetailBanner(dispatch, bannerId)
-  },[])
+  },[dispatch, bannerId])
 
   useEffect(()=>{
     if( dataBanner.bannerUpdateResp ){
       resetUpdateBanner(dispatch)
       navigate('../bannerManagement')
     }
-  },[dataBanner.bannerUpdateResp])
+  },[dataBanner.bannerUpdateResp, dispatch, navigate])
 
   useEffect(()=>{
     if( dataBanner.bannerDetailResp ){
-      console.log("masuk data banner", dataBanner)
       setTitle(dataBanner.bannerDetailResp.title)
       setId(dataBanner.bannerDetailResp.id)
       setContent(dataBanner.bannerDetailResp.description)

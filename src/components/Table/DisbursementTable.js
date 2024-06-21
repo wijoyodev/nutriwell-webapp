@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
-import { BiSearchAlt } from 'react-icons/bi'
-import { Link } from "react-router-dom";
 import styles from './BaseTable.module.scss';
 import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
@@ -73,7 +71,7 @@ const DisbursementTable = ({
 
 	useEffect(()=>{
     setDisbursementList(dispatch, 0)
-	},[])
+	},[dispatch])
 
   useEffect(()=>{
     if( dataMember.allDisbursementResp ){
@@ -93,30 +91,6 @@ const DisbursementTable = ({
       </p>
       <Container className={styles.container}>
         <Row>
-          {/* <Col xs="3">
-            <Link to={linkAddNew}>
-              <Button className={styles.save_button_2}>
-                {"New "+pageName}
-              </Button>
-            </Link>
-          </Col> */}
-        </Row>
-        <Row>
-          <Col xs="3">
-            <Form.Label htmlFor="basic-url">Search</Form.Label>
-            <InputGroup>
-              <InputGroup.Text id="basic-addon2" className={styles.icon_search}>
-                {<BiSearchAlt/>}
-              </InputGroup.Text>
-              <Form.Control 
-                className={styles.field_search}
-                type={"text"} 
-                placeholder={"Search"}
-                onChange={(e)=>setSearchKeyword(e.target.value)}
-                value={searchKeyword}
-              />
-            </InputGroup >
-          </Col>
           <Col xs="3">
             <Form.Label htmlFor="basic-url">Filter by Status</Form.Label>
             <Form.Select aria-label="Choose Status" className={styles.field_form} 
@@ -136,7 +110,6 @@ const DisbursementTable = ({
               endDate={endDate}
               className={styles.date_picker}
               onChange={(update) => {
-                console.log("update date", update)
                 setDateRange(update);
               }}
               isClearable={true}

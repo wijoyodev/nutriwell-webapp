@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
-import { Link } from "react-router-dom";
 import styles from './BaseTable.module.scss';
 import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
-import { setAllOrder, setSearchOrders } from '../../store/actions/orderAction'
+import { setAllOrder } from '../../store/actions/orderAction'
 
 const OrderManagementTable = ({
   pageName,
-  linkAddNew,
   dispatch, 
   dataOrder,
 }) => {
@@ -28,7 +26,7 @@ const OrderManagementTable = ({
       params['search'] = searchKeyword
     }
     if( status ){
-      status ==  99 ? params['status'] = '' : params['status'] = status;
+      status ===  99 ? params['status'] = '' : params['status'] = status;
     }
     setAllOrder(dispatch, 0, params)
   }
@@ -79,12 +77,10 @@ const OrderManagementTable = ({
   }
 
 	useEffect(()=>{
-    console.log("masuk flow order table")
     setAllOrder(dispatch, 0)
-	},[])
+	},[dispatch])
 
   useEffect(()=>{
-    console.log(dataOrder," <<DATA PRDER")
     if( dataOrder.orderSearchResp ){
       setDataShown(dataOrder.orderSearchResp.data)
       setPagination({

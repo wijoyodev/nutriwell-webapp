@@ -1,18 +1,13 @@
 import axios from 'axios';
-import Swal from 'sweetalert2';
+import { checkResponseMessage } from '../../helper/helper'
 
 export const setUpdateProduct = async (dispatch, data, id) => {
-  console.log("setUpdateDetaiAdmin", data, id)
-    
   let files = new FormData();
 
   if( data.imagesUrl ){
-    let prodImages = []
     for( let i = 0 ; i<data.imagesUrl.length ; i++ ){
-      // prodImages.push(data.imagesUrl[i].file)
       files.append('product', data.imagesUrl[i].file);
     }
-    // files.append('product', prodImages);
   }
   files.append('price', data.price);
   files.append('description', data.description);
@@ -28,16 +23,9 @@ export const setUpdateProduct = async (dispatch, data, id) => {
     },
   },{
   }).then(({data}) => {
-    console.log("setUpdateProduct", data)
     dispatch({ type: 'SET_UPDATE_PRODUCT_RESP', payload: data.result })
   }).catch((error)=>{
-    console.log("response error", error)
-    Swal.fire({
-      title: 'Error',
-      text: error,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error)
   })
 }
 
@@ -52,15 +40,8 @@ export const setProductDetail = async (dispatch, adminId) => {
     },
   },{
   }).then(({data}) => {
-    console.log(data, "<<DATA setProductDetail")
     dispatch({ type: 'SET_PRODUCT_DETAIL_RESP', payload: data.result })
   }).catch((error)=>{
-    console.log("response error", error)
-    Swal.fire({
-      title: 'Error',
-      text: error,
-      icon: 'error',
-      confirmButtonColor: '#1b4460',
-    })
+    checkResponseMessage(false, "Error", error)
   })
 }

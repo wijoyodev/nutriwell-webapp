@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
 import { Link } from "react-router-dom";
 import styles from './LoginRegister.module.scss'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
@@ -10,7 +9,6 @@ const FieldHandlerLogin = ({
   item, 
   index
 }) => {
-	const isWebMobile = useMediaQuery({ query: '(max-width: 600px)' })
 	const [showPassword, setShowPassword] = useState(false);
 	
   const handleShowPass = () => {
@@ -18,9 +16,6 @@ const FieldHandlerLogin = ({
     setShowPassword(!curr)
   }
 
-	useEffect(()=>{
-	},[])
-  
   if (item.type === "title"){
     return (
       <Col md={item.spaceMd} xs={item.spaceXs} key={index}> 

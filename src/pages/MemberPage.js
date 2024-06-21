@@ -1,11 +1,7 @@
 import React, { useEffect } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import MemberTable from '../components/Table/MemberTable'
 
 const MemberPage = () => {
-  // const [progress, setProgress] = useState(true);
-  // const isWeMobile = useMediaQuery({ query: '(max-width: 600px)' })
-
   useEffect(()=>{
     localStorage.setItem("pagePos","MemberPage")
   },[])

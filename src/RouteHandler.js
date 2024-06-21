@@ -86,6 +86,7 @@ function RouteHandler() {
                     <Route exact path="/disbursement" element={<DisbursementPage/>} />
                     <Route exact path="/disbursementDetail/:disbursementId" element={<DisbursementDetailPage/>} />
                     <Route exact path="/adminManagement" element={<AdminPage/>} />
+                    <Route exact path="/adminDetail/:adminId" element={<AdminDetailPage/>} />
                     <Route exact path="/bannerManagement" element={<BannerManagementPage/>} />
                     <Route exact path="/newBanner" element={<NewBannerManagementPage/>} />
                     <Route exact path="/bannerDetail/:bannerId" element={<BannerDetailPage/>} />

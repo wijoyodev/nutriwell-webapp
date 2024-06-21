@@ -17,15 +17,7 @@ const MainForm = ({
   whiteBackground,
 }) => {
   const [validated, setValidated] = useState(false);
-  console.log(dataForm,"<<dataForm")
 
-  //  status {
-  //   'Belum Bayar' = 0,
-  //   'Dikemas' = 1,
-  //   'Dikirim' = 2,
-  //   'Selesai' = 3,
-  //   'Dibatalkan' = 4,
-  // }
   const printStatusLabel = (status) => {
     if( pageName === "Order Detail" ){
       if( status === 3 ){ // STATUS : Selesai

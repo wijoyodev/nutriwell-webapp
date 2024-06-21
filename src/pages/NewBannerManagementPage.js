@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MainForm from '../components/MainForm/MainForm'
 import { connect } from "react-redux";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { setCreateBanner, resetCreateBanner } from '../store/actions/bannerAction'
 import Swal from 'sweetalert2';
 
@@ -16,22 +16,18 @@ const NewBannerManagementPage = ({
   const navigate = useNavigate()
 
   useEffect(()=>{
-  },[])
-
-  useEffect(()=>{
-    if( dataBanner.bannerCreatetResp ){
+    if( dataBanner.bannerCreateResp ){
       resetCreateBanner(dispatch)
       navigate('../bannerManagement')
     }
-  },[dataBanner.bannerCreatetResp])
+  },[dataBanner.bannerCreateResp, dispatch, navigate])
 
   const clicked = () => {
     const temp = !progress
     setProgress(temp)
   }
 
-  const onChangeImage = (imageList, addUpdateIndex) => {
-    // data for submit
+  const onChangeImage = (imageList) => {
     setImages(imageList);
   };
 
@@ -63,9 +59,7 @@ const NewBannerManagementPage = ({
       spaceXs: "12",
       maxImage: "1",
       images: images,
-      // images: imagez,
       action: onChangeImage,
-      // action: onChangeImagez,
     },{
       type: "SPACE",
       spaceMd: "6",

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, } from 'react-bootstrap'
+import { Row, Col, Container, Form, } from 'react-bootstrap'
 import styles from './ReferenceNetwork.module.scss'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import FieldHandler from '../../MainFormMember/FieldHandler'
 import { connect } from "react-redux";
 import ReferenceNetworkTable from "../../Table/MemberDetail/ReferenceNetworkTable";
@@ -21,10 +21,6 @@ const ReferenceNetwork = ({
   const [lvl4, setLvl4] = useState("");
   const [lvl5, setLvl5] = useState("");
   const [totalRefNetwork, setTotalRefNetwork] = useState("");
-  const [validated, setValidated] = useState(false);
-
-  useEffect(()=>{
-  },[])
 
   const dataForm = [
     {
@@ -95,15 +91,15 @@ const ReferenceNetwork = ({
   useEffect(()=>{
     setNetworkById(dispatch, 0, memberId)
     setNetworkSummaryById(dispatch, memberId)
-	},[])
+	},[dispatch, memberId])
   
 	return (
-    isLoading ==false && memberNetwork && memberNetworkSummary &&
+    isLoading === false && memberNetwork && memberNetworkSummary &&
     <>
       <Container className={styles.container}>
         <Row>
           <Col className={styles.container_about} xs={12}>
-            <Form noValidate validated={validated}>
+            <Form noValidate>
               <Row className={styles.field_container}>
                 {dataForm.map( (item, index)=>{
                   return <FieldHandler item={item} index={index} key={index}/>
@@ -113,7 +109,11 @@ const ReferenceNetwork = ({
           </Col>
         </Row>
         <Row>
-          <ReferenceNetworkTable memberNetwork={memberNetwork}/>
+          <ReferenceNetworkTable 
+            memberNetwork={memberNetwork} 
+            setNetworkById={setNetworkById} 
+            dispatch={dispatch}
+          />
         </Row>
       </Container>
     </>

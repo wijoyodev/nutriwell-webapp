@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import React from "react";
+import { Row, Col, Table } from 'react-bootstrap';
 import styles from './BaseTable.module.scss';
 import 'rsuite/dist/rsuite.min.css';
 import { RiCheckLine } from 'react-icons/ri'
@@ -33,16 +33,6 @@ const BaseTable = ({
       )
     }
   }
-
-  // const printRoleLabel = (role) => {
-  //   if( role === 1 ){
-  //     return <p> Super Admin </p>
-  //   }else if( role === 2 ){
-  //     return <p> Manager </p>
-  //   }else if( role === 3 ){
-  //     return <p> Admin Packing </p>
-  //   }
-  // }
 
   const printStatusLabel = (status) => {
     if( section === "orderManagement" ){
@@ -83,9 +73,9 @@ const BaseTable = ({
   }
 
   const printData = (data, title) => {
-    if( title == "Total Komisi" || title == "Net Income" ){
+    if( title === "Total Komisi" || title === "Net Income" ){
       return <p className={styles.data_row}> {"Rp. "  + data} </p>
-    }else if( title == "Tanggal" ){
+    }else if( title === "Tanggal" || title === "TANGGAL" ){
       return <p className={styles.data_row}> {printDate(data)}</p>
     }else{
       return <p className={styles.data_row}> {data} </p>
@@ -102,9 +92,6 @@ const BaseTable = ({
       return link + id
     }
   }
-
-	useEffect(()=>{
-	},[])
 
 	return (
     data && 

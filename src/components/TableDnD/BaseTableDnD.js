@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Row, Table } from 'react-bootstrap';
 import styles from './BaseTableDnD.module.scss';
 import 'rsuite/dist/rsuite.min.css';
-import { RiCheckLine } from 'react-icons/ri'
 import { BiSearchAlt } from 'react-icons/bi'
 import { CgMenuGridR } from 'react-icons/cg'
 import { Link } from "react-router-dom";  
 import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 import {arrayMoveImmutable} from 'array-move';
-import Pagination, { bootstrap5PaginationPreset } from 'react-responsive-pagination';
-import Swal from 'sweetalert2'
 
 const BaseTableDnD = ({
   data,
-  totalPages,
   linkDetail,
   reorderState,
-  searchKeyword,
   setTempOrder,
 }) => {
-
-  const [currentPage, setCurrentPage] = useState(4);
-  const [activePage, setActivePage] = useState(1)
-  const [, setDataOrder] = useState(1)
 
   const SortableItem = SortableElement(({value}) => 
     <tr>
@@ -70,9 +61,6 @@ const BaseTableDnD = ({
     setTempOrder(curr)
   };
 
-	useEffect(()=>{
-	},[])
-
 	return (
     <>
       <Row>
@@ -111,7 +99,7 @@ const BaseTableDnD = ({
                     <p className={styles.data_row + ' pl-3'}>{data.orderNum}</p>
                   </td>
                   <td className={styles.vertical_middle}>
-                    <img className={styles.data_row_image} src={data.imageUrl}/>
+                    <img alt={"images"} className={styles.data_row_image} src={data.imageUrl}/>
                   </td>
                   <td className={styles.vertical_middle}>
                     <p className={styles.data_row}>{data.title}</p>
