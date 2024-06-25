@@ -39,7 +39,7 @@ const RewardTable = ({
     setPagination({
       offset: dataReward.offset, 
       limit: dataReward.limit, 
-      total: dataReward.total, 
+      total: dataReward.total_data, 
     })
 	},[dataReward])
 
