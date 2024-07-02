@@ -19,6 +19,7 @@ import {
   AddMemberPage,
   ProductDetailPage,
   NotFoundPage,
+  InvoicePage,
 } from './pages'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -72,6 +73,7 @@ function RouteHandler() {
                     <Route exact path="/memberDetail/:memberId/:disbursementId" element={<DisbursementDetailPage/>} />
                     <Route exact path="/productDetail" element={<ProductDetailPage/>} />
                     <Route exact path="/404" element={<NotFoundPage/>}/>
+                    <Route exact path="/invoice/:orderId" element={<InvoicePage/>} />
                     <Route path="*" element={<NotFoundPage/>}/>
                   </Routes>
                 }

@@ -40,7 +40,7 @@ export const setProductDetail = async (dispatch, adminId) => {
     },
   },{
   }).then(({data}) => {
-    dispatch({ type: 'SET_PRODUCT_DETAIL_RESP', payload: data.result })
+    dispatch({ type: 'SET_PRODUCT_DETAIL_RESP', payload: data.result.data })
   }).catch((error)=>{
     checkResponseMessage(false, "Error", error)
   })

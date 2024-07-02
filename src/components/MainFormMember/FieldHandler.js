@@ -146,7 +146,7 @@ const FieldHandler = ({
                 {'Rp' + item?.transactionTotal?.shippingPrice}
               </Col>
             }
-            { data === "PPH (23 (2%)" &&
+            { data === "PPN (11%)" &&
               <Col md={3} xc={3} className={"p-3"}>
                 {'- Rp' + item?.transactionTotal?.pph}
               </Col>
@@ -357,7 +357,7 @@ const FieldHandler = ({
               </InputGroup.Text>
               <br/>
               {item.for === "update" && 
-                <a href={item.value} className={styles.open_file} target="__blank">
+                <a href={item.value} className={styles.open_file} target="__blank" rel="noreferrer">
                   <p className={styles.open_file_popup}>Click to open uploaded file by User</p>
                   <AiOutlineSearch color="#1b4460"/>
                 </a>

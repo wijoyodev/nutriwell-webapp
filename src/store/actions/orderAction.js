@@ -99,7 +99,7 @@ export const setDetailOrder = async (dispatch, id) => {
   }
 
   axios(options).then(({data}) => {
-    dispatch({ type: 'SET_ORDER_DETAIL', payload: data.result[0] })
+    dispatch({ type: 'SET_ORDER_DETAIL', payload: data.result.data[0] })
   }).catch((error)=>{
     checkResponseMessage(false, "Error", error)
   })

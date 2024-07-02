@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import MainForm from '../components/MainForm/MainForm'
 import { connect } from "react-redux";
 import Swal from 'sweetalert2';
-import { setProductDetail, setUpdateProduct } from '../store/actions/productAction'
 import { Container } from 'react-bootstrap';
+import { setProductDetail, setUpdateProduct } from '../store/actions/productAction'
 
 const ProductDetailPage = ({ dispatch, dataProduct }) => {
   const [name, setName] = useState("");

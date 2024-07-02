@@ -5,12 +5,15 @@ import 'rsuite/dist/rsuite.min.css';
 import { RiCheckLine } from 'react-icons/ri'
 import { BiSearchAlt } from 'react-icons/bi'
 import { Link } from "react-router-dom";
+import { toRupiah } from 'to-rupiah';
 import Pagination, { bootstrap5PaginationPreset } from 'react-responsive-pagination';
 
 const BaseTable = ({
   data,
   linkDetail,
   pagination,
+  totalNetIncome,
+  totalGrossIncome,
   section,
   activePage,
   handlePageChange,
@@ -73,8 +76,8 @@ const BaseTable = ({
   }
 
   const printData = (data, title) => {
-    if( title === "Total Komisi" || title === "Net Income" ){
-      return <p className={styles.data_row}> {"Rp. "  + data} </p>
+    if( title === "Total Komisi" || title === "Net Income" || title === "Jumlah"  ){
+      return <p className={styles.data_row}> {toRupiah(data)} </p>
     }else if( title === "Tanggal" || title === "TANGGAL" ){
       return <p className={styles.data_row}> {printDate(data)}</p>
     }else{
@@ -174,11 +177,37 @@ const BaseTable = ({
             <option>{"40"}</option>
           </Form.Select>
         </Col> */}
-        <Col xs={{span: "2", offset: "4"}} className={styles.page_data}>
-          <p>
-            {`Total: ${pagination.total} data`}
-          </p>
-        </Col>
+        { section === "salesReport" ?
+          <>
+            <Col xs={{span: "2"}} className={styles.page_data}>
+              <p className="text-right">
+                Total Net Income:
+                <br/>
+                <strong>{toRupiah(totalNetIncome)}</strong>
+              </p>
+            </Col>
+            <Col xs={{span: "3"}} className={styles.page_data}>
+              <p className="text-right">
+                Total Gross Income :
+                <br/>
+                <strong>{toRupiah(totalGrossIncome)}</strong>
+              </p>
+            </Col>
+            <Col xs={{span: "1"}} className={styles.page_data}>
+              <p className="text-right">
+                Total:
+                <br/>
+                <strong>{pagination.total} data</strong>
+              </p>
+            </Col>
+          </>
+          :
+          <Col xs={{span: "2", offset: "4"}} className={styles.page_data}>
+            <p>
+              Total: {pagination.total} data
+            </p>
+          </Col> 
+        }
       </Row>
     </>
 	);

@@ -18,6 +18,8 @@ const SalesReportTable = ({
   const [startDate, endDate] = dateRange;
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
+  const [totalNetIncome, setTotalNetIncome] = useState("")
+  const [totalGrossIncome, setTotalGrossIncome] = useState("")
   const [pagination, setPagination] = useState({})
   const [searchKeyword, setSearchKeyword] = useState(null)
 
@@ -71,10 +73,12 @@ const SalesReportTable = ({
   useEffect(()=>{
     if( dataOrder.orderSearchResp ){
       setDataShown(dataOrder.orderSearchResp.data)
+      setTotalNetIncome(dataOrder.orderSearchResp.total.totalNetIncome)
+      setTotalGrossIncome(dataOrder.orderSearchResp.total.totalGrossIncome)
       setPagination({
         offset: dataOrder.orderSearchResp.offset, 
         limit: dataOrder.orderSearchResp.limit, 
-        total: dataOrder.orderSearchResp.total, 
+        total: dataOrder.orderSearchResp.total.totalOrders, 
       })
     }
   },[dataOrder.orderSearchResp])
@@ -141,6 +145,8 @@ const SalesReportTable = ({
             data={data} 
             pagination={pagination}
             section={"salesReport"}
+            totalNetIncome={totalNetIncome}
+            totalGrossIncome={totalGrossIncome}
             activePage={activePage}
             handlePageChange={handlePageChange}
           />

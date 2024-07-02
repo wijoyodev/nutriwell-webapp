@@ -94,7 +94,7 @@ const SideMenu = () => {
             data.type === "menu" ? 
               <Row key={index} onClick={ ()=>selectMenu(index) }>
                 <Link to={data.link} className={styles.link}>
-                  <Col xs="12" className={localStorage.getItem("activeMenu") === index ? styles.list_menu_active : styles.list_menu}>
+                  <Col xs="12" className={Number(localStorage.getItem("activeMenu")) === index ? styles.list_menu_active : styles.list_menu}>
                     <p> {data.icon} &nbsp;&nbsp; {data.title} </p>
                   </Col>
                 </Link>

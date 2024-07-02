@@ -13,6 +13,7 @@ export { default as AddMemberPage } from './AddMemberPage';
 export { default as NewBannerManagementPage } from './NewBannerManagementPage';
 export { default as BannerManagementPage } from './BannerManagementPage';
 export { default as BannerDetailPage } from './BannerDetailPage';
+export { default as InvoicePage } from './InvoicePage';
 export { default as MemberPage } from './MemberPage';
 export { default as MemberDetailPage } from './MemberDetailPage';
 export { default as ProductDetailPage } from './ProductDetailPage';

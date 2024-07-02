@@ -5,10 +5,12 @@ import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineSearch } from 'react-icons/ai';
 import { BsFillImageFill } from 'react-icons/bs';
 import { BiPlus } from 'react-icons/bi';
+import { FaRegFileAlt } from "react-icons/fa";
 import ImageUploading from "react-images-uploading";
 import { DateRangePicker, DatePicker } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
 import Select from 'react-select'
+import { toRupiah } from 'to-rupiah';
 
 const FieldHandler = ({
   item, 
@@ -107,6 +109,32 @@ const FieldHandler = ({
           </Row>
         </Col>
       )
+    }else if( item.type === "reason" && item.showReason ){
+      return (
+        <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
+          <Row>
+            <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label>
+          </Row>
+          <Row>
+            <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.value}</Form.Label>
+          </Row>
+        </Col>
+      )
+    }else if( item.type === "invoice" && item.showInvoice ){
+      return (
+        <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
+        <Row>
+          <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label>
+        </Row>
+          <Row>
+            <a href={"../invoice/" + item.value} target="_blank" rel="noreferrer">
+              <Form.Label htmlFor="basic-url" className={`${styles.link} mb-0`}> 
+                <FaRegFileAlt /> Lihat Invoice 
+              </Form.Label>
+            </a>
+          </Row>
+        </Col>
+      )
     }
   }
   
@@ -147,12 +175,12 @@ const FieldHandler = ({
                 </Col>
                 { data === "Total yang dapat ditarik" &&
                   <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
-                    {'Rp' + item?.transactionTotal?.totalPrice}
+                    {toRupiah(item?.transactionTotal?.totalPrice)}
                   </Col>
                 }
-                { data === "PPH (23 (2%)" &&
+                { data === "PPN (11%)" &&
                   <Col md={3} xc={3} className={"p-3"}>
-                    {'- Rp' + item?.transactionTotal?.pph}
+                    {'- ' + toRupiah(item?.transactionTotal?.pph)}
                   </Col>
                 }
               </Row>
@@ -162,6 +190,7 @@ const FieldHandler = ({
 
         { item.isProductInfo &&
           <>
+          {console.log(item, "<item")}
             <Row index={index} className={styles.data_table}>
               <Col md={3} xc={3} className={"p-3"}>
                 {item.productDetails.product_name}
@@ -170,10 +199,10 @@ const FieldHandler = ({
                 {item.productDetails.quantity}
               </Col>
               <Col md={3} xc={3} className={"p-3"}>
-                {'Rp' + item.productDetails.price}
+                {toRupiah(item.productDetails.price)}
               </Col>
               <Col md={3} xc={3} className={"p-3"}>
-                {'Rp' + item.productDetails.total_price}
+                {toRupiah(item.itemSubTotal)}
               </Col>
             </Row>
             {item.transactionTotalTitle.map( ( data, index) => (
@@ -183,27 +212,27 @@ const FieldHandler = ({
                 </Col>
                 { data === "Total yang dapat ditarik" &&
                   <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
-                    {'Rp' + item?.transactionTotal?.totalPrice}
+                    {toRupiah(item?.transactionTotal?.totalPrice)}
                   </Col>
                 }
                 { data === "Total" &&
                   <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
-                    {'Rp' + item?.transactionTotal}
+                    {toRupiah(item?.transactionTotal)}
                   </Col>
                 }
                 { data === "Subtotal" &&
                   <Col md={3} xc={3} className={"p-3"}>
-                    {'Rp' + item?.transactionSubTotal}
+                    {toRupiah(item?.transactionSubTotal)}
                   </Col>
                 }
                 { data === "Ongkir" &&
                   <Col md={3} xc={3} className={"p-3"}>
-                    {'Rp' + item?.courierPrice}
+                    {toRupiah(item?.courierPrice)}
                   </Col>
                 }
-                { data === "PPH (23 (2%)" &&
+                { data === "PPN (11%)" &&
                   <Col md={3} xc={3} className={"p-3"}>
-                    {'- Rp' + item?.transactionTotal?.pph}
+                    {toRupiah(item?.ppn)}
                   </Col>
                 }
                 {/* {styles.totalPrice + " p-3"} */}
@@ -386,7 +415,7 @@ const FieldHandler = ({
               }
               {imageList.map((image, index) => (
                 <div key={index} className="image-item">
-                  <img src={image.data_url} alt="" width="100" />
+                  <img crossorigin='anonymous' src={image.data_url} alt="" width="100" />
                   <div className="image-item__btn-wrapper">
                     <button onClick={(e) => { 
                       e.preventDefault()
@@ -436,7 +465,7 @@ const FieldHandler = ({
               </InputGroup.Text>
               <br/>
               {item.for === "update" && 
-                <a href={item.value} className={styles.open_file} target="__blank">
+                <a href={item.value} className={styles.open_file} target="__blank" rel="noreferrer">
                   <p className={styles.open_file_popup}>Click to open uploaded file by User</p>
                   <AiOutlineSearch color="#1b4460"/>
                 </a>

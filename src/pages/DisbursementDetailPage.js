@@ -98,7 +98,7 @@ const DisbursementDetailPage = ({ dispatch, dataMember }) => {
       dataFieldsTitle: ["Deskripsi", "Jumlah"], 
       transactionDescription: "Request Penarikan",
       transactionTotal: transactionTotal,
-      transactionTotalTitle: ["PPH (23 (2%)", "Total yang dapat ditarik"], 
+      transactionTotalTitle: ["PPN (11%)", "Total yang dapat ditarik"], 
     },{
       type: "SPACE",
       spaceMd: "12",

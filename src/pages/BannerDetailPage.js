@@ -100,6 +100,16 @@ const BannerDetailPage = ({
 
   const dataForm = [
     {
+      type: "SPACE",
+      spaceMd: "9",
+      spaceXs: "9",
+    },{
+      label: "Delete Banner",
+      type: "buttonDelete",
+      spaceMd: "3",
+      spaceXs: "3",
+      onClickAction: doDeleteBanner,
+    },{
       label: "ID",
       type: "text",
       placeholder: "ID",
@@ -153,12 +163,6 @@ const BannerDetailPage = ({
       spaceMd: "3",
       spaceXs: "3",
       link: '../bannerManagement'
-    },{
-      label: "Delete",
-      type: "buttonDelete",
-      spaceMd: "3",
-      spaceXs: "3",
-      onClickAction: doDeleteBanner,
     }
   ]
 

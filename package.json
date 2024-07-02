@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-pdf/renderer": "^3.4.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -32,6 +33,7 @@
     "rsuite": "^5.23.2",
     "sass": "^1.56.1",
     "sweetalert2": "^11.7.0",
+    "to-rupiah": "^1.0.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -15,6 +15,22 @@
   text-decoration: none !important;
 }
 
+.invoiceContainer{
+  height: 1000px;
+  width: 1000px;
+}
+
+.footerInvoice{
+  background-image: url('../public//images//footer.png');
+  height: 100px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 10;
+  padding: 10;
+  flex-grow: 1;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

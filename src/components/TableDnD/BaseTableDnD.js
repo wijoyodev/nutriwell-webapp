@@ -99,7 +99,7 @@ const BaseTableDnD = ({
                     <p className={styles.data_row + ' pl-3'}>{data.orderNum}</p>
                   </td>
                   <td className={styles.vertical_middle}>
-                    <img alt={"images"} className={styles.data_row_image} src={data.imageUrl}/>
+                    <img crossorigin='anonymous' alt={"images"} className={styles.data_row_image} src={data.imageUrl}/>
                   </td>
                   <td className={styles.vertical_middle}>
                     <p className={styles.data_row}>{data.title}</p>

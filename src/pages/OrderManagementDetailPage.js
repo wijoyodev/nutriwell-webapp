@@ -9,13 +9,16 @@ import { setDetailOrder, setChangeOrderStatus, setTrackShipment, resetTrackShipm
 const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   const { orderId } = useParams()
   const [isLoading, setIsLoading] = useState(true);
-  const [transactionTotal, setTrasactionTotal] = useState(null);
-  const [transactionSubTotal, setTrasactionSubTotal] = useState(null);
+  const [orderStatus, setOrderStatus] = useState(true);
   const [isVerified, setIsVerified] = useState(true);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [requestDate, setRequestDate] = useState("");  
+  const [reason, setReason] = useState("");  
   const [receivedDate, setReceivedDate] = useState("");
+  const [customerDetail, setCustomerDetail] = useState("");
+  const [status, setStatus] = useState("");
+  const [transactionDate, setTransactionDate] = useState("");
 
   // payment info
   const [isPaymentDone, setIsPaymentDone] = useState(false);
@@ -28,13 +31,16 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   const [courierPrice, setCourierPrice] = useState("");
   const [shippingNo, setShippingNo] = useState("");
   const [externalId, setExternalId] = useState("");
+  const [shippingDate, setShippingDate] = useState("");
+
+  // price info
   
+  const [transactionTotal, setTrasactionTotal] = useState(null);
+  const [transactionSubTotal, setTrasactionSubTotal] = useState(null);
+  const [itemSubTotal, setItemSubTotal] = useState(null);
   const [productDetails, setProductDetails] = useState("");
   const [transactionNumber, setTransactionNumber] = useState("");
-  const [customerDetail, setCustomerDetail] = useState("");
-  const [status, setStatus] = useState("");
-  const [transactionDate, setTransactionDate] = useState("");
-  const [shippingDate, setShippingDate] = useState("");
+  const [ppn, setPpn] = useState("");
 
   const reqChangeStat = (orderStatus, dataReq) => {
     let dataParam = {
@@ -203,6 +209,7 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   },[dataOrder.trackShipmentResp, dispatch])
   
   useEffect(()=>{
+    console.log("leweat useEffect data masukl", dataOrder)
     if( dataOrder.orderDetailResp ){
       let data = dataOrder.orderDetailResp
       setId(data.order_number)
@@ -242,6 +249,8 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   },[dataOrder.orderDetailResp, dispatch])
 
   useEffect(()=>{
+    
+    console.log("leweat useEffect")
     setDetailOrder(dispatch, orderId)
     setIsLoading(true)
   },[dispatch, orderId])
@@ -275,6 +284,20 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
           spaceMd: "6",
           spaceXs: "12",
           value: transactionDate,
+        },{
+          label: "ALASAN",
+          type: "reason",
+          showReason: orderStatus === 4 ? true : false,
+          spaceMd: "6",
+          spaceXs: "12",
+          value: `Dibatalkan sistem (${reason})`,
+        },{
+          label: "INVOICE",
+          type: "invoice",
+          showInvoice: (orderStatus === 1 || orderStatus === 2 || orderStatus === 3) ? true : false,
+          spaceMd: "6",
+          spaceXs: "12",
+          value: id,
         }
       ]
     },
@@ -316,10 +339,12 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       type: "sectionTable",
       isProductInfo: true,
       productDetails: productDetails, 
-      dataFieldsTitle: ["Deskripsi", "Jumlah"], 
+      dataFieldsTitle: ["Deskripsi", "QTY", "Harga Per Produk"], 
       transactionTotal: transactionTotal,
+      itemSubTotal: itemSubTotal,
       transactionSubTotal: transactionSubTotal,
-      transactionTotalTitle: ["Subtotal", "Ongkir", "Total"], 
+      ppn: ppn,
+      transactionTotalTitle: ["Subtotal", "PPN (11%)", "Ongkir", "Total"], 
       courierPrice: courierPrice,
     },
     {
@@ -335,6 +360,76 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
       spaceXs: "12",
     }
   ]
+  
+  useEffect(()=>{ 
+    if( dataOrder.trackShipmentResp ){
+      Swal.fire({
+        title: 'Lacak Pengiriman',
+        html: printTracking(dataOrder.trackShipmentResp),
+        confirmButtonColor: '#1b4460',
+      })
+      resetTrackShipment(dispatch)
+    }
+  },[dataOrder.trackShipmentResp, dispatch])
+  
+  useEffect(()=>{
+    if( dataOrder.orderDetailResp ){
+      let data = dataOrder.orderDetailResp
+      console.log("MASUK,", data)
+      setId(data.order_number)
+      setName(data.user_detail.full_name)
+      setRequestDate(data.created_at)
+      setOrderStatus(data.status)
+
+      if(data.status === 2 || data.status === 3){
+        setShippingNo(data.shipment_number)
+        setShippingDate(data.delivery_date)
+        setIsOnShipping(true)
+        setExternalId(data.external_id)
+      }
+
+      if(data.status === 1 || data.status === 2 || data.status === 3){
+        setPaymentMethod(data.payment_method)
+        setPaymentDate(data.payment_date)
+        setIsPaymentDone(true)
+      }
+
+      if(data.status === 3){
+        setReceivedDate(data.receive_date)
+      }
+
+      if( data.status === 4 ){
+        setReason(data.reasons)
+      }
+
+      if(data.status === 1 || data.status === 2 || data.status === 3){
+        localStorage.setItem("dataInvoice",JSON.stringify(data))
+      }
+
+
+      setCourierType(data.courier_name)
+      setCourierPrice(data.courier_rate)
+      setProductDetails(data.product_detail)
+      setTransactionNumber(data.order_number)
+      setCustomerDetail(data.user_detail)
+      setStatus(data.status)
+      setTransactionDate(data.created_at)
+      setIsVerified(data.account)
+
+      // PRICE
+      setPpn(data.product_detail.total_price_after_tax - data.product_detail.total_price)
+      setItemSubTotal(data.product_detail.price * data.product_detail.quantity)
+      setTrasactionSubTotal(data.product_detail.price * data.product_detail.quantity)
+      setTrasactionTotal(data.total_purchase_after_tax)
+      
+      setIsLoading(false)
+    }
+  },[dataOrder.orderDetailResp, dispatch])
+
+  useEffect(()=>{
+    setDetailOrder(dispatch, orderId)
+    setIsLoading(true)
+  },[dispatch, orderId])
 
   return (    
     isLoading === false && 

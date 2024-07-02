@@ -86,7 +86,7 @@ const OrderManagementTable = ({
       setPagination({
         offset: dataOrder.orderSearchResp.offset, 
         limit: dataOrder.orderSearchResp.limit, 
-        total: dataOrder.orderSearchResp.total, 
+        total: dataOrder.orderSearchResp.total.totalOrders, 
       })
     }
   },[dataOrder.orderSearchResp])
