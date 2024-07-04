@@ -1,4 +1,4 @@
 git checkout main
 git pull origin main
-npm install
+npm install --force
 npm run build
