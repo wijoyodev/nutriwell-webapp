@@ -10,6 +10,21 @@ $dark_green : #096D6A;
   background-size: cover; /* Resize the background image to cover the entire container */
 }
 
+.privPol{
+  text-align: justify !important;
+  padding: 2%;
+}
+
+.left_image_half{
+  background-image: url('../../../public/images/main.png');
+  height: 121vh; /* You must set a specified height */
+  background-position: center; /* Center the image */
+  width: 25%;
+  background-color: #062E47; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+}
+
 .separator{
   text-align: center;
   margin-bottom: 2%;

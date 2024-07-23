@@ -17,4 +17,4 @@ export { default as InvoicePage } from './InvoicePage';
 export { default as MemberPage } from './MemberPage';
 export { default as MemberDetailPage } from './MemberDetailPage';
 export { default as ProductDetailPage } from './ProductDetailPage';
-
+export { default as PrivacyPolicyPage } from './PrivacyPolicyPage';

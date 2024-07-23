@@ -3,7 +3,7 @@ import LoginRegister from '../components/LoginRegister/LoginRegister'
 import { connect } from "react-redux";
 import { setLoginResp } from '../store/actions/loginRegisterAction'
 
-const LoginPage = ({ dispatch, dataLoginRegister }) => {
+const LoginPage = ({ dispatch, dataLoginRegister, privacyPolicy }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
@@ -70,6 +70,7 @@ const LoginPage = ({ dispatch, dataLoginRegister }) => {
         dataField={dataField}
         pageName={"Login as Admin"}
         onSubmit={doLogin}
+        privacyPolicy={privacyPolicy}
       />
     </>
   );
