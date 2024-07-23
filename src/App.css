@@ -15,6 +15,22 @@
   text-decoration: none !important;
 }
 
+.invoiceContainer{
+  height: 1000px;
+  width: 1000px;
+}
+
+.footerInvoice{
+  background-image: url('../public//images//footer.png');
+  height: 100px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 10;
+  padding: 10;
+  flex-grow: 1;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -26,12 +42,6 @@
   line-height: 36px;
   letter-spacing: 0px;
   text-align: left;
-}
-
-.company_listed_container{
-  padding-top: 13%;
-  background-color: #595a5d !important;
-  height: 100vh !important;
 }
 
 .box_company_listed{
@@ -150,6 +160,13 @@ textarea{
 .container_right_form{
   padding: 7.5rem 2rem 1rem 1rem !important;
   background-color: #f6f9fb !important;
+}
+
+.container_product{
+  border-radius: 8px;
+  background-color: white;
+  padding: 2% 3% 3% 3%;
+  margin: 0% 1%;
 }
 
 .ft-9{

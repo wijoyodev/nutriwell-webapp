@@ -178,17 +178,6 @@ $dark_blue2 : #0975B6;
   margin-top: 1%;
 }
 
-.title_shipyard{
-  font-size: 24px;
-  margin: 4% 0% 0% 2%;
-}
-
-.no_shipyard{
-  font-size: 17px;
-  margin: 0% 0% 0% 2%;
-  font-weight: 400;
-}
-
 .label_card{
   font-weight: 500;
 }
@@ -243,6 +232,14 @@ $dark_blue2 : #0975B6;
   line-height: 150%; /* 21.6px */
 }
 
+.filed_label_3{
+  font-family: Inter;
+  font-size: 14.4px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 21.6px */
+}
+
 .filed_label_info{
   font-family: Inter;
   font-size: 13px;
@@ -283,6 +280,12 @@ $dark_blue2 : #0975B6;
 .field_title_3{
   font-size: 13px;
   font-weight: 400;
+  margin-top: 2%;
+}
+
+.field_title_4{
+  font-size: 18px;
+  font-weight: 700;
   margin-top: 2%;
 }
 
@@ -428,8 +431,8 @@ $dark_blue2 : #0975B6;
   border-radius: 16px !important;
   margin-bottom: 2%;
   width: 100% !important;
-  background-color: #a9a9a9 !important;
-  color: #ffffff !important;
+  background-color: #ebebeb !important;
+  color: #aaaaaa !important;
   text-align: left !important;
   pointer-events: none !important;
 }
@@ -444,6 +447,7 @@ $dark_blue2 : #0975B6;
   text-decoration: underline;
   font-weight: 600;
   font-size: 10pt ;
+  cursor: pointer;
 }
 
 .no_link{

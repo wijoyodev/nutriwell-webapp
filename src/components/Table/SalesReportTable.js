@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
-import { Link } from "react-router-dom";
 import styles from './BaseTable.module.scss';
 import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllShipyard, setSearchShipyardOwner } from '../../store/actions/shipyardAction'
+import { setAllOrder } from '../../store/actions/orderAction'
 
 const SalesReportTable = ({
   pageName,
-  linkAddNew,
   dispatch, 
-  dataShipyard,
+  dataOrder,
 }) => {
-
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
+  const [totalNetIncome, setTotalNetIncome] = useState("")
+  const [totalGrossIncome, setTotalGrossIncome] = useState("")
   const [pagination, setPagination] = useState({})
   const [searchKeyword, setSearchKeyword] = useState(null)
 
@@ -28,21 +27,27 @@ const SalesReportTable = ({
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    if( startDate && endDate ){
+      params['start'] = Math.floor(new Date(startDate).getTime() / 1000)
+      params['end'] = Math.floor(new Date(endDate).getTime() / 1000)
+    }
+    setAllOrder(dispatch, 0, params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
-   
+    e.preventDefault()
+    let params = {search: ""}
+    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    setDateRange([null, null])
+    setAllOrder(dispatch, 0, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    setAllOrder(dispatch, (pageNumber-1)*10)
   }
 
   const setDataShown = (datas) => {
@@ -50,72 +55,33 @@ const SalesReportTable = ({
     for (let idx in datas) {
       listData.push({
         'ID': datas[idx].id,
-        'Tanggal Pesan': new Date(datas[idx].orderDate).toLocaleString(),
-        'Tanggal Bayar': new Date(datas[idx].paymentDate).toLocaleString(),
-        'Nama': datas[idx].name,
-        'QTY': datas[idx].quantity,
-        'Jumlah Dibayar': datas[idx].totalPayment,
-        'Net Income': datas[idx].netIncome,
+        'Tanggal Pesan': new Date(datas[idx].created_at).toLocaleString(),
+        'Tanggal Bayar': new Date(datas[idx].payment_date).toLocaleString(),
+        'Nama': datas[idx].user_detail.full_name,
+        'QTY': datas[idx].product_detail.quantity,
+        'Jumlah': datas[idx].product_detail.total_price,
+        'Net Income': datas[idx].net_income,
       })
     }
     setData(listData)
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "CU0000",
-      orderDate: 1709735589,
-      paymentDate: 1709735589,
-      name: "PT Sukro",
-      quantity: 9,
-      totalPayment: 98000,
-      netIncome: 97000
-    },{
-      id: "CU0001",
-      orderDate: 1709735589,
-      paymentDate: 1709735589,
-      name: "Alima Putra",
-      quantity: 1,
-      totalPayment: 122000,
-      netIncome: 112000
-    },{
-      id: "CU0002",
-      orderDate: 1709735589,
-      paymentDate: 1709735589,
-      name: "Yuloha Sukima",
-      quantity: 1,
-      totalPayment: 10000,
-      netIncome: 10000
-    },{
-      id: "CU0003",
-      orderDate: 1709735589,
-      paymentDate: 1709735589,
-      name: "Maratus K",
-      quantity: 1,
-      totalPayment: 10000,
-      netIncome: 10000
-    },{
-      id: "CU0004",
-      orderDate: 1709735589,
-      paymentDate: 1709735589,
-      name: "Saikoji",
-      quantity: 1,
-      totalPayment: 10000,
-      netIncome: 10000
-    }])
-    // FOR SLICING DATA ONLY 
-
-	},[])
+    setAllOrder(dispatch, 0)
+	},[dispatch])
 
   useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
+    if( dataOrder.orderSearchResp ){
+      setDataShown(dataOrder.orderSearchResp.data)
+      setTotalNetIncome(dataOrder.orderSearchResp.total.totalNetIncome)
+      setTotalGrossIncome(dataOrder.orderSearchResp.total.totalGrossIncome)
+      setPagination({
+        offset: dataOrder.orderSearchResp.offset, 
+        limit: dataOrder.orderSearchResp.limit, 
+        total: dataOrder.orderSearchResp.total.totalOrders, 
+      })
     }
-  },[dataShipyard.allShipyardResp])
+  },[dataOrder.orderSearchResp])
 
 	return (
     <>
@@ -142,7 +108,7 @@ const SalesReportTable = ({
               <Form.Control 
                 className={styles.field_search}
                 type={"text"} 
-                placeholder={"Search"}
+                placeholder={"no resi-tanpa huruf / no order .."}
                 onChange={(e)=>setSearchKeyword(e.target.value)}
                 value={searchKeyword}
               />
@@ -177,9 +143,10 @@ const SalesReportTable = ({
         {data.length > 0 ?
           <BaseTable 
             data={data} 
-            // linkDetail={"../orderManagementDetail/"} 
             pagination={pagination}
             section={"salesReport"}
+            totalNetIncome={totalNetIncome}
+            totalGrossIncome={totalGrossIncome}
             activePage={activePage}
             handlePageChange={handlePageChange}
           />
@@ -199,7 +166,7 @@ const SalesReportTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataOrder: state.order
   };
 };
 

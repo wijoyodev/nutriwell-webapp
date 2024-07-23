@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
-import { Link } from "react-router-dom";
 import styles from './BaseTable.module.scss';
 import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
-import { setAllShipyard, setSearchShipyardOwner } from '../../store/actions/shipyardAction'
+import { setAllOrder } from '../../store/actions/orderAction'
 
 const OrderManagementTable = ({
   pageName,
-  linkAddNew,
   dispatch, 
-  dataShipyard,
+  dataOrder,
 }) => {
 
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
+  const [status, setStatus] = useState(null)
   const [pagination, setPagination] = useState({})
   const [searchKeyword, setSearchKeyword] = useState(null)
 
@@ -24,88 +23,73 @@ const OrderManagementTable = ({
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    if( status ){
+      status ===  99 ? params['status'] = '' : params['status'] = status;
+    }
+    setAllOrder(dispatch, 0, params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    setAllOrder(dispatch, 0, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    setAllOrder(dispatch, (pageNumber-1)*10)
   }
 
   const setDataShown = (datas) => {
     let listData = []
+
     for (let idx in datas) {
       listData.push({
         'ID': datas[idx].id,
-        'Tanggal Pesan': new Date(datas[idx].orderDate).toLocaleString(),
-        'Nama': datas[idx].name,
-        'QTY': datas[idx].quantity,
-        'Jumlah': datas[idx].total,
-        'STATUS': datas[idx].status,
+        'Tanggal Pesan': new Date(datas[idx].created_at).toLocaleString(),
+        'Nama': datas[idx].user_detail.full_name,
+        'QTY': datas[idx].product_detail.quantity,
+        'Jumlah': datas[idx].product_detail.total_price,
+        'STATUS': setStatusShown(datas[idx].status),
       })
     }
     setData(listData)
   }
 
+  const setStatusShown = (status) => {
+    switch (status) {
+      case 0:
+        return 'Belum Bayar';
+      case 1:
+        return 'Dikemas';
+      case 2:
+        return 'Dikirim';
+      case 3:
+        return 'Selesai';
+      case 4:
+        return 'Dibatalkan';
+      default:
+        return 'Dibatalkan';
+    }
+  }
+
 	useEffect(()=>{
-    // setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "ORO000",
-      orderDate: 1709735589,
-      name: "PT Sukro",
-      quantity: 9,
-      total: 999,
-      status: "Selesai"
-    },{
-      id: "ORO001",
-      orderDate: 1709735589,
-      name: "Alima Putra",
-      quantity: 1,
-      total: 102,
-      status: "Dikemas"
-    },{
-      id: "ORO002",
-      orderDate: 1709735589,
-      name: "Yuloha Sukima",
-      quantity: 1,
-      total: 102,
-      status: "Belum Bayar"
-    },{
-      id: "ORO003",
-      orderDate: 1709735589,
-      name: "Maratus K",
-      quantity: 1,
-      total: 102,
-      status: "Dikirim"
-    },{
-      id: "ORO004",
-      orderDate: 1709735589,
-      name: "Saikoji",
-      quantity: 1,
-      total: 1,
-      status: "Dibatalkan"
-    }])
-    // FOR SLICING DATA ONLY 
+    setAllOrder(dispatch, 0)
+	},[dispatch])
 
-	},[])
-
-  // useEffect(()=>{
-  //   if( dataShipyard.allShipyardResp ){
-  //     setDataShown(dataShipyard.allShipyardResp.data)
-  //     setPagination(dataShipyard.allShipyardResp.pagination)
-  //   }
-  // },[dataShipyard.allShipyardResp])
+  useEffect(()=>{
+    if( dataOrder.orderSearchResp ){
+      setDataShown(dataOrder.orderSearchResp.data)
+      setPagination({
+        offset: dataOrder.orderSearchResp.offset, 
+        limit: dataOrder.orderSearchResp.limit, 
+        total: dataOrder.orderSearchResp.total.totalOrders, 
+      })
+    }
+  },[dataOrder.orderSearchResp])
 
 	return (
     <>
@@ -132,7 +116,7 @@ const OrderManagementTable = ({
               <Form.Control 
                 className={styles.field_search}
                 type={"text"} 
-                placeholder={"Search"}
+                placeholder={"no resi-tanpa huruf / no order .."}
                 onChange={(e)=>setSearchKeyword(e.target.value)}
                 value={searchKeyword}
               />
@@ -140,12 +124,13 @@ const OrderManagementTable = ({
           </Col>
           <Col xs="3">
             <Form.Label htmlFor="basic-url">Filter by Status</Form.Label>
-            <Form.Select aria-label="Choose Status" className={styles.field_form} >
-              <option>{"Select Status"}</option>
-              <option>{"Selesai"}</option>
-              <option>{"Belum Bayar"}</option>
-              <option>{"Dikemas"}</option>
-              <option>{"Dikirim"}</option>
+            <Form.Select aria-label="Choose Status" className={styles.field_form} onChange={(e)=>setStatus(e.target.value)} >
+              <option value="99">{"Select Status"}</option>
+              <option value="0">{"Belum Bayar"}</option>
+              <option value="1">{"Dikemas"}</option>
+              <option value="2">{"Dikirim"}</option>
+              <option value="3">{"Selesai"}</option>
+              <option value="4">{"Dibatalkan"}</option>
             </Form.Select>
           </Col>
           <Col xs="4" className="mt-4">
@@ -185,7 +170,7 @@ const OrderManagementTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataOrder: state.order
   };
 };
 

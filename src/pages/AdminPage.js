@@ -1,11 +1,7 @@
 import React, { useEffect } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import AdminTable from '../components/Table/AdminTable'
 
 const AdminPage = () => {
-  // const [progress, setProgress] = useState(true);
-  // const isWeMobile = useMediaQuery({ query: '(max-width: 600px)' })
-
   useEffect(()=>{
     localStorage.setItem("pagePos","AdminPage")
   },[])

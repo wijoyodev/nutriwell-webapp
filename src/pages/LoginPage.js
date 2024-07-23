@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import LoginRegister from '../components/LoginRegister/LoginRegister'
 import { connect } from "react-redux";
-import { setLoginResp, setAuthResp } from '../store/actions/loginRegisterAction'
+import { setLoginResp } from '../store/actions/loginRegisterAction'
 
-const LoginPage = ({ dispatch, dataLoginRegister }) => {
+const LoginPage = ({ dispatch, dataLoginRegister, privacyPolicy }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate()
   
   const doLogin = (e) => {
     e.preventDefault()
-    let data = { email, password }
+    let data = { user_account : email, password }
     setLoginResp(dispatch, data)
   }
-  // 
+
   const dataField=[
     {
       label: "Log In",
@@ -47,24 +45,24 @@ const LoginPage = ({ dispatch, dataLoginRegister }) => {
     },{
       label: "Log In",
       type: "button_submit",
-      link: "../shipyard",
+      link: "../orderManagement",
       spaceMd: "12",
       spaceXs: "12",
     }
   ]
 
-  // useEffect(()=>{
-  //   if( dataLoginRegister.loginResp ){
-  //     if( dataLoginRegister.loginResp.success ){
-  //       const myTimeout = setTimeout(myGreeting, 2000);
+  useEffect(()=>{
+    if( dataLoginRegister.loginResp ){
+      if( dataLoginRegister.loginResp.success ){
+        const myTimeout = setTimeout(reloadFunc, 2000);
 
-  //       function myGreeting() {
-  //         window.location.reload();
-  //       }
-  //       myTimeout()
-  //     }
-  //   }
-  // },[dataLoginRegister.loginResp])
+        function reloadFunc() {
+          window.location.reload();
+        }
+        myTimeout()
+      }
+    }
+  },[dataLoginRegister.loginResp])
 
   return (    
     <>
@@ -72,6 +70,7 @@ const LoginPage = ({ dispatch, dataLoginRegister }) => {
         dataField={dataField}
         pageName={"Login as Admin"}
         onSubmit={doLogin}
+        privacyPolicy={privacyPolicy}
       />
     </>
   );

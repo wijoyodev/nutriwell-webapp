@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Row, Col, Form, InputGroup, Button, FormGroup } from 'react-bootstrap'
+import React, { useState } from "react";
+import { Row, Col, Form  } from 'react-bootstrap'
 import { useMediaQuery } from 'react-responsive'
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from './LoginRegister.module.scss'
-import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineLeft } from 'react-icons/ai';
 import FieldHandlerLogin from "./FieldHandlerLogin";
+import PrivacyPolicy from "./PrivacyPolicy"
 
 const LoginRegister = ({
-  pageName,
-  linkForgotPass,
-  linkCreateAcc,
-  linkCreatePass,
   dataField,
   linkLogin,
   onSubmit,
+  privacyPolicy,
 }) => {
 
 	const [showPassword, setShowPassword] = useState(false);
@@ -45,9 +42,17 @@ const LoginRegister = ({
 	return (
 		<>
       <Row className="mr-0 ml-0">
-        { !isWeMobile &&
-          <Col xs="6" className={styles.left_image}>
-          </Col>
+        {
+          privacyPolicy ?
+          <>
+            <Col xs="6" className={styles.left_image_half}>
+            </Col>  
+            <PrivacyPolicy/>
+          </>
+          :
+            !isWeMobile &&
+            <Col xs="6" className={styles.left_image}>
+            </Col>
         }
         <Col xs={isWeMobile ? "12" : "6"} className={styles.right_container}>
           { isWeMobile &&

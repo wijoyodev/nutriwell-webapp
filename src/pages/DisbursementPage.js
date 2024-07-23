@@ -1,11 +1,7 @@
 import React, { useEffect } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import DisbursementTable from '../components/Table/DisbursementTable'
 
 const DisbursementPage = () => {
-  // const [progress, setProgress] = useState(true);
-  // const isWeMobile = useMediaQuery({ query: '(max-width: 600px)' })
-
   useEffect(()=>{
     localStorage.setItem("pagePos","OrderManagement")
   },[])
@@ -14,7 +10,7 @@ const DisbursementPage = () => {
     <div className="container_right_form">
       <DisbursementTable
         pageName={"Disbursement"}
-        linkAddNew={"../newShipyardOwner"}
+        linkAddNew={""}
       />
     </div>
   );

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import MainForm from '../components/MainForm/MainForm'
 import { connect } from "react-redux";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { setCreateBanner, resetCreateBanner } from '../store/actions/bannerAction'
+import Swal from 'sweetalert2';
 
 const NewBannerManagementPage = ({
   dispatch, 
@@ -15,33 +16,38 @@ const NewBannerManagementPage = ({
   const navigate = useNavigate()
 
   useEffect(()=>{
-  },[])
-
-  useEffect(()=>{
-    if( dataBanner.bannerCreatetResp ){
+    if( dataBanner.bannerCreateResp ){
       resetCreateBanner(dispatch)
-      navigate('../supplierBanner')
+      navigate('../bannerManagement')
     }
-  },[dataBanner.bannerCreatetResp])
+  },[dataBanner.bannerCreateResp, dispatch, navigate])
 
   const clicked = () => {
     const temp = !progress
     setProgress(temp)
   }
 
-  const onChangeImage = (imageList, addUpdateIndex) => {
-    // data for submit
+  const onChangeImage = (imageList) => {
     setImages(imageList);
   };
 
   const doCreateBanner = (e) => {
     e.preventDefault()
-    const data = {
-      bannerType: "supplier",
-      title,
-      content,
-      imageUrl: images
-   }
+    let data = {}
+    if( images.length === 0 ){
+      Swal.fire({
+        title: 'Photo required',
+        text: "Need to add Photo",
+        icon: 'warning',
+        confirmButtonColor: '#1b4460',
+      })
+    }else{
+      data = {
+        title,
+        description: content,
+        imageUrl: images
+      }
+    }
     setCreateBanner(dispatch, data)
   }
 
@@ -90,12 +96,13 @@ const NewBannerManagementPage = ({
       type: "button_submit",
       spaceMd: "3",
       spaceXs: "3",
+      action: doCreateBanner,
     },{
       label: "Cancel",
       type: "buttonWhite",
       spaceMd: "3",
       spaceXs: "3",
-      link: '../supplierBanner'
+      link: '../bannerManagement'
     }
   ]
 

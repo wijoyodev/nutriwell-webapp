@@ -1,54 +1,62 @@
 import React, { useEffect, useState } from "react";
-// import { useMediaQuery } from 'react-responsive'
 import MainForm from '../components/MainForm/MainForm'
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { connect } from "react-redux";
-import { setUploadFile, resetUploadFile, setDetailShipyard, resetDetailShipyard, setAllShipyardByShipyardId, setUpdateDetailShipyard } from '../store/actions/shipyardAction'
-import { setActiveDeactive } from '../store/actions/loginRegisterAction'
+import dateFormat from "dateformat";
+import { setDetailOrder, setChangeOrderStatus, setTrackShipment, resetTrackShipment } from '../store/actions/orderAction'
 
-const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
+const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   const { orderId } = useParams()
-
-  // const [isLoading, setIsLoading] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [transactionTotal, setTrasactionTotal] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [orderStatus, setOrderStatus] = useState(true);
   const [isVerified, setIsVerified] = useState(true);
-  // const [isVerified, setIsVerified] = useState(null);
-  
-  const [allShipyard, setAllShipyard] = useState(null);
-  const [bankName, setBankName] = useState("");
   const [id, setId] = useState("");
   const [name, setName] = useState("");
-  const [requestDate, setRequestDate] = useState("");
-  const [bankNumber, setBankNumber] = useState("");
-  const [bankAccountName, setBankAccountName] = useState("");
-  const [transactionDetail, setTransactionDetail] = useState("");
-  const [transactionNumber, setTransactionNumber] = useState("");
-  const [reason, setReason] = useState("");
+  const [requestDate, setRequestDate] = useState("");  
+  const [reason, setReason] = useState("");  
+  const [receivedDate, setReceivedDate] = useState("");
   const [customerDetail, setCustomerDetail] = useState("");
   const [status, setStatus] = useState("");
   const [transactionDate, setTransactionDate] = useState("");
-  const navigate = useNavigate()
 
-  const doUpdate = (e) => {
-    e.preventDefault()
-    const dataUpdate = {
-      name,
-      bankNumber,
-      bankAccountName,
-      status,
-      transactionDate,
-      transactionDetail: transactionDetail,
-      transactionNumber: transactionNumber,
-      reason: reason,
-      customerDetail: customerDetail,
+  // payment info
+  const [isPaymentDone, setIsPaymentDone] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentDate, setPaymentDate] = useState("");
+  
+  // shipping info
+  const [isOnShipping, setIsOnShipping] = useState(false);
+  const [courierType, setCourierType] = useState("");
+  const [courierPrice, setCourierPrice] = useState("");
+  const [shippingNo, setShippingNo] = useState("");
+  const [externalId, setExternalId] = useState("");
+  const [shippingDate, setShippingDate] = useState("");
+
+  // price info
+  
+  const [transactionTotal, setTrasactionTotal] = useState(null);
+  const [transactionSubTotal, setTrasactionSubTotal] = useState(null);
+  const [itemSubTotal, setItemSubTotal] = useState(null);
+  const [productDetails, setProductDetails] = useState("");
+  const [transactionNumber, setTransactionNumber] = useState("");
+  const [ppn, setPpn] = useState("");
+
+  const reqChangeStat = (orderStatus, dataReq) => {
+    let dataParam = {
+      "status": orderStatus,
     }
-    setUpdateDetailShipyard(dispatch, dataUpdate, id)
-  }
-
-  const triggerUpload = (e, section) => {
-    setUploadFile(dispatch, e.target.files[0], section)
+    if( orderStatus === 1 ){
+      dataParam["payment_date"] = new Date()
+    }else if( orderStatus === 2 ){
+      dataParam["shipment_number"] = dataReq.shipment_number
+      dataParam["delivery_date"] = new Date()
+    }else if( orderStatus === 3 ){
+      dataParam["receive_date"] = new Date()
+    }else if( orderStatus === 4 ){
+      dataParam["reasons"] = dataReq.reason
+    }
+    setChangeOrderStatus(dispatch, orderId, dataParam)
   }
 
   const packageDetail = () => {
@@ -57,7 +65,7 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
       html: `
         <label for="cars">Kurir</label>
         <br/>
-        <select name="cars" id="swal2-select" class="swal2-select">
+        <select name="cars" id="courier" class="courier">
           <option value="jne">JNE</option>
           <option value="jnt">JNT</option>
           <option value="tiki">TIKI</option>
@@ -65,21 +73,37 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
         </select>
 
         <br/>
-        <label for="cars">Nomr Resi</label>
-        <input id="swal-input2" class="swal2-input" placeholder="Masukkan nomor Resi"/>
+        <label for="cars">Nomor Resi</label>
+        <input id="ship_number" class="ship_number" placeholder="Masukkan nomor Resi"/>
       `,
       focusConfirm: false,
       preConfirm: () => {
-        return [
-          document.getElementById("swal2-select").value,
-          document.getElementById("swal-input2").value
-        ];
+        let courier = document.getElementById("courier").value;
+        let ship_number = document.getElementById("ship_number").value;
+        
+        if (!courier || !ship_number) {
+          Swal.fire({
+            title: 'Warning',
+            text: "You need to Choose Shipment Courier and Tracking Number",
+            icon: 'warning',
+            confirmButtonColor: '#0975B6',
+          })
+        }else{
+          reqChangeStat(2, {shipment_number: ship_number})
+        }
+      },
+      inputValidator: (value) => {
+        // if (!value) {
+        //   return "You need to Choose Shipment Courier and Tracking Number";
+        // }else{
+        //   reqChangeStat(2, {shipment_number: value})
+        // }
       }
     })
   }
 
   const reasonCancel = async () => {
-    const { value: ipAddress } = await Swal.fire({
+    await Swal.fire({
       title: "Alasan",
       inputPlaceholder: "Masukkan alasan",
       input: "text",
@@ -87,13 +111,17 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
       showCancelButton: true,
       inputValidator: (value) => {
         if (!value) {
-          return "You need to write something!";
+          return "You need to write something";
+        }else{
+          reqChangeStat(4, {reason: value})
         }
       }
     });
-    if (ipAddress) {
-      Swal.fire(`Your IP address is ${ipAddress}`);
-    }
+  }
+
+  const trackShipment = (e, shipNum) =>{
+    e.preventDefault()
+    setTrackShipment(dispatch, shipNum)
   }
 
   const changeStatus = (e) => {
@@ -116,111 +144,116 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
       cancelButtonColor: "grey",
       inputValidator: (value) => {
         return new Promise((resolve) => {
-          if (value === "delivered") {
+          if(value === "notPaid") {
+            reqChangeStat(0)
+          } else if(value === "packaged") {
+            reqChangeStat(1)
+          } else if (value === "delivered") {
             packageDetail()
-          } else if (value === "cancelled") {
+          } else if (value === "done") {
+            reqChangeStat(3)
+          } else if( value === "cancelled" ){
             reasonCancel();
-          } else {
-            Swal.fire({
-              title: 'Sukses',
-              text: "Mengganti status",
-              icon: 'success',
-              confirmButtonColor: '#0975B6',
-            })
           }
         });
       }
     })
   }
 
-  useEffect(()=>{
-    if( dataShipyard.detailShipyardResp ){
-      let data = dataShipyard.detailShipyardResp
-      setId(data.id)
-      setName(data.name)
-      setRequestDate(data.requestDate)
-      setBankName(data.bankName)
-      setBankNumber(data.bankNumber)
-      setBankAccountName(data.bankAccountName)
-      setTransactionDetail(data.transactionDetail)
-      setTransactionNumber(data.transactionNumber)
-      setReason(data.reason)
-      setCustomerDetail(data.customerDetail)
-      setStatus(data.status)
-      setTransactionDate(data.transactionDate)
-      setIsVerified(data.account)
-      setTrasactionTotal(data.account.isActive)
+  const printTracking = (data) => {
+    let textHistory = ''
+    textHistory += `
+      <table class="table table-sm table-st">
+        <tr>
+          <td> Ekspedisi </td>
+          <td> ${data.company || ""} </td>
+        </tr>
+        <tr>
+          <td> Type Pengiriman </td>
+          <td> ${data.type || ""} </td>
+        </tr>
+        <tr>
+          <td> Nama Kurir </td>
+          <td> ${data.driver_name || ""} </td>
+        </tr>
+        <tr>
+          <td> No Resi </td>
+          <td> ${data.waybill_id || ""} </td>
+        </tr>
+        <tr>
+          <td> Status Terakhir </td>
+          <td> ${data.history[data.history.length-1].status|| ""} </td>
+        </tr>
+        <tr>
+          <td> Waktu Update Terakhir </td>
+          <td> ${dateFormat(data.history[data.history.length-1].updated_at, " dS mmmm, yyyy, h:MM:ss") || ""} </td>
+        </tr>
+        <tr>
+          <td> Notes </td>
+          <td> ${data.history[data.history.length-1].note} </td>
+        </tr>
+      </table>
+    `
+    return textHistory
+  }
+  
+  useEffect(()=>{ 
+    if( dataOrder.trackShipmentResp ){
+      Swal.fire({
+        title: 'Lacak Pengiriman',
+        html: printTracking(dataOrder.trackShipmentResp),
+        confirmButtonColor: '#1b4460',
+      })
+      resetTrackShipment(dispatch)
     }
-  },[dataShipyard.detailShipyardResp])
-
+  },[dataOrder.trackShipmentResp, dispatch])
+  
   useEffect(()=>{
-    if( dataShipyard.allShipyardByShipyardIdResp ){
-      setAllShipyard(dataShipyard.allShipyardByShipyardIdResp)
+    console.log("leweat useEffect data masukl", dataOrder)
+    if( dataOrder.orderDetailResp ){
+      let data = dataOrder.orderDetailResp
+      setId(data.order_number)
+      setName(data.user_detail.full_name)
+      setRequestDate(data.created_at)
+      
+
+      if(data.status === 2 || data.status === 3){
+        setShippingNo(data.shipment_number)
+        setShippingDate(data.delivery_date)
+        setIsOnShipping(true)
+        setExternalId(data.external_id)
+      }
+
+      if(data.status === 1 || data.status === 2 || data.status === 3){
+        setPaymentMethod(data.payment_method)
+        setPaymentDate(data.payment_date)
+        setIsPaymentDone(true)
+      }
+
+      if(data.status === 3){
+        setReceivedDate(data.receive_date)
+      }
+
+      setCourierType(data.courier_name)
+      setCourierPrice(data.courier_rate)
+      setProductDetails(data.product_detail)
+      setTransactionNumber(data.order_number)
+      setCustomerDetail(data.user_detail)
+      setStatus(data.status)
+      setTransactionDate(data.created_at)
+      setIsVerified(data.account)
+      setTrasactionTotal(data.total_purchase)
+      setTrasactionSubTotal(data.product_detail.total_price)
       setIsLoading(false)
     }
-  },[dataShipyard.allShipyardByShipyardIdResp])
+  },[dataOrder.orderDetailResp, dispatch])
 
   useEffect(()=>{
-    if( dataShipyard.uploadFileResp ){
-      switch (dataShipyard.uploadFileResp.section) {
-        case "transactionDetail" :
-          setTransactionDetail(dataShipyard.uploadFileResp.url)
-          break;
-        case "transactionNumber" :
-          setTransactionNumber(dataShipyard.uploadFileResp.url)
-          break;
-        case "reason" :
-          setReason(dataShipyard.uploadFileResp.url)
-          break;
-        case "customerDetail" :
-          setCustomerDetail(dataShipyard.uploadFileResp.url)
-          break;
-        default :
-          setTransactionDetail(dataShipyard.uploadFileResp.url)
-          break;
-      } 
-      resetUploadFile(dispatch)
-    }
-  },[dataShipyard.uploadFileResp])
-
-  useEffect(()=>{
-    setDetailShipyard(dispatch, orderId)
-    setAllShipyardByShipyardId(dispatch, orderId)
-
-    // FOR SLICING DATA ONLY 
-    setId("ODO00001")
-    setName("PT Bumi Makmur")
-    setRequestDate("oke")
-    setBankName("BCA")
-    setBankNumber("5082172373")
-    setBankAccountName("Samsul Saripudin")
-    setTransactionDetail([{
-      description: "Request PEnarikan",
-      total: 1500000,
-    }])
-    setTransactionNumber("973528139")
-    setReason("oke")
-    setCustomerDetail({
-      name: "John Doe",
-      phone: "085712381238",
-      address: "Ruko Prominence, Jl. Jalur Sutera Boulevard No.2, Kab Tangerang, Banten, ID 12345",
-      paymentMethod: "Transfer Bank",
-      shippingMethod: "JNE Regular",
-      trasactionDate: 1709910356,
-      shippingNo: "032483294203942",
-      shippingDate: 1709910356,
-    })
-    setStatus("Selesai")
-    setTransactionDate(1709743549)
-    setIsVerified("oke")
-    setTrasactionTotal({
-      subTotal: 150000,
-      shippingPrice: 3000,
-      totalPrice: 153000,
-    })
-    // FOR SLICING DATA ONLY
-
-  },[])
+    
+    console.log("leweat useEffect")
+    setDetailOrder(dispatch, orderId)
+    setIsLoading(true)
+  },[dispatch, orderId])
 
   const dataForm = [
     {
@@ -246,11 +279,25 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
           spaceXs: "12",
           value: transactionNumber,
         },{
-          label: "NOMOR PESANAN",
+          label: "WAKTU PESANAN",
           type: "text",
           spaceMd: "6",
           spaceXs: "12",
           value: transactionDate,
+        },{
+          label: "ALASAN",
+          type: "reason",
+          showReason: orderStatus === 4 ? true : false,
+          spaceMd: "6",
+          spaceXs: "12",
+          value: `Dibatalkan sistem (${reason})`,
+        },{
+          label: "INVOICE",
+          type: "invoice",
+          showInvoice: (orderStatus === 1 || orderStatus === 2 || orderStatus === 3) ? true : false,
+          spaceMd: "6",
+          spaceXs: "12",
+          value: id,
         }
       ]
     },
@@ -269,34 +316,43 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
           type: "text",
           spaceMd: "6",
           spaceXs: "12",
-          isPaymentDone: true,
-          value: customerDetail.paymentMethod,
-          detailInfo: customerDetail.trasactionDate,
+          isPaymentDone: isPaymentDone,
+          paymentMethod: paymentMethod,
+          detailInfo: paymentDate,
         },{
           label: "METODE PENGIRIMAN",
           type: "text",
           spaceMd: "6",
           spaceXs: "12",
-          isOnShipping: true,
-          value: customerDetail.shippingMethod,
+          isOnShipping: isOnShipping,
+          courierType: courierType,
           detailInfo: customerDetail,
+          shippingNo: shippingNo,
+          externalId: externalId,
+          shippingDate: shippingDate,
+          receivedDate: receivedDate,
         }
       ]
     },
     {
       label: "Informasi Pesanan",
       type: "sectionTable",
-      dataFields: transactionDetail, 
-      dataFieldsTitle: ["Deskripsi", "Jumlah"], 
+      isProductInfo: true,
+      productDetails: productDetails, 
+      dataFieldsTitle: ["Deskripsi", "QTY", "Harga Per Produk"], 
       transactionTotal: transactionTotal,
-      transactionTotalTitle: ["Subtotal", "Ongkir", "Total"], 
+      itemSubTotal: itemSubTotal,
+      transactionSubTotal: transactionSubTotal,
+      ppn: ppn,
+      transactionTotalTitle: ["Subtotal", "PPN (11%)", "Ongkir", "Total"], 
+      courierPrice: courierPrice,
     },
     {
       label: "Ubah Status",
       type: "button_submit",
       spaceMd: "3", 
       spaceXs: "3",
-      action: changeStatus,
+      action: changeStatus ,
       link: "../accountReview"
     },{
       type: "SPACE",
@@ -304,21 +360,90 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
       spaceXs: "12",
     }
   ]
+  
+  useEffect(()=>{ 
+    if( dataOrder.trackShipmentResp ){
+      Swal.fire({
+        title: 'Lacak Pengiriman',
+        html: printTracking(dataOrder.trackShipmentResp),
+        confirmButtonColor: '#1b4460',
+      })
+      resetTrackShipment(dispatch)
+    }
+  },[dataOrder.trackShipmentResp, dispatch])
+  
+  useEffect(()=>{
+    if( dataOrder.orderDetailResp ){
+      let data = dataOrder.orderDetailResp
+      console.log("MASUK,", data)
+      setId(data.order_number)
+      setName(data.user_detail.full_name)
+      setRequestDate(data.created_at)
+      setOrderStatus(data.status)
+
+      if(data.status === 2 || data.status === 3){
+        setShippingNo(data.shipment_number)
+        setShippingDate(data.delivery_date)
+        setIsOnShipping(true)
+        setExternalId(data.external_id)
+      }
+
+      if(data.status === 1 || data.status === 2 || data.status === 3){
+        setPaymentMethod(data.payment_method)
+        setPaymentDate(data.payment_date)
+        setIsPaymentDone(true)
+      }
+
+      if(data.status === 3){
+        setReceivedDate(data.receive_date)
+      }
+
+      if( data.status === 4 ){
+        setReason(data.reasons)
+      }
+
+      if(data.status === 1 || data.status === 2 || data.status === 3){
+        localStorage.setItem("dataInvoice",JSON.stringify(data))
+      }
+
+
+      setCourierType(data.courier_name)
+      setCourierPrice(data.courier_rate)
+      setProductDetails(data.product_detail)
+      setTransactionNumber(data.order_number)
+      setCustomerDetail(data.user_detail)
+      setStatus(data.status)
+      setTransactionDate(data.created_at)
+      setIsVerified(data.account)
+
+      // PRICE
+      setPpn(data.product_detail.total_price_after_tax - data.product_detail.total_price)
+      setItemSubTotal(data.product_detail.price * data.product_detail.quantity)
+      setTrasactionSubTotal(data.product_detail.price * data.product_detail.quantity)
+      setTrasactionTotal(data.total_purchase_after_tax)
+      
+      setIsLoading(false)
+    }
+  },[dataOrder.orderDetailResp, dispatch])
+
+  useEffect(()=>{
+    setDetailOrder(dispatch, orderId)
+    setIsLoading(true)
+  },[dispatch, orderId])
 
   return (    
-    isLoading === false && transactionDetail.length > 0 && transactionTotal && 
+    isLoading === false && 
     <div className="container_right_form">
       <MainForm
         pageName={"Order Detail"}
+        trackShipment={trackShipment}
         dataForm={dataForm}
         linkAccReview={"../accountReview"}
-        allShipyard={allShipyard}
         status={status}
         orderId={id}
         pageFor={"detail"}
         isVerified={isVerified}
         requestDate={requestDate}
-        onSubmit={doUpdate}
       />
     </div>
   );
@@ -326,7 +451,7 @@ const OrderManagementDetailPage = ({ dispatch, dataShipyard }) => {
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard,
+    dataOrder: state.order,
   };
 };
 

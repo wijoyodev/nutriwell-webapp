@@ -1,41 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Col, Form, InputGroup, Button } from 'react-bootstrap'
+import { Link } from "react-router-dom";
 import styles from './LoginRegister.module.scss'
-import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineLeft } from 'react-icons/ai';
-import ImageUploading from "react-images-uploading";
-import { DateRangePicker } from 'rsuite';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import 'rsuite/dist/rsuite.min.css';
 
 const FieldHandlerLogin = ({
   item, 
   index
 }) => {
-	const isWebMobile = useMediaQuery({ query: '(max-width: 600px)' })
 	const [showPassword, setShowPassword] = useState(false);
-  const [value, setValue] = useState('');
-  const navigate = useNavigate()
-  
-  const handleChange = (otp) =>{
-    setValue(otp)
-    
-    if (otp.length === 4 && otp === "1111"){
-      localStorage.setItem('username', "userTest");
-      navigate("/home/shipyards");
-    } else if (otp.length === 4 && otp != "1111") {
-       alert("1111 to login")
-     }
-  };
 	
   const handleShowPass = () => {
     let curr = showPassword
     setShowPassword(!curr)
   }
 
-	useEffect(()=>{
-	},[])
-  
   if (item.type === "title"){
     return (
       <Col md={item.spaceMd} xs={item.spaceXs} key={index}> 
@@ -89,7 +69,7 @@ const FieldHandlerLogin = ({
           <Form.Control
             className={item.notEditable ? styles.field_form_disabled  : styles.field_form}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             onChange={(e)=>item.action(e.target.value)}
             aria-describedby="basic-addon1"
             value={item.value}

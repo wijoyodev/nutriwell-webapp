@@ -1,22 +1,29 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
 import styles from './MainForm.module.scss'
 import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineSearch } from 'react-icons/ai';
 import { BsFillImageFill } from 'react-icons/bs';
 import { BiPlus } from 'react-icons/bi';
+import { FaRegFileAlt } from "react-icons/fa";
 import ImageUploading from "react-images-uploading";
 import { DateRangePicker, DatePicker } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
 import Select from 'react-select'
+import { toRupiah } from 'to-rupiah';
 
 const FieldHandler = ({
   item, 
   index,
-  onClickFunc,
+  trackShipment,
 }) => {
   const uploadFile= useRef(null);
+	const [showPassword, setShowPassword] = useState(false);
+	
+  const handleShowPass = () => {
+    let curr = showPassword
+    setShowPassword(!curr)
+  }
   
   const dropdownComponent = (item) =>{
     let data = []
@@ -32,37 +39,57 @@ const FieldHandler = ({
     )
   }
 
-	useEffect(()=>{
-	},[])
-
   const sectionFieldHanlder = (item, index) => {
-    if(item.type === "text" ){
+    if(item.type === "date" ){
+      return(
+        <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
+          <Row>
+            <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.label}</Form.Label>
+            <Form.Label htmlFor="basic-url" className={styles.filed_label_info}>
+              { new Date(item.value).toLocaleString() }
+            </Form.Label>
+          </Row>
+        </Col>
+      )
+    }else if(item.type === "text" ){
       return (
         <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
           <Row>
             <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label>
           </Row>
           <Row>
-            <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.value}</Form.Label>
+            <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.isCurrency && "Rp. "}{item.value}</Form.Label>
           </Row>
+          {item.bankInfo &&
+            <Row>
+              <Form.Label htmlFor="basic-url" className={styles.filed_label_3 + ' mb-0  pb-0'}>{item.valueAccBank}</Form.Label>
+              <Form.Label htmlFor="basic-url" className={styles.filed_label_info + ' mb-0'}>{item.valueAccBankNum}</Form.Label>
+              <Form.Label htmlFor="basic-url" className={styles.filed_label_info}>{item.valueAccBankName}</Form.Label>
+            </Row>
+          }
           {item.isPaymentDone &&
             <Row>
+              <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.paymentMethod}</Form.Label>
               <Form.Label htmlFor="basic-url" className={styles.filed_label_info}>
                 {`Dibayar pada ` + new Date(item.detailInfo).toLocaleString()}
               </Form.Label>
             </Row>
           }
+          {item.isPaymentDone === false && "-"}
+          
           {item.isOnShipping &&
             <Row>
+              <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.courierType}</Form.Label>
               <Form.Label htmlFor="basic-url" className={styles.filed_label_info}>
-                {`No Resi ` + item.detailInfo.shippingNo} 
+                {`No Resi ` + item.shippingNo} 
                 &nbsp;
-                <u className={styles.link}> Lacak </u>
+                <u className={styles.link} onClick={(e)=>trackShipment(e, item.externalId)}>Lacak </u>
                 <br/>
-                {`Terkirim ` + new Date(item.detailInfo.shippingDate).toLocaleString()}
+                {`Terkirim ` + new Date(item.receivedDate).toLocaleString()}
               </Form.Label>
             </Row>
           }
+          {item.isOnShipping === false && "-"}
         </Col>
       )
     }else if( item.type === "textCustomer" ){
@@ -72,13 +99,39 @@ const FieldHandler = ({
             <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label>
           </Row>
           <Row>
-            <Form.Label htmlFor="basic-url" className={`${styles.filed_label_2} mb-0`}>{item.value.name}</Form.Label>
+            <Form.Label htmlFor="basic-url" className={`${styles.filed_label_2} mb-0`}>{item.value.full_name}</Form.Label>
           </Row>
           <Row>
-            <Form.Label htmlFor="basic-url" className={`${styles.filed_label} mb-0`}>{item.value.phone}</Form.Label>
+            <Form.Label htmlFor="basic-url" className={`${styles.filed_label} mb-0`}>{item.value.phone_number}</Form.Label>
           </Row>
           <Row>
-            <Form.Label htmlFor="basic-url" className={`${styles.filed_label} mb-0`}>{item.value.address}</Form.Label>
+            <Form.Label htmlFor="basic-url" className={`${styles.filed_label} mb-0`}>{item.value.address_detail}</Form.Label>
+          </Row>
+        </Col>
+      )
+    }else if( item.type === "reason" && item.showReason ){
+      return (
+        <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
+          <Row>
+            <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label>
+          </Row>
+          <Row>
+            <Form.Label htmlFor="basic-url" className={styles.filed_label + ' mb-0  pb-0'}>{item.value}</Form.Label>
+          </Row>
+        </Col>
+      )
+    }else if( item.type === "invoice" && item.showInvoice ){
+      return (
+        <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
+        <Row>
+          <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label>
+        </Row>
+          <Row>
+            <a href={"../invoice/" + item.value} target="_blank" rel="noreferrer">
+              <Form.Label htmlFor="basic-url" className={`${styles.link} mb-0`}> 
+                <FaRegFileAlt /> Lihat Invoice 
+              </Form.Label>
+            </a>
           </Row>
         </Col>
       )
@@ -101,64 +154,92 @@ const FieldHandler = ({
       <Col md={12} xs={12} key={index} className={styles.section_wrapper}>
         <Form.Label htmlFor="basic-url" className={styles.field_handler}>{item.label}</Form.Label>
         <Row className={styles.header_table}>
-          { item.dataFieldsTitle.map( (item, index) => {
-            return (
-              <Col md={3} xc={3} className={"p-3"} index={index}>
+          { item.dataFieldsTitle.map( (item, index) => (
+            <Col key={index} md={3} xs={3} className={"p-3"}>
                 {item}
               </Col>
             )
-          }) }
+          ) }
         </Row>
-        {item.dataFields.map( ( data, index) => (
-          <Row index={index} className={styles.data_table}>
-            <Col md={3} xc={3} className={"p-3"}>
-              {data.productName}
-            </Col>
-            <Col md={3} xc={3} className={"p-3"}>
-              {data.quantity}
-            </Col>
-            <Col md={3} xc={3} className={"p-3"}>
-              {'Rp' + data.price}
-            </Col>
-            <Col md={3} xc={3} className={"p-3"}>
-              {'Rp' + data.total}
-            </Col>
-          </Row>
-        ))}
-        
-        {item.transactionTotalTitle.map( ( data, index) => (
-          <Row index={index}>
-            <Col md={{ span:3, offset:6 }} xc={{ span:3, offset:6 }} className={"p-3"}>
-              {data}
-            </Col>
-            { data === "Total yang dapat ditarik" &&
-              <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
-                {'Rp' + item?.transactionTotal?.totalPrice}
-              </Col>
-            }
-            { data === "Total" &&
-              <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
-                {'Rp' + item?.transactionTotal?.totalPrice}
-              </Col>
-            }
-            { data === "Subtotal" &&
+        { item.transactionInfo &&  
+          <>
+            <Row index={index} className={styles.data_table}>
               <Col md={3} xc={3} className={"p-3"}>
-                {'Rp' + item?.transactionTotal?.subTotal}
+                {item.transactionDescription}
               </Col>
-            }
-            { data === "Ongkir" &&
+            </Row>
+            {item.transactionTotalTitle.map( ( data, index) => (
+              <Row index={index}>
+                <Col md={{ span:3, offset:3 }} xc={{ span:3, offset:3 }} className={"p-3"}>
+                  {data}
+                </Col>
+                { data === "Total yang dapat ditarik" &&
+                  <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
+                    {toRupiah(item?.transactionTotal?.totalPrice)}
+                  </Col>
+                }
+                { data === "PPN (11%)" &&
+                  <Col md={3} xc={3} className={"p-3"}>
+                    {'- ' + toRupiah(item?.transactionTotal?.pph)}
+                  </Col>
+                }
+              </Row>
+            ))}
+          </>
+        }
+
+        { item.isProductInfo &&
+          <>
+          {console.log(item, "<item")}
+            <Row index={index} className={styles.data_table}>
               <Col md={3} xc={3} className={"p-3"}>
-                {'Rp' + item?.transactionTotal?.shippingPrice}
+                {item.productDetails.product_name}
               </Col>
-            }
-            { data === "PPH (23 (2%)" &&
               <Col md={3} xc={3} className={"p-3"}>
-                {'- Rp' + item?.transactionTotal?.pph}
+                {item.productDetails.quantity}
               </Col>
-            }
-            {/* {styles.totalPrice + " p-3"} */}
-          </Row>
-        ))}
+              <Col md={3} xc={3} className={"p-3"}>
+                {toRupiah(item.productDetails.price)}
+              </Col>
+              <Col md={3} xc={3} className={"p-3"}>
+                {toRupiah(item.itemSubTotal)}
+              </Col>
+            </Row>
+            {item.transactionTotalTitle.map( ( data, index) => (
+              <Row index={index}>
+                <Col md={{ span:3, offset:6 }} xc={{ span:3, offset:6 }} className={"p-3"}>
+                  {data}
+                </Col>
+                { data === "Total yang dapat ditarik" &&
+                  <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
+                    {toRupiah(item?.transactionTotal?.totalPrice)}
+                  </Col>
+                }
+                { data === "Total" &&
+                  <Col md={3} xc={3} className={styles.totalPrice + " p-3"}>
+                    {toRupiah(item?.transactionTotal)}
+                  </Col>
+                }
+                { data === "Subtotal" &&
+                  <Col md={3} xc={3} className={"p-3"}>
+                    {toRupiah(item?.transactionSubTotal)}
+                  </Col>
+                }
+                { data === "Ongkir" &&
+                  <Col md={3} xc={3} className={"p-3"}>
+                    {toRupiah(item?.courierPrice)}
+                  </Col>
+                }
+                { data === "PPN (11%)" &&
+                  <Col md={3} xc={3} className={"p-3"}>
+                    {toRupiah(item?.ppn)}
+                  </Col>
+                }
+                {/* {styles.totalPrice + " p-3"} */}
+              </Row>
+            ))}
+          </>
+        }
       </Col>
     )
   } else if(item.type === "text"){
@@ -169,7 +250,7 @@ const FieldHandler = ({
           <Form.Control
             className={item.notEditable ? styles.field_form_disabled  : styles.field_form}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             onChange={(e)=>item.action(e.target.value)}
             value={item.value}
@@ -180,6 +261,27 @@ const FieldHandler = ({
             {item.label} is required
           </Form.Control.Feedback>
         </InputGroup>
+      </Col>
+    )
+  } else if (item.type === "password"){
+    return (
+      <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
+        <Form.Label htmlFor="basic-url" className={styles.field_handler}>{item.label}</Form.Label>
+        <InputGroup hasValidation className="mb-1">
+          <Form.Control 
+            className={styles.field_form_password}
+            type={showPassword ? "text" : "password"} 
+            placeholder={item.placeholder}
+            onChange={(e)=>item.action(e.target.value)}
+            required={item.required}
+          />
+          <InputGroup.Text id="basic-addon2" className={styles.eye_container} onClick={ ()=>handleShowPass()}>
+            { showPassword ?  <AiOutlineEye/> : <AiOutlineEyeInvisible/> }
+          </InputGroup.Text>
+          <Form.Control.Feedback type="invalid">
+            {item.label} is required
+          </Form.Control.Feedback>
+        </InputGroup >
       </Col>
     )
   } else if (item.type === "textarea") {
@@ -252,7 +354,7 @@ const FieldHandler = ({
     )
   } else if (item.type === "button_white"){
     return (
-      <Col md={item.spaceMd} xs={item.spaceXs} key={index}>
+      <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
         { item.action ? 
           <Button className={styles.cancel_button} onClick={((e)=>item.action(e))}>
             {item.label}
@@ -271,9 +373,10 @@ const FieldHandler = ({
       <Col md={item.spaceMd} xs={item.spaceXs} key={index}>
         <Form.Label htmlFor="basic-url" className={styles.field_title_2}>{item.label}</Form.Label>
         <br/>
+        {/* <Form.Control onChange={(e)=>{item.action(e)}} name="image" type="file" /> */}
         <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.desc}</Form.Label>
         <ImageUploading
-          multiple
+          multiple={item.multiplePhoto ? true : false}
           value={item.images}
           onChange={item.action}
           maxNumber={item.maxImage}
@@ -301,8 +404,8 @@ const FieldHandler = ({
                 className={styles.field_form_upload_image}>
                   Upload Photo
               </button>
-              &nbsp;
-              { item.maxImage !=1 && 
+              &nbsp; 
+              { item.maxImage !== 1 && 
                 <button onClick={(e) => {
                   e.preventDefault() 
                   onImageRemoveAll()
@@ -312,7 +415,7 @@ const FieldHandler = ({
               }
               {imageList.map((image, index) => (
                 <div key={index} className="image-item">
-                  <img src={image.data_url} alt="" width="100" />
+                  <img crossorigin='anonymous' src={image.data_url} alt="" width="100" />
                   <div className="image-item__btn-wrapper">
                     <button onClick={(e) => { 
                       e.preventDefault()
@@ -362,7 +465,7 @@ const FieldHandler = ({
               </InputGroup.Text>
               <br/>
               {item.for === "update" && 
-                <a href={item.value} className={styles.open_file} target="__blank">
+                <a href={item.value} className={styles.open_file} target="__blank" rel="noreferrer">
                   <p className={styles.open_file_popup}>Click to open uploaded file by User</p>
                   <AiOutlineSearch color="#1b4460"/>
                 </a>
@@ -386,7 +489,7 @@ const FieldHandler = ({
           <Form.Control
             className={styles.field_form_disabled_upload}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             tabIndex={item.notEditable ? "-1" : "1"}
           />
@@ -415,12 +518,9 @@ const FieldHandler = ({
         <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
           <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label> 
           <br/>
-          <DatePicker className={styles.field_form} appearance="default" placeholder="Default" style={{ width: "100%", marginTop: "5px"  }} 
-          onChange={(e)=> {item.action(e[0], e[1])}} 
-          // value={[
-          //   new Date(item.availableFrom * 1000),
-          //   new Date(item.availableUntil * 1000)
-          // ]}
+          <DatePicker oneTap calendarDefaultDate={new Date("12/12/1995")} className={styles.field_form} appearance="default" placeholder="Default" style={{ width: "100%", marginTop: "5px"  }} 
+          onChange={(e)=> item.action(e)}
+          value={new Date(item.value * 1000)}
           />
         </Col>
     )
@@ -441,7 +541,13 @@ const FieldHandler = ({
   } else if (item.type === "LABEL"){
     return (
       <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
-        <Form.Label htmlFor="basic-url" className={styles.field_title_3}>{item.label}</Form.Label> 
+        <Form.Label htmlFor="basic-url" className={styles.field_title_4}>{item.label}</Form.Label> 
+      </Col>
+    )
+  } else if (item.type === "Title"){
+    return (
+      <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
+        <Form.Label htmlFor="basic-url" className={styles.field_title_4}>{item.label}</Form.Label> 
       </Col>
     )
   } else if (item.type === "SPACE"){
@@ -460,27 +566,6 @@ const FieldHandler = ({
           :
           <a className={styles.link}>{item.label}</a>
         }
-      </Col>
-    )
-  } else if (item.type === "password"){
-    return (
-      <Col md={item.spaceMd} xs={item.spaceXs} key={index}>
-        <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label>
-        <InputGroup hasValidation className="mb-1">
-          <Form.Control 
-            className={styles.field_form_password}
-            type={item.showPassword ? "text" : "password"} 
-            placeholder={item.placeholder}
-            onChange={(e)=>item.action(e.target.value)}
-            required={item.required}
-          />
-          <InputGroup.Text id="basic-addon2" className={styles.eye_container} onClick={ ()=>item.handleShowPass(item.passType)}>
-            { item.showPassword ?  <AiOutlineEye/> : <AiOutlineEyeInvisible/> }
-          </InputGroup.Text>
-          <Form.Control.Feedback type="invalid">
-            {item.label} is required
-          </Form.Control.Feedback>
-        </InputGroup >
       </Col>
     )
   } else if (item.type === "checklist"){
@@ -561,7 +646,7 @@ const FieldHandler = ({
     )
   } else if (item.type === "cardAdd"){
     return (
-      <Link to={item.link} className={styles.no_link} className={styles.card}>
+      <Link to={item.link} className={styles.no_link}>
         <Col md={item.spaceMd} xs={item.spaceXs} key={index}>
           <Row>
             <Col xs={7}>

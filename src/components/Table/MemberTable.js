@@ -1,48 +1,50 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
 import { Link } from "react-router-dom";
 import styles from './BaseTable.module.scss';
 import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllShipyard, setSearchShipyardOwner } from '../../store/actions/shipyardAction'
+import { setAllMember,setAllLocation } from '../../store/actions/memberAction'
 
 const MemberTable = ({
   pageName,
   linkAddNew,
   dispatch, 
-  dataShipyard,
+  dataMember,
 }) => {
 
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [startDate, endDate] = dateRange;
-  const [activePage, setActivePage] = useState(1)
+  const [activePage, setActivePage] = useState(0)
+  const [locations, setLocations] = useState([])
   const [data, setData] = useState([])
   const [pagination, setPagination] = useState({})
   const [searchKeyword, setSearchKeyword] = useState(null)
+  const [selectedLoc, setSelectedLoc] = useState(null)
 
   const doSearch = (e) => {
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    if( selectedLoc && selectedLoc !== '0' ){
+      params['location_id'] = selectedLoc
+    }
+    setAllMember(dispatch, 0 ,params)
   }
 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    setAllMember(dispatch, 0, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    setAllMember(dispatch, (pageNumber-1)*10)
   }
 
   const setDataShown = (datas) => {
@@ -50,60 +52,47 @@ const MemberTable = ({
     for (let idx in datas) {
       listData.push({
         'ID': datas[idx].id,
-        'Nama': datas[idx].name,
-        'Domisili': datas[idx].domisili,
-        'Jumlah Downline': datas[idx].totalDownline,
-        'Total Komisi': datas[idx].totalComission,
+        'Nama': datas[idx].full_name,
+        'Domisili': datas[idx].address_detail.city,
+        'Jumlah Downline': datas[idx].total_downlines,
+        'Total Komisi': datas[idx].total_profit,
       })
     }
     setData(listData)
   }
 
-	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "DI0100",
-      name: "PT Sukro",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "15000000"
-    },{
-      id: "DI0101",
-      name: "Alima Putra",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "2000000"
-    },{
-      id: "DI0102",
-      name: "Yuloha Sukima",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "15000000"
-    },{
-      id: "DI0103",
-      name: "Maratus K",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "500000"
-    },{
-      id: "DI0104",
-      name: "Saikoji",
-      domisili: "DKI Jakarta",
-      totalDownline: "55",
-      totalComission: "150000000"
-    }])
-    // FOR SLICING DATA ONLY 
+  const setLocationShown = (datas) => {
+    let listData = []
+    for (let idx in datas) {
+      listData.push({
+        'id': datas[idx].id,
+        'value': datas[idx].city,
+      })
+    }
+    setLocations(listData)
+  }
 
-	},[])
+	useEffect(()=>{
+    setAllMember(dispatch, 0)
+    setAllLocation(dispatch)
+	},[dispatch])
 
   useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
+    if( dataMember.allMemberResp ){
+      setDataShown(dataMember.allMemberResp.data)
+      setPagination({
+        offset: dataMember.allMemberResp.offset, 
+        limit: dataMember.allMemberResp.limit, 
+        total: dataMember.allMemberResp.total, 
+      })
     }
-  },[dataShipyard.allShipyardResp])
+  },[dataMember.allMemberResp])
+
+  useEffect(()=>{
+    if( dataMember.setAllLocationResp ){
+      setLocationShown(dataMember.setAllLocationResp)
+    }
+  },[dataMember.setAllLocationResp])
 
 	return (
     <>
@@ -139,26 +128,13 @@ const MemberTable = ({
             </InputGroup >
           </Col>
           <Col xs="3">
-            <Form.Label htmlFor="basic-url">Filter by Status</Form.Label>
-            <Form.Select aria-label="Choose Status" className={styles.field_form} >
-              <option>{"Select Status"}</option>
-              <option>{"Pending"}</option>
-              <option>{"Berhasil"}</option>
+            <Form.Label htmlFor="basic-url">Filter by Location</Form.Label>
+            <Form.Select aria-label="Choose Location" className={styles.field_form} onChange={(e)=>setSelectedLoc(e.target.value)} >
+              <option value="0">{"Select Location"}</option>
+              {locations.map( (item, index)=>{
+                return <option index={index} value={item.id} id={item.id}>{item.value}</option>
+              })}
             </Form.Select>
-          </Col>
-          <Col xs="3">
-            <Form.Label htmlFor="basic-url">Range Date</Form.Label>
-            <DatePicker
-              selectsRange={true}
-              placeholderText="Choose Range Date"
-              startDate={startDate}
-              endDate={endDate}
-              className={styles.date_picker}
-              onChange={(update) => {
-                setDateRange(update);
-              }}
-              isClearable={true}
-            />
           </Col>
           <Col xs="3" className="mt-4">
             <Button className={styles.save_button} onClick={(e)=>doSearch(e)}>
@@ -186,7 +162,7 @@ const MemberTable = ({
             <br/>
             <br/>
             <p>
-              Curently no Sales Report data..
+              Curently no Member data..
             </p>
           </>
         }
@@ -197,7 +173,7 @@ const MemberTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataMember: state.member,
   };
 };
 

@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup, } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
 import { Link } from "react-router-dom";
 import styles from './BaseTable.module.scss';
 import BaseTable from "./BaseTable";
 import { connect } from "react-redux";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setAllShipyard, setSearchShipyardOwner } from '../../store/actions/shipyardAction'
+import { setAllAdmin } from '../../store/actions/adminAction'
 
 const AdminTable = ({
   pageName,
-  linkAddNew,
   dispatch, 
-  dataShipyard,
+  dataAdmin,
 }) => {
 
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [startDate, endDate] = dateRange;
+  const [status, setStatus] = useState(0);
   const [activePage, setActivePage] = useState(1)
   const [data, setData] = useState([])
   const [pagination, setPagination] = useState({})
@@ -28,21 +25,24 @@ const AdminTable = ({
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
-    setSearchShipyardOwner(dispatch, params)
+    if( status ){
+      params['status'] = status
+    }
+    setAllAdmin(dispatch, 0, params)
   }
-
+ 
   const doClearFilter = (e) => {
-    let params = {keyword: ""}
+    let params = {search: ""}
    
     setSearchKeyword("")
-    setSearchShipyardOwner(dispatch, params)
+    setAllAdmin(dispatch, 0, params)
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllShipyard(dispatch, pageNumber)
+    setAllAdmin(dispatch, (pageNumber-1)*10)
   }
 
   const setDataShown = (datas) => {
@@ -50,9 +50,9 @@ const AdminTable = ({
     for (let idx in datas) {
       listData.push({
         'ID': datas[idx].id,
-        'Nama': datas[idx].name,
+        'Nama': datas[idx].full_name,
         'Email': datas[idx].email,
-        'Role': datas[idx].role,
+        'ROLE': datas[idx].role_name,
         'STATUS': datas[idx].status,
       })
     }
@@ -60,50 +60,19 @@ const AdminTable = ({
   }
 
 	useEffect(()=>{
-    setAllShipyard(dispatch, activePage)
-    
-    // FOR SLICING DATA ONLY 
-    setDataShown([{
-      id: "DI0100",
-      name: "PT Sukro",
-      email: "suryo.kencono@mail.com",
-      role: "Super Admin",
-      status: "Active"
-    },{
-      id: "DI0101",
-      name: "Alima Putra",
-      email: "AlimaPutra@gmail.com",
-      role: "Super Admin",
-      status: "Active"
-    },{
-      id: "DI0102",
-      name: "Yuloha Sukima",
-      email: "YulohaSukima@gmail.com",
-      role: "Admin Packing",
-      status: "Inactive"
-    },{
-      id: "DI0103",
-      name: "Maratus K",
-      email: "MaratusK@gmail.com",
-      role: "Super Admin",
-      status: "Inactive"
-    },{
-      id: "DI0104",
-      name: "Saikoji",
-      email: "Saikoji.putra@gmail.com",
-      role: "Manager",
-      status: "Inactive"
-    }])
-    // FOR SLICING DATA ONLY 
-
-	},[])
+    setAllAdmin(dispatch, 0)
+	},[dispatch])
 
   useEffect(()=>{
-    if( dataShipyard.allShipyardResp ){
-      setDataShown(dataShipyard.allShipyardResp.data)
-      setPagination(dataShipyard.allShipyardResp.pagination)
+    if( dataAdmin.allAdminResp ){
+      setDataShown(dataAdmin.allAdminResp.data)
+      setPagination({
+        offset: dataAdmin.allAdminResp.offset, 
+        limit: dataAdmin.allAdminResp.limit, 
+        total: dataAdmin.allAdminResp.total, 
+      })
     }
-  },[dataShipyard.allShipyardResp])
+  },[dataAdmin.allAdminResp])
 
 	return (
     <>
@@ -111,15 +80,6 @@ const AdminTable = ({
         {pageName}
       </p>
       <Container className={styles.container}>
-        <Row>
-          {/* <Col xs="3">
-            <Link to={linkAddNew}>
-              <Button className={styles.save_button_2}>
-                {"New "+pageName}
-              </Button>
-            </Link>
-          </Col> */}
-        </Row>
         <Row>
           <Col xs="3">
             <Form.Label htmlFor="basic-url">Search</Form.Label>
@@ -138,7 +98,9 @@ const AdminTable = ({
           </Col>
           <Col xs="3">
             <Form.Label htmlFor="basic-url">Filter by Status</Form.Label>
-            <Form.Select aria-label="Choose Status" className={styles.field_form} >
+            <Form.Select aria-label="Choose Status" className={styles.field_form} 
+              onChange={ (e)=> setStatus(e.target.value)}
+            >
               <option>{"Select Status"}</option>
               <option>{"Active"}</option>
               <option>{"Inactive"}</option>
@@ -155,13 +117,15 @@ const AdminTable = ({
               {"Cancel"}
             </Button>
           </Col>
-          <Col xs={{ span:2, offset:1 }} className="mt-4">
-            <Link to={"./addAdmin"}>
-              <Button className={styles.add_button}>
-                {"Add Admin"}
-              </Button>
-            </Link>
-          </Col>
+          {localStorage.getItem('role') === "1" &&
+            <Col xs={{ span:2, offset:1 }} className="mt-4">
+              <Link to={"./addAdmin"}>
+                <Button className={styles.add_button}>
+                  {"Add Admin"}
+                </Button>
+              </Link>
+            </Col>
+          }
         </Row>
         {data.length > 0 ?
           <BaseTable 
@@ -177,7 +141,7 @@ const AdminTable = ({
             <br/>
             <br/>
             <p>
-              Curently no Sales Report data..
+              Curently no Admin data..
             </p>
           </>
         }
@@ -188,7 +152,7 @@ const AdminTable = ({
 
 const storage = state => {
   return {
-    dataShipyard: state.shipyard
+    dataAdmin: state.admin,
   };
 };
 

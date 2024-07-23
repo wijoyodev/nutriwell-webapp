@@ -1,84 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
-import { AiOutlineCheck, AiOutlineWarning } from 'react-icons/ai'
-import { BiSearchAlt } from 'react-icons/bi'
+import React, { useState } from "react";
+import { Row, Col, Form, } from 'react-bootstrap'
 import styles from './MainForm.module.scss'
 import { connect } from "react-redux";
 import 'rsuite/dist/rsuite.min.css';
 import FieldHandler from './FieldHandler'
-import Swal from 'sweetalert2'
-import { Link } from "react-router-dom";
-import { setVerifyUser, resetVerifyUser, setForgotPassword } from '../../store/actions/loginRegisterAction'
 
 const MainForm = ({
   pageName,
   onClickFunc,
-  dispatch, 
-  dataLoginRegister, 
   dataForm,
   pageFor,
+  trackShipment,
   status,
-  allShipyard,
   orderId,
-  isVerified,
-  email,
-  isActive,
   onSubmit,
   whiteBackground,
 }) => {
   const [validated, setValidated] = useState(false);
 
-  const doResendPass = (e) => {
-    e.preventDefault()
-    setForgotPassword(dispatch, email, isVerified.role)
-  }
-
   const printStatusLabel = (status) => {
     if( pageName === "Order Detail" ){
-      if( status == "Selesai" ){
+      if( status === 3 ){ // STATUS : Selesai
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Selesai </font>
-      } else if( status == "Belum Bayar" ){
+      } else if( status === 0 ){ // STATUS : Belum Bayar
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Belum Bayar </font>
-      } else if( status == "Dikemas" ){
+      } else if( status === 1 ){ // STATUS : Dikemas
         return <font className={`${styles.statusPacking} ${styles.buttonStatus}`}> Dikemas </font>
-      } else if( status == "Dikirim" ){
+      } else if( status === 2 ){ // STATUS : Dikirim
         return <font className={`${styles.statusDelivered} ${styles.buttonStatus}`}> Dikirim </font>
-      } else if( status == "Dibatalkan" ){
+      } else if( status === 4 ){ // STATUS : Dibatalkan
         return <font className={`${styles.statusCancelled} ${styles.buttonStatus}`}> Dibatalkan </font>
       } else {
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Selesai </font>
       }
     }else if( pageName === "Disbursement Detail" ){
-      if( status == "Berhasil" ){
+      if( status === "Berhasil" || status === "COMPLETED" ){
         return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Berhasil </font>
-      } else if( status == "Pending" ){
+      } else if( status === "Pending" || status === "PENDING" ){
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
       } else {
         return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
       }
     }
-  }
-  
-  const doVerify = (e) => {
-    e.preventDefault()
-    Swal.fire({
-      text: "Are you sure want to verify this user?",
-      confirmButtonText: 'Yes',
-      confirmButtonColor: '#a9acaf',
-      cancelButtonText: 'No',
-      cancelButtonColor: '#163b55',
-      showCloseButton: true,
-      showCancelButton: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const data ={
-          email: isVerified.email, 
-          role: isVerified.role
-        }
-        setVerifyUser(dispatch, data)
-      }
-    })
   }
   
   const handleSubmit = (event) => {
@@ -92,12 +55,6 @@ const MainForm = ({
     setValidated(true);
   };
 
-  useEffect(()=>{
-    if( dataLoginRegister.verifyUserResp ){
-      resetVerifyUser(dispatch)
-    }
-  },[dataLoginRegister.verifyUserResp])
-	
 	return (
 		<>
       { pageFor === "detail" && 
@@ -164,52 +121,9 @@ const MainForm = ({
           <Form noValidate validated={validated} onSubmit={handleSubmit} className={whiteBackground && styles.backgroundWhite}>
             <Row className={styles.field_container}>
               {dataForm.map( (item, index)=>{
-                return <FieldHandler item={item} index={index} key={index} onClickFunc={onClickFunc}/>
+                return <FieldHandler item={item} index={index} key={index} onClickFunc={onClickFunc} trackShipment={trackShipment}/>
               })}
             </Row>
-            { pageName === "Shipyard Owner Detail" && 
-              <>
-                <Row>
-                  <h3 className={styles.title_shipyard}>
-                    Shipyards Available
-                  </h3>
-                </Row>
-                {allShipyard.length > 0 ? 
-                  <Row className={styles.field_container}>
-                    {allShipyard.map( (item, index)=>{
-                        return (
-                          <Col md={5} xs={5} key={index} className={styles.card_2}>
-                            <Link to={`/orderManagementDetail/${orderId}/shipyardDetail/${item.id}`} className={styles.no_link}>
-                              <Row>
-                                <Col xs={7}>
-                                  <font className={styles.label_card}>
-                                    {item.name}
-                                  </font>
-                                </Col>
-                              </Row>
-                              <Row >
-                                { item.shipyardPhotos.length > 0 ?
-                                  <img src={item.shipyardPhotos[0].imageUrl} className={styles.img_card}/>
-                                  :
-                                  <img src={'/images/emptyImageDefault.png'} className={styles.img_card}/>
-                                }
-                              </Row>
-                            </Link>
-                          </Col>
-                        )
-                    })}
-                  </Row>
-                  :
-                  <h4 className={styles.no_shipyard}>
-                    <AiOutlineWarning color="#e75d0f"/>
-                    &nbsp;
-                    No Shipyard Available 
-                    &nbsp;
-                    <AiOutlineWarning color="#e75d0f"/>
-                  </h4>
-                }
-              </>
-            }
           </Form>
         </Col>
       </Row>

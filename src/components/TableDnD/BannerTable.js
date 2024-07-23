@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Container, Button, Form, InputGroup, Table } from 'react-bootstrap';
+import { Row, Col, Container, Button, Form, InputGroup } from 'react-bootstrap';
 import 'rsuite/dist/rsuite.min.css';
 import { BiSearchAlt } from 'react-icons/bi'
 import { Link } from "react-router-dom";
 import styles from './BaseTableDnD.module.scss';
 import BaseTableDnD from "./BaseTableDnD";
 import { connect } from "react-redux";
-import { setBanner, resetBanner, setBannerOrder } from '../../store/actions/bannerAction'
+import { setBanner, setBannerSearch } from '../../store/actions/bannerAction'
 
 const BannerTable = ({
   pageName,
@@ -17,79 +17,55 @@ const BannerTable = ({
 
   const totalPages = 17;
 
-  const [activePage, setActivePage] = useState(1)
   const [searchKeyword, setSearchKeyword] = useState("")
-  const [reorderState, setReorderState] = useState(false)
-  const [tempOrder, setTempOrder] = useState([])
   const [data, setData] = useState(null)
-
-  const handlePageChange = (pageNumber) => {
-    let currPage = pageName
-    setActivePage(currPage)
-  }
-
-  const orderBannerId = (banners) => {
-    let ids = []
-    for (let oneData in banners) {
-      ids.push(banners[oneData].id)
-    }
-    return ids
-  }
-
+  
   const doSearch = (e) => {
     e.preventDefault()
     let params = {}
     if( searchKeyword ){
-      params['keyword'] = searchKeyword
+      params['search'] = searchKeyword
     }
+    setBannerSearch(dispatch, params)
   }
 
-  const setOrderBanner = () => {
-    const data = {
-      bannerType: "supplier",
-      bannerIds: orderBannerId(tempOrder)
+  const doClearFilter = (e) => {
+    e.preventDefault()
+    let params = {search: ""}
+    
+    setSearchKeyword("")
+    setBannerSearch(dispatch, params)
   }
-    setBannerOrder(dispatch, data)
-    setReorderState(!reorderState)
+
+  const manageListBanner = (listData) => {
+    let finalData = []
+    for( let i=0 ; i < listData.length ; i++ ){
+      finalData.push({
+        "id": listData[i].id,
+        "code": listData[i].code,
+        "title": listData[i].title,
+        "linkUrl": "https://google.com/",
+        "imageUrl": listData[i].image_url,
+        "orderNum": i+1,
+        "createdAt": listData[i].created_at,
+        "updatedAt": listData[i].updated_at
+      })
+    }
+    setData(finalData)
   }
 
 	useEffect(()=>{
-    setBanner(dispatch, "supplier")
-
-    // for data testing only
-    setData([
-      {
-        "id": "52fe7f43-ce0d-40de-9aae-a3ce1b9c6d5a",
-        "title": "Masakan kenabran jadin lebih sehat",
-        "linkUrl": "https://google.com/",
-        "imageUrl": "https://media.istockphoto.com/id/1931938426/id/foto/tangan-merobek-kertas-itu-komunikasi-media-sosial-kolase-seni-kontemporer-terisolasi-desain.jpg?s=1024x1024&w=is&k=20&c=037-WFMX6PTcRlsykBvrBSMFxFeI4R3E2M44TzsvDw8=",
-        "orderNum": 1,
-        "createdAt": 1693895989,
-        "updatedAt": 0
-      },{
-        "id": "52fe7f43-ce0d-40de-9aae-a3ce1b9c6d5a",
-        "title": "Manfaat garam GARENA",
-        "linkUrl": "https://google.com/",
-        "imageUrl": "https://media.istockphoto.com/id/1931938426/id/foto/tangan-merobek-kertas-itu-komunikasi-media-sosial-kolase-seni-kontemporer-terisolasi-desain.jpg?s=1024x1024&w=is&k=20&c=037-WFMX6PTcRlsykBvrBSMFxFeI4R3E2M44TzsvDw8=",
-        "orderNum": 2,
-        "createdAt": 1693895989,
-        "updatedAt": 0
-      }
-    ])
-    
-    // for data testing only
-	},[])
+    setBanner(dispatch)
+	},[dispatch])
 
   useEffect(()=>{
-    // if( dataBanner.bannerListResp ){
-    //   resetBanner(dispatch)
-    //   setData(dataBanner.bannerListResp)
-    // }
+    if( dataBanner.bannerListResp ){
+      manageListBanner(dataBanner.bannerListResp)
+    }
   },[dataBanner.bannerListResp])
 
 
 	return (
-    data &&
     <Container className={styles.container}>
       <Row>
         <Col xs="10">
@@ -126,50 +102,27 @@ const BannerTable = ({
           <Button className={styles.save_button} onClick={(e)=>doSearch(e)}>
             {"Apply"}
           </Button>
-        </Col>
-        {/* <Col xs="3">
-          <InputGroup>
-            <InputGroup.Text id="basic-addon2" className={styles.icon_search}>
-              {<BiSearchAlt/>}
-            </InputGroup.Text>
-            <Form.Control 
-              className={styles.field_search}
-              type={"text"} 
-              placeholder={"Search"}
-            />
-          </InputGroup >
-        </Col>
-        <Col xs="2">
-          <Button className={styles.save_button} onClick={()=>setSearchKeyword("bima")}>
-            {"Search"}
-          </Button>
-          &nbsp;
-          &nbsp;
-          &nbsp;
-        </Col> */}
-        <Col xs={{span: reorderState? "4":"2", offset: reorderState? "2":"4" }} className="text-end mt-4">
-          { reorderState &&
-            <Button className={styles.apply_order_button} onClick={()=>setOrderBanner()}>
-              {"Apply Order"}
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <Button className={styles.cancel_button} onClick={(e)=>doClearFilter(e)} >
+              {"Cancel"}
             </Button>
-          }
-          &nbsp;
-          &nbsp;
-          &nbsp;
-          <Button className={styles.cancel_button} onClick={()=>setReorderState(!reorderState)}>
-            {reorderState ? "Cancel" : "Reorder"}
-          </Button>
         </Col>
       </Row>
-
-      <BaseTableDnD 
-        data={data} 
-        totalPages={totalPages}
-        reorderState={reorderState}
-        linkDetail={"../bannerDetail/"} 
-        searchKeyword={searchKeyword}
-        setTempOrder={setTempOrder}
-      />
+      {
+        data && 
+          <BaseTableDnD 
+            data={data} 
+            totalPages={totalPages}
+            linkDetail={"../bannerDetail/"} 
+            searchKeyword={searchKeyword}
+          />
+      }
+      {
+        !data && 
+        <p> currently no Banner data shown </p>
+      }
     </Container>
 	);
 };

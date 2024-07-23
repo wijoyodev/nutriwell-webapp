@@ -1,145 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
-import { AiOutlineCheck, AiOutlineWarning } from 'react-icons/ai'
-import { BiSearchAlt } from 'react-icons/bi'
+import { Row, Col, } from 'react-bootstrap'
 import styles from './MainFormMember.module.scss'
 import Information from '../MemberDetail/Information/Information'
 import ReferenceNetwork from '../MemberDetail/ReferenceNetwork/ReferenceNetwork'
 import { connect } from "react-redux";
 import 'rsuite/dist/rsuite.min.css';
-import FieldHandler from './FieldHandler'
-import Swal from 'sweetalert2'
-import { Link, useParams } from "react-router-dom";
-import { setVerifyUser, resetVerifyUser, setForgotPassword } from '../../store/actions/loginRegisterAction'
 import OrderTable from "../Table/MemberDetail/OrderTable";
 import Reward from "../MemberDetail/Reward/Reward";
 import Disbursement from "../MemberDetail/Disbursement/Disbursement";
 
 const MainFormMember = ({
   pageName,
-  onClickFunc,
-  dispatch, 
-  dataLoginRegister, 
-  dataForm,
   pageFor,
-  status,
-  allShipyard,
+  dataOneMember,
   orderId,
-  isVerified,
-  email,
-  isActive,
-  onSubmit,
-  whiteBackground,
 }) => {
-  const [validated, setValidated] = useState(false);
   const [position, setPosition] = useState("")
-  const [dataOneMember, setDataOneMember] = useState("")
-  const { memberId } = useParams()
-
-  const doResendPass = (e) => {
-    e.preventDefault()
-    setForgotPassword(dispatch, email, isVerified.role)
-  }
-
-  const printStatusLabel = (status) => {
-    if( pageName === "Order Detail" ){
-      if( status == "Selesai" ){
-        return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Selesai </font>
-      } else if( status == "Belum Bayar" ){
-        return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Belum Bayar </font>
-      } else if( status == "Dikemas" ){
-        return <font className={`${styles.statusPacking} ${styles.buttonStatus}`}> Dikemas </font>
-      } else if( status == "Dikirim" ){
-        return <font className={`${styles.statusDelivered} ${styles.buttonStatus}`}> Dikirim </font>
-      } else if( status == "Dibatalkan" ){
-        return <font className={`${styles.statusCancelled} ${styles.buttonStatus}`}> Dibatalkan </font>
-      } else {
-        return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Selesai </font>
-      }
-    }else if( pageName === "Disbursement Detail" ){
-      if( status == "Berhasil" ){
-        return <font className={`${styles.statusDone} ${styles.buttonStatus}`}> Berhasil </font>
-      } else if( status == "Pending" ){
-        return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
-      } else {
-        return <font className={`${styles.statusNotPaid} ${styles.buttonStatus}`}> Pending </font>
-      }
-    }
-  }
-  
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }else{
-      onSubmit(event)
-    }
-    setValidated(true);
-  };
 
   useEffect(()=>{
-    if( dataLoginRegister.verifyUserResp ){
-      resetVerifyUser(dispatch)
-    }
-  },[dataLoginRegister.verifyUserResp])
-
-  useEffect(()=>{
-    if(position && localStorage.getItem('memberDetailPos') != position){
-      console.log("kok masuk?", localStorage.getItem('memberDetailPos'), "|" , position)
+    if(position && localStorage.getItem('memberDetailPos') !== position){
       localStorage.setItem('memberDetailPos', position)
     }
   },[position])
 
   useEffect(()=>{
     if(!localStorage.getItem('memberDetailPos')){
-      console.log("if(!localStorage.getItem('memberDetailPos')){", localStorage.getItem('memberDetailPos'))
       localStorage.setItem('memberDetailPos','info')
       setPosition('info')
     }else{
-      console.log("}else{", localStorage.getItem('memberDetailPos'))
       setPosition(localStorage.getItem('memberDetailPos'))
     }
-  },[])
+  },[localStorage.getItem('memberDetailPos')])
+
 	
 	return (
 		<>
-      { pageFor === "detail" && 
+      { pageFor === "detail" && dataOneMember &&
       <>
         <Row>
           <Col xs={9}>
             <p className={styles.main_title_2}>
-              { orderId ? 
-                `${pageName} #${orderId}`
-                :
-                pageName
-              }
-              &nbsp; &nbsp; &nbsp;
-              { printStatusLabel(status) }
-              {/* { isActive?
-                <font className={styles.label_active}>
-                  Active
-                </font>
-                :
-                <font className={styles.label_inactive}>
-                  Inactive
-                </font>
-              } */}
-              {/* &nbsp;
-              {pageName !== "Admin Detail" && 
-                <>
-                  { isVerified.isVerified ?
-                    <font className={styles.label_verified}>
-                      <AiOutlineCheck/> &nbsp; Verified
-                    </font>
-                    :
-                    <font className={styles.label_not_verified}>
-                      Not Verified
-                    </font>
-                  }
-                </>
-              } */}
+              {pageName}
             </p>
           </Col>
         </Row>
@@ -204,7 +105,7 @@ const MainFormMember = ({
 
 const storage = state => {
   return {
-    dataLoginRegister: state.loginRegister,
+    dataMember: state.member,
   };
 };
 

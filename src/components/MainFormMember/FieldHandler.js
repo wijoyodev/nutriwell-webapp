@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useRef } from "react";
 import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap'
-import { useMediaQuery } from 'react-responsive'
 import styles from './MainFormMember.module.scss'
 import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineSearch } from 'react-icons/ai';
@@ -14,7 +13,6 @@ import Select from 'react-select'
 const FieldHandler = ({
   item, 
   index,
-  onClickFunc,
 }) => {
   const uploadFile= useRef(null);
   
@@ -31,9 +29,6 @@ const FieldHandler = ({
       </Col>
     )
   }
-
-	useEffect(()=>{
-	},[])
 
   const sectionFieldHanlder = (item, index) => {
     if(item.type === "text" ){
@@ -151,7 +146,7 @@ const FieldHandler = ({
                 {'Rp' + item?.transactionTotal?.shippingPrice}
               </Col>
             }
-            { data === "PPH (23 (2%)" &&
+            { data === "PPN (11%)" &&
               <Col md={3} xc={3} className={"p-3"}>
                 {'- Rp' + item?.transactionTotal?.pph}
               </Col>
@@ -169,7 +164,7 @@ const FieldHandler = ({
           <Form.Control
             className={item.notEditable ? styles.field_form_disabled  : styles.field_form}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             onChange={(e)=>item.action(e.target.value)}
             value={item.value}
@@ -362,7 +357,7 @@ const FieldHandler = ({
               </InputGroup.Text>
               <br/>
               {item.for === "update" && 
-                <a href={item.value} className={styles.open_file} target="__blank">
+                <a href={item.value} className={styles.open_file} target="__blank" rel="noreferrer">
                   <p className={styles.open_file_popup}>Click to open uploaded file by User</p>
                   <AiOutlineSearch color="#1b4460"/>
                 </a>
@@ -386,7 +381,7 @@ const FieldHandler = ({
           <Form.Control
             className={styles.field_form_disabled_upload}
             placeholder={item.placeholder}
-            aria-label="ShipyardName"
+            aria-label="name"
             aria-describedby="basic-addon1"
             tabIndex={item.notEditable ? "-1" : "1"}
           />
@@ -412,15 +407,14 @@ const FieldHandler = ({
   } else if (item.type === "date"){
     return (
       item.availability && 
-        <Col md={item.spaceMd} xs={item.spaceXs} key={index}>
+        <Col md={item.spaceMd} xs={item.spaceXs} key={index} className={styles.section}>
           <Form.Label htmlFor="basic-url" className={styles.field_title}>{item.label}</Form.Label> 
           <br/>
-          <DatePicker appearance="default" placeholder="Default" style={{ width: "100%"}} 
-          onChange={(e)=> {item.action(e[0], e[1])}}
-          // value={[
-          //   new Date(item.availableFrom * 1000),
-          //   new Date(item.availableUntil * 1000)
-          // ]}
+          <DatePicker oneTap appearance="default" placeholder="Default" style={{ width: "100%", marginTop: "2%"}} 
+          onChange={(e)=> {item.action(e)}}
+          value={
+            new Date(item.value)
+          }
           />
         </Col>
     )

@@ -1,25 +1,23 @@
 const initialState = {
-  bannerListResp: null,
-  bannerOrderResp: null,
   bannerDetailResp: null,
   bannerUpdateResp: null,
-  bannerCreatetResp: null,
+  bannerCreateResp: null,
   bannerDeleteResp: null,
 }
   
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_BANNER': {
-      return {...state, bannerListResp: action.payload.data.banners}
+      return {...state, bannerListResp: action.payload.result}
     }
     case 'SET_CREATE_BANNER': {
-      return {...state, bannerCreatetResp: action.payload}
+      return {...state, bannerCreateResp: action.payload}
     }
-    case 'SET_BANNER_ORDER': {
-      return {...state, bannerOrderResp: action.payload.data.data}
+    case 'SET_BANNER_SEARCH': {
+      return {...state, bannerListResp: action.payload.result}
     }
     case 'SET_DETAIL_BANNER': {
-      return {...state, bannerDetailResp: action.payload.data.banner}
+      return {...state, bannerDetailResp: action.payload.result[0]}
     }
     case 'SET_UPDATE_BANNER': {
       return {...state, bannerUpdateResp: action.payload.data}
@@ -27,11 +25,8 @@ const reducer = (state = initialState, action) => {
     case 'SET_DELETE_BANNER': {
       return {...state, bannerDeleteResp: action.payload.data}
     }
-    case 'RESET_BANNER':{
-      return {...state, bannerListResp: null}
-    }
     case 'RESET_CREATE_BANNER':{
-      return {...state, bannerCreatetResp: null}
+      return {...state, bannerCreateResp: null}
     }
     case 'RESET_UPDATE_BANNER':{
       return {...state, bannerUpdateResp: null}
