@@ -74,6 +74,7 @@ function RouteHandler() {
                     <Route exact path="/memberDetail/:memberId/:disbursementId" element={<DisbursementDetailPage/>} />
                     <Route exact path="/productDetail" element={<ProductDetailPage/>} />
                     <Route exact path="/404" element={<NotFoundPage/>}/>
+                    <Route exact path="/privacyPolicy" element={<PrivacyPolicyPage/>} />
                     <Route exact path="/invoice/:orderId" element={<InvoicePage/>} />
                     <Route path="*" element={<NotFoundPage/>}/>
                   </Routes>
@@ -98,6 +99,7 @@ function RouteHandler() {
                     <Route exact path="/memberDetail/:memberId" element={<MemberDetailPage/>} />
                     <Route exact path="/productDetail" element={<ProductDetailPage/>} />
                     <Route exact path="/404" element={<NotFoundPage/>}/>
+                    <Route exact path="/privacyPolicy" element={<PrivacyPolicyPage/>} />
                     <Route path="*" element={<NotFoundPage/>}/>
                   </Routes>
                 }
@@ -110,6 +112,7 @@ function RouteHandler() {
                     <Route exact path="/orderManagementDetail/:orderId" element={<OrderManagementDetailPage/>} />
                     <Route exact path="/productDetail" element={<ProductDetailPage/>} />
                     <Route exact path="/404" element={<NotFoundPage/>}/>
+                    <Route exact path="/privacyPolicy" element={<PrivacyPolicyPage/>} />
                     <Route path="*" element={<NotFoundPage/>}/>
                   </Routes>
                 }
