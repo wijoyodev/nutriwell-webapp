@@ -23,19 +23,11 @@ const ProductDetailPage = ({ dispatch, dataProduct }) => {
         confirmButtonColor: '#1b4460',
       })
     }else{
-      if( images[0].file ){
-        dataEdit = {
-          product_name: name,
-          description: desc,
-          imagesUrl: images,
-          price: pricing,
-        }
-      }else{
-        dataEdit = {
-          product_name: name,
-          description: desc,
-          price: pricing,
-          }
+      dataEdit = {
+        product_name: name,
+        description: desc,
+        imagesUrl: images,
+        price: pricing,
       }
       setUpdateProduct(dispatch, dataEdit, id)
     }
