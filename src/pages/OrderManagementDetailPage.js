@@ -209,7 +209,6 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   },[dataOrder.trackShipmentResp, dispatch])
   
   useEffect(()=>{
-    console.log("leweat useEffect data masukl", dataOrder)
     if( dataOrder.orderDetailResp ){
       let data = dataOrder.orderDetailResp
       setId(data.order_number)
@@ -249,8 +248,6 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   },[dataOrder.orderDetailResp, dispatch])
 
   useEffect(()=>{
-    
-    console.log("leweat useEffect")
     setDetailOrder(dispatch, orderId)
     setIsLoading(true)
   },[dispatch, orderId])
@@ -375,7 +372,6 @@ const OrderManagementDetailPage = ({ dispatch, dataOrder }) => {
   useEffect(()=>{
     if( dataOrder.orderDetailResp ){
       let data = dataOrder.orderDetailResp
-      console.log("MASUK,", data)
       setId(data.order_number)
       setName(data.user_detail.full_name)
       setRequestDate(data.created_at)

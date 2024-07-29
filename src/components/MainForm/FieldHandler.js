@@ -190,7 +190,6 @@ const FieldHandler = ({
 
         { item.isProductInfo &&
           <>
-          {console.log(item, "<item")}
             <Row index={index} className={styles.data_table}>
               <Col md={3} xc={3} className={"p-3"}>
                 {item.productDetails.product_name}
