@@ -25,7 +25,7 @@ const SalesReportTable = ({
 
   const doSearch = (e) => {
     e.preventDefault()
-    let params = {}
+    let params = {date_type:"payment_date", status: "1,3"}
     if( searchKeyword ){
       params['search'] = searchKeyword
     }
@@ -42,12 +42,12 @@ const SalesReportTable = ({
     
     setSearchKeyword("")
     setDateRange([null, null])
-    setAllOrder(dispatch, 0, params)
+    setAllOrder(dispatch, 0, {date_type:"payment_date", status: "1,3"})
   }
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber)
-    setAllOrder(dispatch, (pageNumber-1)*10)
+    setAllOrder(dispatch, (pageNumber-1)*10, {date_type:"payment_date", status: "1,3"})
   }
 
   const setDataShown = (datas) => {
@@ -67,7 +67,7 @@ const SalesReportTable = ({
   }
 
 	useEffect(()=>{
-    setAllOrder(dispatch, 0)
+    setAllOrder(dispatch, 0, {date_type:"payment_date", status: "1,3"})
 	},[dispatch])
 
   useEffect(()=>{
