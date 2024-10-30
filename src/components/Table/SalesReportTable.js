@@ -56,7 +56,7 @@ const SalesReportTable = ({
       listData.push({
         'ID': datas[idx].id,
         'Tanggal Pesan': new Date(datas[idx].created_at).toLocaleString(),
-        'Tanggal Bayar': new Date(datas[idx].payment_date).toLocaleString(),
+        'Tanggal Bayar': datas[idx].payment_date  ? new Date(datas[idx].payment_date).toLocaleString() : "-",
         'Nama': datas[idx].user_detail.full_name,
         'QTY': datas[idx].product_detail.quantity,
         'Jumlah': datas[idx].product_detail.total_price,
