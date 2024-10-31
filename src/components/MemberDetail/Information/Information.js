@@ -77,7 +77,7 @@ const Information = ({
     setDOB(data.date_of_birth)
     setAddress(data.address_detail.address_detail + ', ' + data.address_detail.district + ', ' + data.address_detail.city + ', ' + data.address_detail.province)
     setGender(data.gender)
-    // setUpline(data)
+    setUpline(data.upline.full_name)
     setBankAccountName(data.account_bank_number)
     setBankName(data.account_bank_name)
     setBankAccount(data.account_bank)
