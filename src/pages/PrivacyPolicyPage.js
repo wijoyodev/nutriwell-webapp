@@ -8,7 +8,7 @@ const PrivacyPolicyPage = () => {
     <>
       <LoginRegister
         dataField={[]}
-        privacyPolicy={true}
+        contentType={'privacyPolicy'}
         pageName={"Login as Admin"}
       />
     </>

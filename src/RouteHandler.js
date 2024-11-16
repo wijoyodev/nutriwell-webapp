@@ -26,6 +26,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import SideMenu from "./components/SideMenu/SideMenu";
 import Header from "./components/Header/Header";
+import DeleteRequestPage from "./pages/DeleteRequestPage";
 
 function RouteHandler() {
   const [isLogin, setIsLogin] = useState("")
@@ -75,6 +76,7 @@ function RouteHandler() {
                     <Route exact path="/productDetail" element={<ProductDetailPage/>} />
                     <Route exact path="/404" element={<NotFoundPage/>}/>
                     <Route exact path="/privacyPolicy" element={<PrivacyPolicyPage/>} />
+                    <Route exact path="/deleteRequest" element={<DeleteRequestPage/>} />
                     <Route exact path="/invoice/:orderId" element={<InvoicePage/>} />
                     <Route path="*" element={<NotFoundPage/>}/>
                   </Routes>
@@ -100,6 +102,7 @@ function RouteHandler() {
                     <Route exact path="/productDetail" element={<ProductDetailPage/>} />
                     <Route exact path="/404" element={<NotFoundPage/>}/>
                     <Route exact path="/privacyPolicy" element={<PrivacyPolicyPage/>} />
+                    <Route exact path="/deleteRequest" element={<DeleteRequestPage/>} />
                     <Route path="*" element={<NotFoundPage/>}/>
                   </Routes>
                 }
@@ -113,6 +116,7 @@ function RouteHandler() {
                     <Route exact path="/productDetail" element={<ProductDetailPage/>} />
                     <Route exact path="/404" element={<NotFoundPage/>}/>
                     <Route exact path="/privacyPolicy" element={<PrivacyPolicyPage/>} />
+                    <Route exact path="/deleteRequest" element={<DeleteRequestPage/>} />
                     <Route path="*" element={<NotFoundPage/>}/>
                   </Routes>
                 }
@@ -127,6 +131,7 @@ function RouteHandler() {
                   <Route exact path="/" element={<LoginPage/>} />
                   <Route exact path="/login" element={<LoginPage/>} />
                   <Route exact path="/privacyPolicy" element={<PrivacyPolicyPage/>} />
+                  <Route exact path="/deleteRequest" element={<DeleteRequestPage/>} />
                   <Route exact path="/404" element={<NotFoundPage/>}/>
                   <Route path="*" element={<NotFoundPage/>}/>
                 </Routes>

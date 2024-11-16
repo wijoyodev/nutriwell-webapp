@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 import styles from './LoginRegister.module.scss'
 import FieldHandlerLogin from "./FieldHandlerLogin";
 import PrivacyPolicy from "./PrivacyPolicy"
+import DeleteRequest from "./DeleteRequest";
 
 const LoginRegister = ({
   dataField,
   linkLogin,
   onSubmit,
-  privacyPolicy,
+  contentType,
 }) => {
 
 	const [showPassword, setShowPassword] = useState(false);
@@ -43,16 +44,23 @@ const LoginRegister = ({
 		<>
       <Row className="mr-0 ml-0">
         {
-          privacyPolicy ?
+          contentType === 'privacyPolicy' ?
           <>
             <Col xs="6" className={styles.left_image_half}>
             </Col>  
-            <PrivacyPolicy/>
+            <PrivacyPolicy />
+          </>
+          : contentType === 'deleteRequest' ?
+          <>
+            <Col xs="6" className={styles.left_image_half}>
+            </Col>  
+            <DeleteRequest dataField={dataField} />
           </>
           :
             !isWeMobile &&
             <Col xs="6" className={styles.left_image}>
             </Col>
+            
         }
         <Col xs={isWeMobile ? "12" : "6"} className={styles.right_container}>
           { isWeMobile &&
